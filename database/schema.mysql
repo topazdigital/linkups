@@ -1,0 +1,138 @@
+-- Linkups Adventures MySQL schema
+-- Import this file into your hosting MySQL database.
+
+CREATE DATABASE IF NOT EXISTS linkups_adventures CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE linkups_adventures;
+
+CREATE TABLE users (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(120) NOT NULL,
+  email VARCHAR(190) NOT NULL UNIQUE,
+  phone VARCHAR(30),
+  password_hash VARCHAR(255) NOT NULL,
+  role ENUM('customer','admin') NOT NULL DEFAULT 'customer',
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  email_verified_at DATETIME NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE sessions (
+  id VARCHAR(255) PRIMARY KEY,
+  user_id BIGINT UNSIGNED NOT NULL,
+  expires_at DATETIME NOT NULL,
+  token_hash VARCHAR(255) NOT NULL UNIQUE,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  INDEX idx_sessions_user (user_id),
+  INDEX idx_sessions_expiry (expires_at)
+) ENGINE=InnoDB;
+
+CREATE TABLE destinations (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(120) NOT NULL,
+  slug VARCHAR(140) NOT NULL UNIQUE,
+  summary TEXT,
+  description TEXT,
+  image_url VARCHAR(500),
+  is_featured BOOLEAN NOT NULL DEFAULT FALSE,
+  is_published BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE adventures (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  destination_id BIGINT UNSIGNED NULL,
+  title VARCHAR(180) NOT NULL,
+  slug VARCHAR(200) NOT NULL UNIQUE,
+  category VARCHAR(80) NOT NULL,
+  duration_days SMALLINT UNSIGNED NOT NULL,
+  duration_nights SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+  price DECIMAL(12,2) NOT NULL,
+  description TEXT,
+  itinerary JSON,
+  included JSON,
+  excluded JSON,
+  hero_image_url VARCHAR(500),
+  is_featured BOOLEAN NOT NULL DEFAULT FALSE,
+  is_published BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (destination_id) REFERENCES destinations(id) ON DELETE SET NULL,
+  INDEX idx_adventures_category (category),
+  INDEX idx_adventures_published (is_published)
+) ENGINE=InnoDB;
+
+CREATE TABLE bookings (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  reference VARCHAR(30) NOT NULL UNIQUE,
+  user_id BIGINT UNSIGNED NULL,
+  adventure_id BIGINT UNSIGNED NULL,
+  full_name VARCHAR(150) NOT NULL,
+  email VARCHAR(190) NOT NULL,
+  phone VARCHAR(30) NOT NULL,
+  travel_date DATE NULL,
+  travellers SMALLINT UNSIGNED NOT NULL DEFAULT 1,
+  special_requests TEXT,
+  status ENUM('new','confirmed','in_progress','completed','cancelled') NOT NULL DEFAULT 'new',
+  payment_status ENUM('pending','paid','failed','refunded') NOT NULL DEFAULT 'pending',
+  total_amount DECIMAL(12,2) NOT NULL DEFAULT 0,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
+  FOREIGN KEY (adventure_id) REFERENCES adventures(id) ON DELETE SET NULL,
+  INDEX idx_bookings_status (status),
+  INDEX idx_bookings_date (travel_date)
+) ENGINE=InnoDB;
+
+CREATE TABLE enquiries (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(150) NOT NULL,
+  email VARCHAR(190) NOT NULL,
+  phone VARCHAR(30),
+  service VARCHAR(100),
+  message TEXT NOT NULL,
+  status ENUM('new','read','replied','archived') NOT NULL DEFAULT 'new',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE blog_posts (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  author_id BIGINT UNSIGNED NULL,
+  title VARCHAR(220) NOT NULL,
+  slug VARCHAR(240) NOT NULL UNIQUE,
+  category VARCHAR(80) NOT NULL,
+  excerpt TEXT,
+  content LONGTEXT NOT NULL,
+  image_url VARCHAR(500),
+  status ENUM('draft','published','archived') NOT NULL DEFAULT 'draft',
+  published_at DATETIME NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE newsletter_subscribers (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(190) NOT NULL UNIQUE,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE site_settings (
+  setting_key VARCHAR(120) PRIMARY KEY,
+  setting_value TEXT NOT NULL,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- Promote the first account to administrator after registration:
+-- UPDATE users SET role = 'admin' WHERE email = 'your-admin-email@example.com';
+
+INSERT INTO site_settings (setting_key, setting_value) VALUES
+('site_name', 'Linkups Adventures'),
+('site_domain', 'linkupsadventures.co.ke'),
+('contact_phone', '0726 843 677'),
+('contact_email', 'linkupsadventures@gmail.com'),
+('mpesa_till', '5139557')
+ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value);
