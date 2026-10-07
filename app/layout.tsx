@@ -3,8 +3,8 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
+  title: 'LinkUps Adventures | Kenya, made personal',
+  description: 'Small-group safaris, beach escapes and thoughtful Kenya adventures made for real people.',
   generator: 'v0.app',
   icons: {
     icon: [
