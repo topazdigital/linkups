@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ArrowRight, CalendarDays, Check, ChevronDown, Compass, Globe2, MapPin, Menu, Search, Star, Users, X } from 'lucide-react'
 
 const hero = 'https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=2000&q=85'
@@ -26,7 +26,10 @@ const destinations = [
 
 function Header() {
   const [open, setOpen] = useState(false)
-  return <header className="site-header"><a href="#top" className="brand" aria-label="Linkups Adventures home"><span>LinkUps</span><small>ADVENTURES</small></a><nav className={open ? 'nav open' : 'nav'}>{[['Home', '/'], ['Adventures', '/adventures'], ['Destinations', '/destinations'], ['Group Travel', '/group-travel'], ['About Us', '/about'], ['Blog', '/blog'], ['Contact', '/contact']].map(([item, href]) => <Link key={item} href={href} onClick={() => setOpen(false)}>{item}</Link>)}</nav><div className="header-actions"><Search aria-label="Search" /><Link className="header-account" href="/login">Sign in</Link><Link className="header-account" href="/register">Register</Link><a className="button orange" href="/plan">Plan My Adventure</a><button className="menu-button" aria-label="Toggle navigation" onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</button></div></header>
+  const [signedIn, setSignedIn] = useState(false)
+  useEffect(() => { setSignedIn(document.cookie.includes('linkups_session=active')) }, [])
+  function signOut() { document.cookie = 'linkups_session=; Max-Age=0; Path=/'; setSignedIn(false) }
+  return <header className="site-header"><a href="#top" className="brand" aria-label="Linkups Adventures home"><span>LinkUps</span><small>ADVENTURES</small></a><nav className={open ? 'nav open' : 'nav'}>{[['Home', '/'], ['Adventures', '/adventures'], ['Destinations', '/destinations'], ['Group Travel', '/group-travel'], ['About Us', '/about'], ['Blog', '/blog'], ['Contact', '/contact']].map(([item, href]) => <Link key={item} href={href} onClick={() => setOpen(false)}>{item}</Link>)}</nav><div className="header-actions"><Search aria-label="Search" />{signedIn ? <button className="header-account header-button" onClick={signOut}>Sign out</button> : <><Link className="header-account" href="/login">Sign in</Link><Link className="header-account" href="/register">Register</Link></>}<a className="button orange" href="/plan">Plan My Adventure</a><button className="menu-button" aria-label="Toggle navigation" onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</button></div></header>
 }
 
 function SectionTitle({ eyebrow, title, light = false }: { eyebrow: string; title: string; light?: boolean }) { return <div className={`section-title ${light ? 'light' : ''}`}><span className="eyebrow">{eyebrow}</span><h2>{title}</h2></div> }

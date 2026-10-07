@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Menu, X, ArrowRight } from 'lucide-react'
 
 export const siteImages = {
@@ -18,8 +18,11 @@ export function Logo({ light = false }: { light?: boolean }) {
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false)
+  const [signedIn, setSignedIn] = useState(false)
+  useEffect(() => { setSignedIn(document.cookie.includes('linkups_session=active')) }, [])
   const links = [['Adventures', '/adventures'], ['Destinations', '/destinations'], ['Group Travel', '/group-travel'], ['About Us', '/about'], ['Blog', '/blog'], ['Contact', '/contact']]
-  return <header className="site-header"><Logo /><nav className={open ? 'nav open' : 'nav'}>{links.map(([label, href]) => <Link href={href} key={href} onClick={() => setOpen(false)}>{label}</Link>)}</nav><div className="header-actions"><Link className="header-account" href="/login">Sign in</Link><Link className="header-account" href="/register">Register</Link><Link className="button orange" href="/plan">Plan My Adventure <ArrowRight /></Link><button className="menu-button" aria-label="Toggle navigation" onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</button></div></header>
+  function signOut() { document.cookie = 'linkups_session=; Max-Age=0; Path=/'; setSignedIn(false) }
+  return <header className="site-header"><Logo /><nav className={open ? 'nav open' : 'nav'}>{links.map(([label, href]) => <Link href={href} key={href} onClick={() => setOpen(false)}>{label}</Link>)}</nav><div className="header-actions">{signedIn ? <button className="header-account header-button" onClick={signOut}>Sign out</button> : <><Link className="header-account" href="/login">Sign in</Link><Link className="header-account" href="/register">Register</Link></>}<Link className="button orange" href="/plan">Plan My Adventure <ArrowRight /></Link><button className="menu-button" aria-label="Toggle navigation" onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</button></div></header>
 }
 
 export function SiteFooter() {
