@@ -126,6 +126,67 @@ CREATE TABLE site_settings (
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
+CREATE TABLE banner_slides (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  eyebrow VARCHAR(120),
+  title VARCHAR(220) NOT NULL,
+  subtitle TEXT,
+  image_url VARCHAR(500) NOT NULL,
+  button_label VARCHAR(80),
+  button_url VARCHAR(500),
+  sort_order INT NOT NULL DEFAULT 0,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_banner_active_order (is_active, sort_order)
+) ENGINE=InnoDB;
+
+CREATE TABLE oauth_providers (
+  provider VARCHAR(40) PRIMARY KEY,
+  client_id VARCHAR(255),
+  client_secret_encrypted TEXT,
+  is_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE email_settings (
+  id TINYINT UNSIGNED PRIMARY KEY,
+  sender_name VARCHAR(150) NOT NULL,
+  sender_email VARCHAR(190) NOT NULL,
+  reply_to_email VARCHAR(190),
+  smtp_host VARCHAR(255),
+  smtp_port SMALLINT UNSIGNED,
+  smtp_username VARCHAR(190),
+  smtp_password_encrypted TEXT,
+  booking_notifications BOOLEAN NOT NULL DEFAULT TRUE,
+  enquiry_notifications BOOLEAN NOT NULL DEFAULT TRUE,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE media_assets (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  file_name VARCHAR(255) NOT NULL,
+  file_url VARCHAR(500) NOT NULL,
+  alt_text VARCHAR(255),
+  media_type VARCHAR(80) NOT NULL DEFAULT 'image',
+  uploaded_by BIGINT UNSIGNED NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (uploaded_by) REFERENCES users(id) ON DELETE SET NULL,
+  INDEX idx_media_type (media_type)
+) ENGINE=InnoDB;
+
+CREATE TABLE audit_logs (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT UNSIGNED NULL,
+  action VARCHAR(120) NOT NULL,
+  entity_type VARCHAR(80),
+  entity_id BIGINT UNSIGNED NULL,
+  details JSON,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
+  INDEX idx_audit_created (created_at)
+) ENGINE=InnoDB;
+
 -- Promote the first account to administrator after registration:
 -- UPDATE users SET role = 'admin' WHERE email = 'your-admin-email@example.com';
 
