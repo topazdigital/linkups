@@ -3,14 +3,13 @@
 import { useState } from 'react'
 import { ArrowRight, CalendarDays, Check, ChevronDown, Compass, Globe2, MapPin, Menu, Search, Star, Users, X } from 'lucide-react'
 
-const logo = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-10-07%20at%2015.10.42-gDNkbyG07O4lpIJaPYZ9PVhgybo0Jj.jpeg'
-const hero = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-10-07%20at%2015.17.27-Rr6eGOQM1vDIJHbGMlCFShQjg2dP2C.jpeg'
-const destinationHero = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-10-07%20at%2015.17.28-kBRS1JVBEcXxMemBUnN16ZMzufhSN1.jpeg'
+const hero = 'https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=2000&q=85'
+const destinationHero = 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1600&q=85'
 const images = {
-  mara: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-10-07%20at%2015.17.28-kBRS1JVBEcXxMemBUnN16ZMzufhSN1.jpeg',
-  beach: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-10-07%20at%2015.17.29%20%281%29-c0FOMtGEKYpDt1JldqOjP9IgTSy4Op.jpeg',
-  group: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-10-07%20at%2015.17.29-nxp7xTqHJkdm9TEyyKgD08MHkZZXxt.jpeg',
-  package: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-10-07%20at%2015.17.30.jpeg-KwbzP2owlt9h3KTd1tjEyYAerCZxVb.jpeg',
+  mara: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=900&q=85',
+  beach: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=85',
+  group: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=900&q=85',
+  package: 'https://images.unsplash.com/photo-1549366021-9f761d450615?auto=format&fit=crop&w=900&q=85',
 }
 
 const destinations = [
@@ -26,7 +25,7 @@ const destinations = [
 
 function Header() {
   const [open, setOpen] = useState(false)
-  return <header className="site-header"><a href="#top" className="brand"><img src={logo} alt="Linkups Adventures" /></a><nav className={open ? 'nav open' : 'nav'}>{['Home', 'Adventures', 'Destinations', 'Group Travel', 'About Us', 'Blog', 'Contact'].map((item) => <a key={item} href={`#${item.toLowerCase().replaceAll(' ', '-')}`} onClick={() => setOpen(false)}>{item}</a>)}</nav><div className="header-actions"><Search aria-label="Search" /><a className="button orange" href="#contact">Plan My Adventure</a><button className="menu-button" aria-label="Toggle navigation" onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</button></div></header>
+  return <header className="site-header"><a href="#top" className="brand" aria-label="Linkups Adventures home"><span>LinkUps</span><small>ADVENTURES</small></a><nav className={open ? 'nav open' : 'nav'}>{['Home', 'Adventures', 'Destinations', 'Group Travel', 'About Us', 'Blog', 'Contact'].map((item) => <a key={item} href={`#${item.toLowerCase().replaceAll(' ', '-')}`} onClick={() => setOpen(false)}>{item}</a>)}</nav><div className="header-actions"><Search aria-label="Search" /><a className="button orange" href="#contact">Plan My Adventure</a><button className="menu-button" aria-label="Toggle navigation" onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</button></div></header>
 }
 
 function SectionTitle({ eyebrow, title, light = false }: { eyebrow: string; title: string; light?: boolean }) { return <div className={`section-title ${light ? 'light' : ''}`}><span className="eyebrow">{eyebrow}</span><h2>{title}</h2></div> }
@@ -40,7 +39,7 @@ export default function Page() {
     <section className="packages"><div className="section-row"><SectionTitle eyebrow="Featured adventures" title="Handpicked experiences" /><a href="#contact" className="text-link">View all packages <ArrowRight /></a></div><div className="package-grid">{[['Maasai Mara Villa Escape', 'From KES 24,800 pp', images.package], ['Mombasa Beach Escape', 'From KES 12,800 pp', images.beach], ['Naivasha Adventure', 'From KES 5,500 pp', images.beach], ['Samburu Overland', 'From KES 16,000 pp', images.mara]].map(([name, price, image]) => <article className="package-card" key={name}><img src={image} alt="" /><div className="package-body"><small>3 Days · 2 Nights</small><h3>{name}</h3><strong>{price}</strong><a className="button orange small" href="#contact">View package <ArrowRight /></a></div></article>)}</div></section>
     <section className="custom-trip" id="contact" style={{ backgroundImage: `linear-gradient(90deg, rgba(0,44,36,.92), rgba(0,44,36,.45)), url(${destinationHero})` }}><div><SectionTitle light eyebrow="Can't find exactly what you want?" title="Plan your custom trip" /><p>Tell us where you want to go, who you're travelling with, your dates and your budget. We'll build the experience around you.</p><a className="button orange" href="mailto:linkupsadventures@gmail.com">Start planning <ArrowRight /></a></div><div className="benefits">{['Custom itineraries', 'Group & family trips', 'Flexible budgets', 'Dedicated support'].map((item) => <span key={item}><Check /> {item}</span>)}</div></section>
     <section className="trust"><div><Star /><strong>Trusted by adventurers</strong><p>Thoughtful planning, local expertise and memories that last.</p></div><div><Users /><strong>For every traveller</strong><p>Solo explorers, couples, families, friends and teams.</p></div><div><Compass /><strong>Kenya, your way</strong><p>From savannahs to coastlines, discover more with Linkups.</p></div></section>
-  </main><footer><div className="footer-main"><div><img src={logo} alt="Linkups Adventures" /><p>Where fun meets adventures.</p></div><div><strong>Explore</strong><a href="#adventures">Adventures</a><a href="#destinations">Destinations</a><a href="#contact">Group Travel</a><a href="#contact">About Us</a></div><div><strong>Contact</strong><a href="tel:0726843677">0726 843 677</a><a href="mailto:linkupsadventures@gmail.com">linkupsadventures@gmail.com</a><a href="#contact">@LinkupsAdventures</a></div><div><strong>Follow us</strong><div className="socials"><Globe2 /><Star /><Compass /></div></div><div><strong>Payments</strong><p>M-Pesa Till<br /><b>5139557</b></p></div></div><div className="footer-bottom"><span>© 2026 Linkups Adventures. All rights reserved.</span><span>Terms & Conditions　 Cancellation Policy　 Privacy Policy</span></div></footer></div>
+  </main><footer><div className="footer-main"><div><a href="#top" className="footer-brand">LinkUps <small>ADVENTURES</small></a><p>Where fun meets adventures.</p></div><div><strong>Explore</strong><a href="#adventures">Adventures</a><a href="#destinations">Destinations</a><a href="#contact">Group Travel</a><a href="#contact">About Us</a></div><div><strong>Contact</strong><a href="tel:0726843677">0726 843 677</a><a href="mailto:linkupsadventures@gmail.com">linkupsadventures@gmail.com</a><a href="#contact">@LinkupsAdventures</a></div><div><strong>Follow us</strong><div className="socials"><Globe2 /><Star /><Compass /></div></div><div><strong>Payments</strong><p>M-Pesa Till<br /><b>5139557</b></p></div></div><div className="footer-bottom"><span>© 2026 Linkups Adventures. All rights reserved.</span><span>Terms & Conditions　 Cancellation Policy　 Privacy Policy</span></div></footer></div>
 }
 
 export { CalendarDays, MapPin, ChevronDown }
