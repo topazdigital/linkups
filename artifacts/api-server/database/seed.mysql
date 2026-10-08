@@ -1,0 +1,25 @@
+-- Initial public catalogue. Safe to run again; existing slugs are preserved.
+-- Run after schema.mysql. Review prices and descriptions before a production launch.
+
+INSERT IGNORE INTO destinations (name, slug, summary, image_url, is_featured) VALUES
+  ('Maasai Mara', 'maasai-mara', 'Wildlife, game drives and wide-open savannah.', '/images/adventure-hero.png', TRUE),
+  ('Mombasa', 'mombasa', 'Coastline, warm water and time to unwind.', '/images/adventure-coast.png', TRUE),
+  ('Naivasha', 'naivasha', 'Lakeside escapes, hiking and outdoor activities.', '/images/adventure-mountain.png', TRUE),
+  ('Samburu', 'samburu', 'Northern Kenya wildlife and local culture.', '/images/adventure-hero.png', TRUE);
+
+INSERT IGNORE INTO adventures
+  (destination_id, title, slug, category, duration_days, duration_nights, price,
+   description, itinerary, included, excluded, hero_image_url, is_featured, is_published)
+VALUES
+  ((SELECT id FROM destinations WHERE slug = 'maasai-mara'), 'Maasai Mara Villa Escape', 'maasai-mara-villa-escape', 'Safari', 3, 2, 24800,
+   'A guided Maasai Mara escape with wildlife viewing and a comfortable stay.', JSON_ARRAY(), JSON_ARRAY(), JSON_ARRAY(), '/images/adventure-hero.png', TRUE, TRUE),
+  ((SELECT id FROM destinations WHERE slug = 'mombasa'), 'Mombasa Beach Escape', 'mombasa-beach-escape', 'Beach Escape', 3, 2, 12800,
+   'A relaxed coast break with time for the beach and local experiences.', JSON_ARRAY(), JSON_ARRAY(), JSON_ARRAY(), '/images/adventure-coast.png', TRUE, TRUE),
+  ((SELECT id FROM destinations WHERE slug = 'naivasha'), 'Naivasha Adventure', 'naivasha-adventure', 'Outdoor Adventure', 1, 0, 5500,
+   'A day out in the Naivasha area with nature and outdoor activities.', JSON_ARRAY(), JSON_ARRAY(), JSON_ARRAY(), '/images/adventure-mountain.png', TRUE, TRUE),
+  ((SELECT id FROM destinations WHERE slug = 'samburu'), 'Samburu Overland', 'samburu-overland', 'Safari', 2, 1, 16000,
+   'A northern Kenya overland trip focused on wildlife, landscapes and local culture.', JSON_ARRAY(), JSON_ARRAY(), JSON_ARRAY(), '/images/adventure-hero.png', TRUE, TRUE),
+  (NULL, 'Wild Hearts Escape', 'wild-hearts-escape', 'Couples Escape', 3, 2, 24400,
+   'A thoughtful escape for couples looking to slow down and explore together.', JSON_ARRAY(), JSON_ARRAY(), JSON_ARRAY(), '/images/adventure-coast.png', FALSE, TRUE),
+  (NULL, 'Girls Adventure Escape', 'girls-adventure-escape', 'Group Travel', 3, 2, 12400,
+   'A group escape built around good company, shared activities and time to relax.', JSON_ARRAY(), JSON_ARRAY(), JSON_ARRAY(), '/images/group-travel-hero.png', FALSE, TRUE);

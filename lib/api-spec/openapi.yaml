@@ -10,6 +10,10 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: public
+    description: Public booking and enquiry operations
+  - name: admin
+    description: Protected admin operations
 paths:
   /healthz:
     get:
@@ -24,7 +28,243 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /enquiries:
+    post:
+      operationId: createEnquiry
+      tags: [public]
+      summary: Submit a contact enquiry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EnquiryInput"
+      responses:
+        "201":
+          description: Enquiry saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnquiryCreated"
+        "400":
+          description: Invalid enquiry
+  /bookings:
+    post:
+      operationId: createBooking
+      tags: [public]
+      summary: Request an adventure booking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookingInput"
+      responses:
+        "201":
+          description: Booking request saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookingCreated"
+        "400":
+          description: Invalid booking request
+  /adventures:
+    get:
+      operationId: listPublicAdventures
+      tags: [public]
+      summary: List published adventures
+      responses:
+        "200":
+          description: Published adventures
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Adventure"
+  /admin/session:
+    get:
+      operationId: getAdminSession
+      tags: [admin]
+      summary: Check the current admin session
+      responses:
+        "200":
+          description: Current authentication state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminSession"
+  /admin/login:
+    post:
+      operationId: adminLogin
+      tags: [admin]
+      summary: Sign in to the admin dashboard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminLoginInput"
+      responses:
+        "200":
+          description: Admin session created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminSession"
+        "401":
+          description: Invalid admin credentials
+  /admin/logout:
+    post:
+      operationId: adminLogout
+      tags: [admin]
+      summary: End the current admin session
+      responses:
+        "204":
+          description: Admin session ended
+  /admin/bookings:
+    get:
+      operationId: listAdminBookings
+      tags: [admin]
+      summary: List booking requests
+      responses:
+        "200":
+          description: Booking requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Booking"
+  /admin/bookings/{id}:
+    patch:
+      operationId: updateBooking
+      tags: [admin]
+      summary: Update a booking status
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookingStatusUpdate"
+      responses:
+        "200":
+          description: Updated booking
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "404":
+          description: Booking not found
+  /admin/enquiries:
+    get:
+      operationId: listAdminEnquiries
+      tags: [admin]
+      summary: List contact enquiries
+      responses:
+        "200":
+          description: Contact enquiries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Enquiry"
+  /admin/enquiries/{id}:
+    patch:
+      operationId: updateEnquiry
+      tags: [admin]
+      summary: Update an enquiry status
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EnquiryStatusUpdate"
+      responses:
+        "200":
+          description: Updated enquiry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Enquiry"
+        "404":
+          description: Enquiry not found
+  /admin/adventures:
+    get:
+      operationId: listAdminAdventures
+      tags: [admin]
+      summary: List published and unpublished adventures
+      responses:
+        "200":
+          description: Adventures
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Adventure"
+    post:
+      operationId: createAdventure
+      tags: [admin]
+      summary: Add an adventure
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdventureInput"
+      responses:
+        "201":
+          description: Adventure created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Adventure"
+  /admin/adventures/{id}:
+    patch:
+      operationId: updateAdventure
+      tags: [admin]
+      summary: Edit or publish an adventure
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdventureUpdate"
+      responses:
+        "200":
+          description: Updated adventure
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Adventure"
+        "404":
+          description: Adventure not found
 components:
+  securitySchemes:
+    AdminSession:
+      type: apiKey
+      in: cookie
+      name: linkups_admin_session
   schemas:
     HealthStatus:
       type: object
@@ -33,4 +273,142 @@ components:
           type: string
       required:
         - status
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error: { type: string }
+    EnquiryInput:
+      type: object
+      required: [name, email, message]
+      properties:
+        name: { type: string, minLength: 2, maxLength: 150 }
+        email: { type: string, format: email, maxLength: 190 }
+        phone: { type: string, maxLength: 30 }
+        service: { type: string, maxLength: 100 }
+        message: { type: string, minLength: 2, maxLength: 8000 }
+    EnquiryCreated:
+      type: object
+      required: [id, status]
+      properties:
+        id: { type: integer }
+        status: { type: string, enum: [new] }
+    BookingInput:
+      type: object
+      required: [fullName, email, phone, travellers]
+      properties:
+        fullName: { type: string, minLength: 2, maxLength: 150 }
+        email: { type: string, format: email, maxLength: 190 }
+        phone: { type: string, minLength: 5, maxLength: 30 }
+        adventureSlug: { type: ["string", "null"], maxLength: 200 }
+        travelDate: { type: ["string", "null"], format: date }
+        travellers: { type: integer, minimum: 1, maximum: 40 }
+        specialRequests: { type: string, maxLength: 8000 }
+    BookingCreated:
+      type: object
+      required: [reference, status, totalAmount]
+      properties:
+        reference: { type: string }
+        status: { type: string, enum: [new] }
+        totalAmount: { type: number }
+    BookingStatus:
+      type: string
+      enum: [new, confirmed, in_progress, completed, cancelled]
+    EnquiryStatus:
+      type: string
+      enum: [new, read, replied, archived]
+    BookingStatusUpdate:
+      type: object
+      required: [status]
+      properties:
+        status: { $ref: "#/components/schemas/BookingStatus" }
+    EnquiryStatusUpdate:
+      type: object
+      required: [status]
+      properties:
+        status: { $ref: "#/components/schemas/EnquiryStatus" }
+    Booking:
+      type: object
+      required: [id, reference, fullName, email, phone, adventureTitle, travelDate, travellers, specialRequests, status, paymentStatus, totalAmount, createdAt]
+      properties:
+        id: { type: integer }
+        reference: { type: string }
+        fullName: { type: string }
+        email: { type: string }
+        phone: { type: string }
+        adventureTitle: { type: ["string", "null"] }
+        travelDate: { type: ["string", "null"], format: date }
+        travellers: { type: integer }
+        specialRequests: { type: ["string", "null"] }
+        status: { $ref: "#/components/schemas/BookingStatus" }
+        paymentStatus: { type: string, enum: [pending, paid, failed, refunded] }
+        totalAmount: { type: number }
+        createdAt: { type: string, format: date-time }
+    Enquiry:
+      type: object
+      required: [id, name, email, phone, service, message, status, createdAt]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        email: { type: string }
+        phone: { type: ["string", "null"] }
+        service: { type: ["string", "null"] }
+        message: { type: string }
+        status: { $ref: "#/components/schemas/EnquiryStatus" }
+        createdAt: { type: string, format: date-time }
+    AdminLoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string, minLength: 8, maxLength: 200 }
+    AdminSession:
+      type: object
+      required: [authenticated, email]
+      properties:
+        authenticated: { type: boolean }
+        email: { type: ["string", "null"] }
+    Adventure:
+      type: object
+      required: [id, slug, title, category, durationDays, durationNights, price, description, heroImageUrl, isFeatured, isPublished]
+      properties:
+        id: { type: integer }
+        slug: { type: string }
+        title: { type: string }
+        category: { type: string }
+        durationDays: { type: integer }
+        durationNights: { type: integer }
+        price: { type: number }
+        description: { type: ["string", "null"] }
+        heroImageUrl: { type: ["string", "null"] }
+        isFeatured: { type: boolean }
+        isPublished: { type: boolean }
+    AdventureInput:
+      type: object
+      required: [slug, title, category, durationDays, durationNights, price, isPublished]
+      properties:
+        slug: { type: string, minLength: 2, maxLength: 200, pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$" }
+        title: { type: string, minLength: 2, maxLength: 180 }
+        category: { type: string, minLength: 2, maxLength: 80 }
+        durationDays: { type: integer, minimum: 1, maximum: 90 }
+        durationNights: { type: integer, minimum: 0, maximum: 90 }
+        price: { type: number, minimum: 0 }
+        description: { type: string, maxLength: 8000 }
+        heroImageUrl: { type: string, maxLength: 500 }
+        isFeatured: { type: boolean }
+        isPublished: { type: boolean }
+    AdventureUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        slug: { type: string, minLength: 2, maxLength: 200, pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$" }
+        title: { type: string, minLength: 2, maxLength: 180 }
+        category: { type: string, minLength: 2, maxLength: 80 }
+        durationDays: { type: integer, minimum: 1, maximum: 90 }
+        durationNights: { type: integer, minimum: 0, maximum: 90 }
+        price: { type: number, minimum: 0 }
+        description: { type: string, maxLength: 8000 }
+        heroImageUrl: { type: string, maxLength: 500 }
+        isFeatured: { type: boolean }
+        isPublished: { type: boolean }
 

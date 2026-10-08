@@ -6,7 +6,7 @@ const groupTypes = [
   ['Friends', 'Adventure is better with your people.', siteImages.group, Users],
   ['Girls trips', 'Good vibes. Great memories.', siteImages.group, Heart],
   ['Birthdays & celebrations', 'Make it a trip to remember.', siteImages.coast, CalendarDays],
-  ['Families', 'Quality time. New experiences.', siteImages.people, Users],
+  ['Families', 'Quality time. New experiences.', siteImages.group, Users],
   ['Corporate groups', 'Build stronger teams through adventure.', siteImages.group, BriefcaseBusiness],
 ]
 const benefits = [['Custom itineraries', "Tailored to your group's interests and budget.", Sparkles], ['Group discounts', 'More people, better rates.', Users], ['Hassle-free planning', 'We handle the details, you enjoy the journey.', ShieldCheck], ['Experienced team', 'On-ground support throughout your trip.', Headphones], ['Flexible options', 'From luxury to budget-friendly.', CalendarDays], ['Unforgettable moments', "Because it’s not just a trip, it’s an experience.", Heart]]
