@@ -1,0 +1,1 @@
+- [Hosting isolation](hosting-isolation.md) — keep LinkUps deployment separate from the other Node.js sites on the user's server.
