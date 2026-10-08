@@ -20,7 +20,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false)
   const [signedIn, setSignedIn] = useState(false)
   useEffect(() => { setSignedIn(document.cookie.includes('linkups_session=active')) }, [])
-  const links = [['Adventures', '/adventures'], ['Destinations', '/destinations'], ['Group Travel', '/group-travel'], ['About Us', '/about'], ['Blog', '/blog'], ['Contact', '/contact']]
+  const links = [['Adventures', '/adventures'], ['Destinations', '/destinations'], ['Upcoming Trips', '/upcoming-trips'], ['Group Travel', '/group-travel'], ['About Us', '/about'], ['Blog', '/blog'], ['Contact', '/contact']]
   function signOut() { document.cookie = 'linkups_session=; Max-Age=0; Path=/'; setSignedIn(false) }
   return <header className="site-header"><Logo /><nav className={open ? 'nav open' : 'nav'}>{links.map(([label, href]) => <Link href={href} key={href} onClick={() => setOpen(false)}>{label}</Link>)}</nav><div className="header-actions">{signedIn ? <button className="header-account header-button" onClick={signOut}>Sign out</button> : <><Link className="header-account" href="/login">Sign in</Link><Link className="header-account" href="/register">Register</Link></>}<Link className="button orange" href="/plan">Plan My Adventure <ArrowRight /></Link><button className="menu-button" aria-label="Toggle navigation" onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</button></div></header>
 }
@@ -29,7 +29,9 @@ export function SiteFooter() {
   return <footer><div className="footer-main"><div><Logo light /><p>Where fun meets adventures.</p></div><div><strong>Explore</strong><Link href="/adventures">Adventures</Link><Link href="/destinations">Destinations</Link><Link href="/group-travel">Group Travel</Link><Link href="/blog">Blog</Link></div><div><strong>Contact</strong><a href="tel:0726843677">0726 843 677</a><a href="mailto:linkupsadventures@gmail.com">linkupsadventures@gmail.com</a><Link href="/contact">Send an enquiry</Link></div><div><strong>Account</strong><Link href="/login">Sign in</Link><Link href="/register">Create account</Link><Link href="/admin">Admin portal</Link></div><div><strong>Payments</strong><p>M-Pesa Till<br /><b>5139557</b></p></div></div><div className="footer-bottom"><span>© 2026 Linkups Adventures. All rights reserved.</span><span>Terms & Conditions · Cancellation Policy · Privacy Policy</span></div></footer>
 }
 
-export function PageFrame({ children }: { children: React.ReactNode }) { return <><SiteHeader /><main>{children}</main><SiteFooter /></> }
+import { ConversionTools } from './conversion-tools'
+
+export function PageFrame({ children }: { children: React.ReactNode }) { return <><SiteHeader /><main>{children}</main><SiteFooter /><ConversionTools /></> }
 
 export function Hero({ eyebrow, title, description, image }: { eyebrow: string; title: React.ReactNode; description: string; image: string }) {
   return <section className="hero" style={{ backgroundImage: `linear-gradient(90deg, rgba(1,44,37,.86), rgba(1,44,37,.14)), url(${image})` }}><div className="hero-copy"><span className="eyebrow orange-text">{eyebrow}</span><h1>{title}</h1><p>{description}</p><Link className="button orange" href="/plan">Plan my adventure <ArrowRight /></Link></div></section>
