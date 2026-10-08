@@ -1,10 +1,13 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import { SiteStructuredData } from '@/components/reviews-media'
 
 export const metadata: Metadata = {
   title: 'LinkUps Adventures | Kenya, made personal',
-  description: 'Small-group safaris, beach escapes and thoughtful Kenya adventures made for real people.',
+  description: 'Book small-group safaris, beach escapes, camping, road trips and custom Kenya adventures with LinkUps Adventures.',
+  keywords: ['Kenya safari', 'Maasai Mara tours', 'Kenya beach holidays', 'group travel Kenya', 'LinkUps Adventures'],
+  openGraph: { title: 'LinkUps Adventures | Kenya, made personal', description: 'Thoughtful safaris, beach escapes and custom Kenya adventures made for real people.', type: 'website', locale: 'en_KE' },
   generator: 'v0.app',
   icons: {
     icon: [
@@ -41,6 +44,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
+        <SiteStructuredData />
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
