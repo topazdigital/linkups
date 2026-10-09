@@ -1,0 +1,14 @@
+{
+  "name": "linkups-adventures-hosted",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node dist/index.mjs"
+  },
+  "dependencies": {
+    "mysql2": "^3.24.5"
+  }
+}

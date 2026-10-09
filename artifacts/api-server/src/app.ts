@@ -1,6 +1,7 @@
 import express, { type Express } from "express";
 import cookieParser from "cookie-parser";
 import pinoHttp from "pino-http";
+import path from "node:path";
 import router from "./routes";
 import { logger } from "./lib/logger";
 import { DatabaseUnavailableError } from "./lib/mysql";
@@ -32,6 +33,26 @@ app.use(express.urlencoded({ extended: true, limit: "32kb" }));
 app.use(cookieParser());
 
 app.use("/api", router);
+
+const staticDirectory = process.env["STATIC_DIR"];
+if (staticDirectory) {
+  const staticRoot = path.resolve(process.cwd(), staticDirectory);
+  app.use(express.static(staticRoot, { index: "index.html" }));
+  app.use((req, res, next) => {
+    if (
+      (req.method !== "GET" && req.method !== "HEAD") ||
+      req.path === "/api" ||
+      req.path.startsWith("/api/")
+    ) {
+      next();
+      return;
+    }
+
+    res.sendFile(path.join(staticRoot, "index.html"), (error) => {
+      if (error) next(error);
+    });
+  });
+}
 
 app.use(
   (

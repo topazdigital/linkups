@@ -1,7 +1,35 @@
+import { ArrowRight } from 'lucide-react'
 import { Link } from 'wouter'
-import { ArrowRight, CalendarDays, Users } from 'lucide-react'
+import { AdventureCards } from '@/components/adventure-cards'
 import { PageFrame, SectionTitle } from '@/components/site-shell'
-import { ConversionTools } from '@/components/conversion-tools'
 
-const trips = [['15 Nov 2026', 'Maasai Mara Migration Weekend', '3 days · 2 nights', 'KES 24,800 pp', '8 seats left'], ['05 Dec 2026', 'Mombasa Festive Beach Escape', '4 days · 3 nights', 'KES 18,500 pp', '12 seats left'], ['20 Jan 2027', 'Samburu Overland Adventure', '3 days · 2 nights', 'KES 16,000 pp', '6 seats left']]
-export default function UpcomingTrips() { return <PageFrame><section className="page-hero"><div><span className="eyebrow orange-text">Join the journey</span><h1>Upcoming trips</h1><p>Meet good people, see remarkable places and join a ready-to-go LinkUps adventure.</p></div></section><main className="upcoming-page"><SectionTitle eyebrow="Save your seat" title="Trips with dates, details and room to explore" /><div className="trip-list">{trips.map(([date, name, duration, price, seats]) => <article className="trip-row" key={name}><div className="trip-date"><CalendarDays /><strong>{date}</strong></div><div><h2>{name}</h2><p>{duration} · {seats}</p></div><strong className="trip-price">{price}</strong><Link className="button orange" href={`/plan?trip=${encodeURIComponent(name)}`}>Join this trip <ArrowRight /></Link></article>)}</div><ConversionTools /></main></PageFrame> }
+export default function UpcomingTripsPage() {
+  return (
+    <PageFrame>
+      <section className="page-hero">
+        <div>
+          <span className="eyebrow orange-text">Plan with LinkUps</span>
+          <h1>Upcoming trips</h1>
+          <p>Choose an adventure and tell us when you would like to travel.</p>
+        </div>
+      </section>
+      <main className="upcoming-page">
+        <section className="departure-notice">
+          <div>
+            <strong>Departure dates are confirmed on request.</strong>
+            <p>
+              We do not publish fixed departure dates or live seat counts yet.
+              Send your preferred dates and group size, and our team will check
+              availability with you before confirming a booking.
+            </p>
+          </div>
+          <Link className="button orange" href="/plan">
+            Ask about dates <ArrowRight />
+          </Link>
+        </section>
+        <SectionTitle eyebrow="Choose an adventure" title="Browse current trips" />
+        <AdventureCards />
+      </main>
+    </PageFrame>
+  )
+}
