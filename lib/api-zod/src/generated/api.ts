@@ -176,6 +176,12 @@ export const GetPublicSiteContentParams = zod.object({
   "pageKey": zod.coerce.string().regex(getPublicSiteContentPathPageKeyRegExp)
 })
 
+export const getPublicSiteContentResponseHeroImagesItemMax = 500;
+
+export const getPublicSiteContentResponseHeroImagesMax = 8;
+
+
+
 export const GetPublicSiteContentResponse = zod.object({
   "pageKey": zod.string(),
   "pageTitle": zod.string(),
@@ -184,6 +190,8 @@ export const GetPublicSiteContentResponse = zod.object({
   "seoDescription": zod.string().nullable(),
   "bodyContent": zod.string().nullable(),
   "heroImageUrl": zod.string().nullable(),
+  "heroImages": zod.array(zod.string().max(getPublicSiteContentResponseHeroImagesItemMax)).max(getPublicSiteContentResponseHeroImagesMax),
+  "heroMode": zod.enum(['static', 'slideshow']),
   "isPublished": zod.boolean(),
   "updatedAt": zod.coerce.date()
 })
@@ -1026,6 +1034,12 @@ export const UpdateDestinationResponse = zod.object({
 /**
  * @summary List editable website page content
  */
+export const listAdminSiteContentResponseHeroImagesItemMax = 500;
+
+export const listAdminSiteContentResponseHeroImagesMax = 8;
+
+
+
 export const ListAdminSiteContentResponseItem = zod.object({
   "pageKey": zod.string(),
   "pageTitle": zod.string(),
@@ -1034,6 +1048,8 @@ export const ListAdminSiteContentResponseItem = zod.object({
   "seoDescription": zod.string().nullable(),
   "bodyContent": zod.string().nullable(),
   "heroImageUrl": zod.string().nullable(),
+  "heroImages": zod.array(zod.string().max(listAdminSiteContentResponseHeroImagesItemMax)).max(listAdminSiteContentResponseHeroImagesMax),
+  "heroMode": zod.enum(['static', 'slideshow']),
   "isPublished": zod.boolean(),
   "updatedAt": zod.coerce.date()
 })
@@ -1061,6 +1077,10 @@ export const saveAdminSiteContentBodyBodyContentMax = 20000;
 
 export const saveAdminSiteContentBodyHeroImageUrlMax = 500;
 
+export const saveAdminSiteContentBodyHeroImagesItemMax = 500;
+
+export const saveAdminSiteContentBodyHeroImagesMax = 8;
+
 
 
 export const SaveAdminSiteContentBody = zod.object({
@@ -1071,8 +1091,16 @@ export const SaveAdminSiteContentBody = zod.object({
   "seoDescription": zod.string().max(saveAdminSiteContentBodySeoDescriptionMax).nullish(),
   "bodyContent": zod.string().max(saveAdminSiteContentBodyBodyContentMax).nullish(),
   "heroImageUrl": zod.string().max(saveAdminSiteContentBodyHeroImageUrlMax).nullish(),
+  "heroImages": zod.array(zod.string().max(saveAdminSiteContentBodyHeroImagesItemMax)).max(saveAdminSiteContentBodyHeroImagesMax).optional(),
+  "heroMode": zod.enum(['static', 'slideshow']).optional(),
   "isPublished": zod.boolean()
 })
+
+export const saveAdminSiteContentResponseHeroImagesItemMax = 500;
+
+export const saveAdminSiteContentResponseHeroImagesMax = 8;
+
+
 
 export const SaveAdminSiteContentResponse = zod.object({
   "pageKey": zod.string(),
@@ -1082,6 +1110,8 @@ export const SaveAdminSiteContentResponse = zod.object({
   "seoDescription": zod.string().nullable(),
   "bodyContent": zod.string().nullable(),
   "heroImageUrl": zod.string().nullable(),
+  "heroImages": zod.array(zod.string().max(saveAdminSiteContentResponseHeroImagesItemMax)).max(saveAdminSiteContentResponseHeroImagesMax),
+  "heroMode": zod.enum(['static', 'slideshow']),
   "isPublished": zod.boolean(),
   "updatedAt": zod.coerce.date()
 })

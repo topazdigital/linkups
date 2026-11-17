@@ -5,6 +5,7 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { SiteContentInputHeroMode } from './siteContentInputHeroMode';
 
 export interface SiteContentInput {
   /**
@@ -43,5 +44,11 @@ export interface SiteContentInput {
      * @nullable
      */
   heroImageUrl?: string | null;
+  /**
+     * @maxItems 8
+     * @items.maxLength 500
+     */
+  heroImages?: string[];
+  heroMode?: SiteContentInputHeroMode;
   isPublished: boolean;
 }

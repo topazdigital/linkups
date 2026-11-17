@@ -5,6 +5,7 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { SiteContentHeroMode } from './siteContentHeroMode';
 
 export interface SiteContent {
   pageKey: string;
@@ -19,6 +20,12 @@ export interface SiteContent {
   bodyContent: string | null;
   /** @nullable */
   heroImageUrl: string | null;
+  /**
+     * @maxItems 8
+     * @items.maxLength 500
+     */
+  heroImages: string[];
+  heroMode: SiteContentHeroMode;
   isPublished: boolean;
   updatedAt: Date;
 }

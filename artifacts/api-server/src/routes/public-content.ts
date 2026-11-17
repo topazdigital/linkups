@@ -28,6 +28,8 @@ interface SiteContentRow extends RowDataPacket {
   seoDescription: string | null;
   bodyContent: string | null;
   heroImageUrl: string | null;
+  heroImages: string[] | string | null;
+  heroMode: string;
   isPublished: number | boolean;
   updatedAt: string;
 }
@@ -75,6 +77,8 @@ router.get(
               seo_description AS seoDescription,
               body_content AS bodyContent,
               hero_image_url AS heroImageUrl,
+              hero_images AS heroImages,
+              hero_mode AS heroMode,
               is_published AS isPublished,
               DATE_FORMAT(updated_at, '%Y-%m-%dT%H:%i:%s.000Z') AS updatedAt
        FROM site_content
@@ -90,10 +94,29 @@ router.get(
     res.json(
       GetPublicSiteContentResponse.parse({
         ...content,
+        heroImages: parseHeroImages(content.heroImages),
+        heroMode: content.heroMode === "slideshow" ? "slideshow" : "static",
         isPublished: Boolean(content.isPublished),
       }),
     );
   },
 );
+
+function parseHeroImages(value: string[] | string | null): string[] {
+  if (Array.isArray(value)) {
+    return value.filter((item): item is string => typeof item === "string");
+  }
+  if (typeof value !== "string") {
+    return [];
+  }
+  try {
+    const parsed: unknown = JSON.parse(value);
+    return Array.isArray(parsed)
+      ? parsed.filter((item): item is string => typeof item === "string")
+      : [];
+  } catch {
+    return [];
+  }
+}
 
 export default router;

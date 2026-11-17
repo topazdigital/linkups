@@ -819,7 +819,7 @@ components:
         isPublished: { type: boolean }
     SiteContent:
       type: object
-      required: [pageKey, pageTitle, heroTitle, heroSubtitle, seoDescription, bodyContent, heroImageUrl, isPublished, updatedAt]
+      required: [pageKey, pageTitle, heroTitle, heroSubtitle, seoDescription, bodyContent, heroImageUrl, heroImages, heroMode, isPublished, updatedAt]
       properties:
         pageKey: { type: string }
         pageTitle: { type: string }
@@ -828,6 +828,11 @@ components:
         seoDescription: { type: ["string", "null"] }
         bodyContent: { type: ["string", "null"] }
         heroImageUrl: { type: ["string", "null"] }
+        heroImages:
+          type: array
+          maxItems: 8
+          items: { type: string, maxLength: 500 }
+        heroMode: { type: string, enum: [static, slideshow] }
         isPublished: { type: boolean }
         updatedAt: { type: string, format: date-time }
     SiteContentInput:
@@ -841,6 +846,11 @@ components:
         seoDescription: { type: ["string", "null"], maxLength: 500 }
         bodyContent: { type: ["string", "null"], maxLength: 20000 }
         heroImageUrl: { type: ["string", "null"], maxLength: 500 }
+        heroImages:
+          type: array
+          maxItems: 8
+          items: { type: string, maxLength: 500 }
+        heroMode: { type: string, enum: [static, slideshow] }
         isPublished: { type: boolean }
     Event:
       type: object

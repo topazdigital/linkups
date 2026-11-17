@@ -49,6 +49,8 @@ interface SiteContentRow extends RowDataPacket {
   seoDescription: string | null;
   bodyContent: string | null;
   heroImageUrl: string | null;
+  heroImages: string[] | string | null;
+  heroMode: string;
   isPublished: number | boolean;
   updatedAt: string;
 }
@@ -76,6 +78,8 @@ const siteContentSelect = `
          seo_description AS seoDescription,
          body_content AS bodyContent,
          hero_image_url AS heroImageUrl,
+         hero_images AS heroImages,
+         hero_mode AS heroMode,
          is_published AS isPublished,
          DATE_FORMAT(updated_at, '%Y-%m-%dT%H:%i:%s.000Z') AS updatedAt
   FROM site_content
@@ -107,6 +111,19 @@ function destinationResponse(row: DestinationRow) {
 }
 
 function siteContentResponse(row: SiteContentRow) {
+  let heroImages: string[] = []
+  if (Array.isArray(row.heroImages)) {
+    heroImages = row.heroImages.filter((value): value is string => typeof value === 'string')
+  } else if (typeof row.heroImages === 'string') {
+    try {
+      const parsed: unknown = JSON.parse(row.heroImages)
+      if (Array.isArray(parsed)) {
+        heroImages = parsed.filter((value): value is string => typeof value === 'string')
+      }
+    } catch {
+      heroImages = []
+    }
+  }
   return {
     pageKey: row.pageKey,
     pageTitle: row.pageTitle,
@@ -115,6 +132,8 @@ function siteContentResponse(row: SiteContentRow) {
     seoDescription: row.seoDescription,
     bodyContent: row.bodyContent,
     heroImageUrl: row.heroImageUrl,
+    heroImages,
+    heroMode: row.heroMode === 'slideshow' ? 'slideshow' : 'static',
     isPublished: Boolean(row.isPublished),
     updatedAt: row.updatedAt,
   };
@@ -311,8 +330,8 @@ router.put(
     await executeSql(
       `INSERT INTO site_content
          (page_key, page_title, hero_title, hero_subtitle, seo_description,
-          body_content, hero_image_url, is_published, updated_by)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+          body_content, hero_image_url, hero_images, hero_mode, is_published, updated_by)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
        ON DUPLICATE KEY UPDATE
          page_title = VALUES(page_title),
          hero_title = VALUES(hero_title),
@@ -320,6 +339,8 @@ router.put(
          seo_description = VALUES(seo_description),
          body_content = VALUES(body_content),
          hero_image_url = VALUES(hero_image_url),
+         hero_images = VALUES(hero_images),
+         hero_mode = VALUES(hero_mode),
          is_published = VALUES(is_published),
          updated_by = VALUES(updated_by)`,
       [
@@ -330,6 +351,8 @@ router.put(
         input.seoDescription?.trim() || null,
         input.bodyContent?.trim() || null,
         input.heroImageUrl?.trim() || null,
+        JSON.stringify(input.heroImages ?? (input.heroImageUrl ? [input.heroImageUrl] : [])),
+        input.heroMode ?? 'static',
         input.isPublished,
         req.adminIdentity?.userId ?? null,
       ],

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
-import { useLocation } from 'wouter'
+import { Link, useLocation } from 'wouter'
 import { useQueryClient } from '@tanstack/react-query'
 import {
   getGetAuthSessionQueryKey,
@@ -38,6 +38,7 @@ import {
 } from '@workspace/api-client-react'
 import type { AdminUser, Adventure, Booking, Destination, Enquiry, Event as ScheduledEvent, EventInput, SiteContent, SiteContentInput } from '@workspace/api-client-react'
 import { Logo } from '@/components/site-shell'
+import { legalPages } from '@/lib/legal-content'
 import { formatAdventurePrice } from '@/lib/api'
 import {
   CalendarCheck,
@@ -106,6 +107,8 @@ type ContentForm = {
   seoDescription: string
   bodyContent: string
   heroImageUrl: string
+  heroImages: string[]
+  heroMode: 'static' | 'slideshow'
   isPublished: boolean
 }
 
@@ -137,7 +140,7 @@ const blankEvent: EventForm = {
 }
 const blankContent: ContentForm = {
   pageKey: '', pageTitle: '', heroTitle: '', heroSubtitle: '', seoDescription: '',
-  bodyContent: '', heroImageUrl: '', isPublished: false,
+  bodyContent: '', heroImageUrl: '', heroImages: [], heroMode: 'static', isPublished: false,
 }
 
 function formatDate(value: string | null | undefined) {
@@ -511,7 +514,35 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
     setContentForm({
       pageKey: item.pageKey, pageTitle: item.pageTitle, heroTitle: item.heroTitle ?? '',
       heroSubtitle: item.heroSubtitle ?? '', seoDescription: item.seoDescription ?? '',
-      bodyContent: item.bodyContent ?? '', heroImageUrl: item.heroImageUrl ?? '', isPublished: item.isPublished,
+      bodyContent: item.bodyContent ?? legalPages[item.pageKey]?.bodyContent ?? '', heroImageUrl: item.heroImageUrl ?? '',
+      heroImages: item.heroImages.length ? item.heroImages : item.heroImageUrl ? [item.heroImageUrl] : [],
+      heroMode: item.heroMode, isPublished: item.isPublished,
+    })
+  }
+  function updateHeroImage(index: number, value: string) {
+    setContentForm((current) => ({
+      ...current,
+      heroImages: current.heroImages.map((image, imageIndex) => imageIndex === index ? value : image),
+    }))
+  }
+  function addHeroImage() {
+    setContentForm((current) => current.heroImages.length < 8
+      ? { ...current, heroImages: [...current.heroImages, ''] }
+      : current)
+  }
+  function removeHeroImage(index: number) {
+    setContentForm((current) => ({
+      ...current,
+      heroImages: current.heroImages.filter((_, imageIndex) => imageIndex !== index),
+    }))
+  }
+  function moveHeroImage(index: number, offset: number) {
+    setContentForm((current) => {
+      const target = index + offset
+      if (target < 0 || target >= current.heroImages.length) return current
+      const heroImages = [...current.heroImages]
+      ;[heroImages[index], heroImages[target]] = [heroImages[target], heroImages[index]]
+      return { ...current, heroImages }
     })
   }
   function resetContentForm() {
@@ -529,7 +560,9 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
       heroSubtitle: contentForm.heroSubtitle.trim() || null,
       seoDescription: contentForm.seoDescription.trim() || null,
       bodyContent: contentForm.bodyContent.trim() || null,
-      heroImageUrl: contentForm.heroImageUrl.trim() || null,
+      heroImageUrl: contentForm.heroImages.find((image) => image.trim())?.trim() || null,
+      heroImages: contentForm.heroImages.map((image) => image.trim()).filter(Boolean),
+      heroMode: contentForm.heroMode,
       isPublished: contentForm.isPublished,
     }
     try {
@@ -691,20 +724,35 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
         </section>}
 
         {active === 'Website content' && <section className="admin-section">
-          <div className="admin-toolbar"><div><h3>Website pages</h3><p>Update homepage hero copy and the editable content for published pages.</p></div></div>
+          <div className="admin-toolbar"><div><h3>Website pages</h3><p>Create public pages, edit policy content, and manage the homepage hero.</p></div></div>
           {contentQuery.isLoading ? <div className="workspace-skeletons" role="status"><div className="skeleton" /></div> : <div className="workspace-card-grid" data-testid="list-admin-content">
-            {visibleContent.map((item) => <article className="workspace-panel workspace-content-card" key={item.pageKey} data-testid={`card-site-content-${item.pageKey}`}><div><span className={`status ${item.isPublished ? 'confirmed' : 'new'}`}>{item.isPublished ? 'Published' : 'Draft'}</span><h3 style={{ marginTop: 12 }}>{item.pageTitle}</h3><p>/{item.pageKey} · Updated {formatDate(item.updatedAt)}</p></div><p>{item.heroTitle || item.seoDescription || 'No hero copy entered yet.'}</p><div className="workspace-form-actions"><button className="admin-secondary" data-testid={`button-content-edit-${item.pageKey}`} onClick={() => editContent(item)}>Edit page</button></div></article>)}
+            {visibleContent.map((item) => <article className="workspace-panel workspace-content-card" key={item.pageKey} data-testid={`card-site-content-${item.pageKey}`}><div><span className={`status ${item.isPublished ? 'confirmed' : 'new'}`}>{item.isPublished ? 'Published' : 'Draft'}</span><h3 style={{ marginTop: 12 }}>{item.pageTitle}</h3><p>/{item.pageKey} · Updated {formatDate(item.updatedAt)}</p></div><p>{item.heroTitle || item.seoDescription || 'No hero copy entered yet.'}</p><div className="workspace-form-actions"><button className="admin-secondary" data-testid={`button-content-edit-${item.pageKey}`} onClick={() => editContent(item)}>Edit page</button>{item.isPublished && <Link className="admin-secondary" data-testid={`link-content-view-${item.pageKey}`} href={`/${item.pageKey}`}>View page</Link>}</div></article>)}
             {visibleContent.length === 0 && <div className="workspace-panel workspace-empty" data-testid="empty-admin-content">{queryText ? 'No pages match this search.' : 'No page content found. Add a page record below.'}</div>}
           </div>}
           <form className="workspace-form" onSubmit={submitContent} data-testid="form-admin-content">
             <h3>{editingPage ? `Edit ${contentForm.pageTitle || editingPage}` : 'Add or update a page'}</h3>
-            <label className="workspace-field">Page key<input className="workspace-input" data-testid="input-content-page-key" required pattern="[a-z0-9-]+" maxLength={60} value={contentForm.pageKey} onChange={(event) => setContentForm({ ...contentForm, pageKey: event.target.value })} placeholder="home" /></label>
+            <label className="workspace-field">Page key<input className="workspace-input" data-testid="input-content-page-key" required pattern="[a-z0-9-]+" maxLength={60} value={contentForm.pageKey} readOnly={Boolean(editingPage)} onChange={(event) => setContentForm({ ...contentForm, pageKey: event.target.value })} placeholder="home" /><small>{editingPage ? 'The public URL stays stable after a page is created.' : 'This becomes the public URL, for example terms.'}</small></label>
             <label className="workspace-field">Page title<input className="workspace-input" data-testid="input-content-page-title" required minLength={2} maxLength={160} value={contentForm.pageTitle} onChange={(event) => setContentForm({ ...contentForm, pageTitle: event.target.value })} placeholder="Home" /></label>
             <label className="workspace-field wide">Hero title<input className="workspace-input" data-testid="input-content-hero-title" maxLength={240} value={contentForm.heroTitle} onChange={(event) => setContentForm({ ...contentForm, heroTitle: event.target.value })} /></label>
             <label className="workspace-field wide">Hero subtitle<textarea className="workspace-textarea" data-testid="input-content-hero-subtitle" maxLength={2000} rows={3} value={contentForm.heroSubtitle} onChange={(event) => setContentForm({ ...contentForm, heroSubtitle: event.target.value })} /></label>
             <label className="workspace-field wide">SEO description<textarea className="workspace-textarea" data-testid="input-content-seo-description" maxLength={500} rows={2} value={contentForm.seoDescription} onChange={(event) => setContentForm({ ...contentForm, seoDescription: event.target.value })} /></label>
-            <label className="workspace-field wide">Page body content<textarea className="workspace-textarea" data-testid="input-content-body" maxLength={20000} rows={7} value={contentForm.bodyContent} onChange={(event) => setContentForm({ ...contentForm, bodyContent: event.target.value })} /></label>
-            <label className="workspace-field wide">Hero image URL<input className="workspace-input" data-testid="input-content-hero-image" type="url" maxLength={500} value={contentForm.heroImageUrl} onChange={(event) => setContentForm({ ...contentForm, heroImageUrl: event.target.value })} /></label>
+            <label className="workspace-field wide">Page body content<textarea className="workspace-textarea" data-testid="input-content-body" maxLength={20000} rows={12} value={contentForm.bodyContent} onChange={(event) => setContentForm({ ...contentForm, bodyContent: event.target.value })} /><small>Use ## for section headings, blank lines between paragraphs, and - for bullet points. HTML is not rendered.</small></label>
+            {contentForm.pageKey.trim().toLowerCase() === 'home' && <>
+              <label className="workspace-field">Hero display mode<select className="workspace-input" data-testid="select-home-hero-mode" value={contentForm.heroMode} onChange={(event) => setContentForm({ ...contentForm, heroMode: event.target.value as ContentForm['heroMode'] })}><option value="static">One static image</option><option value="slideshow">Smooth slideshow</option></select><small>Slides advance automatically and include pause and manual controls.</small></label>
+              <div className="workspace-field wide hero-image-editor"><span>Homepage hero images</span><small>Add up to eight public image URLs or paths. The first image is used if the slideshow is off.</small>
+                {contentForm.heroImages.map((image, index) => <div className="hero-image-row" key={index}>
+                  <label className="workspace-field">Image {index + 1}<input className="workspace-input" data-testid={`input-home-hero-image-${index}`} maxLength={500} value={image} onChange={(event) => updateHeroImage(index, event.target.value)} placeholder="/images/adventure-hero.png or https://…" /></label>
+                  {image && <img className="hero-image-preview" src={image} alt={`Homepage hero image ${index + 1} preview`} loading="lazy" />}
+                  <div className="hero-image-actions">
+                    <button className="admin-secondary" type="button" aria-label={`Move image ${index + 1} up`} onClick={() => moveHeroImage(index, -1)} disabled={index === 0}>Move up</button>
+                    <button className="admin-secondary" type="button" aria-label={`Move image ${index + 1} down`} onClick={() => moveHeroImage(index, 1)} disabled={index === contentForm.heroImages.length - 1}>Move down</button>
+                    <button className="admin-secondary" type="button" aria-label={`Remove image ${index + 1}`} onClick={() => removeHeroImage(index)}>Remove</button>
+                  </div>
+                </div>)}
+                {contentForm.heroImages.length === 0 && <p className="hero-image-empty">No homepage images added. The built-in LinkUps image will be used.</p>}
+                <button className="admin-secondary" data-testid="button-home-hero-add-image" type="button" onClick={addHeroImage} disabled={contentForm.heroImages.length >= 8}>Add another image</button>
+              </div>
+            </>}
             <label className="workspace-check"><input data-testid="check-content-published" type="checkbox" checked={contentForm.isPublished} onChange={(event) => setContentForm({ ...contentForm, isPublished: event.target.checked })} /> Publish this page content</label>
             <div className="workspace-form-actions wide"><button className="admin-primary" data-testid="button-content-save" type="submit" disabled={isSavingContent}>{isSavingContent ? 'Saving page…' : 'Save page content'}</button>{editingPage && <button className="admin-secondary" data-testid="button-content-cancel" type="button" onClick={resetContentForm}>Clear form</button>}</div>
           </form>

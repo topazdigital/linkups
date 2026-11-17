@@ -14,6 +14,7 @@ import GroupTravelPage from '@/app/group-travel/page';
 import HomePage from '@/app/page';
 import LoginPage from '@/app/login/page';
 import PlanPage from '@/app/plan/page';
+import PublicContentPage from '@/app/site-content/page';
 import RegisterPage from '@/app/register/page';
 import DashboardPage from '@/app/dashboard/page';
 import TravelGuidePage from '@/app/travel-guide/page';
@@ -60,6 +61,9 @@ function AppRoutes() {
         <Route path="/register" component={RegisterPage} />
         <Route path="/travel-guide" component={TravelGuidePage} />
         <Route path="/upcoming-trips" component={UpcomingTripsPage} />
+        <Route path="/:pageKey">
+          {(params) => <PublicContentPage pageKey={params.pageKey} />}
+        </Route>
         <Route component={NotFoundPage} />
       </Switch>
     </ErrorBoundary>

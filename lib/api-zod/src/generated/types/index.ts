@@ -42,6 +42,8 @@ export * from './healthStatus';
 export * from './loginInput';
 export * from './registerInput';
 export * from './siteContent';
+export * from './siteContentHeroMode';
 export * from './siteContentInput';
+export * from './siteContentInputHeroMode';
 export * from './userProfile';
 export * from './userProfileUpdate';

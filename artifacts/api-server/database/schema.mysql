@@ -94,6 +94,8 @@ CREATE TABLE IF NOT EXISTS site_content (
   seo_description VARCHAR(500) NULL,
   body_content LONGTEXT NULL,
   hero_image_url VARCHAR(500) NULL,
+  hero_images JSON NULL,
+  hero_mode ENUM('static','slideshow') NOT NULL DEFAULT 'static',
   is_published BOOLEAN NOT NULL DEFAULT FALSE,
   updated_by BIGINT UNSIGNED NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -103,7 +105,8 @@ CREATE TABLE IF NOT EXISTS site_content (
 ) ENGINE=InnoDB;
 
 INSERT IGNORE INTO site_content
-  (page_key, page_title, hero_title, hero_subtitle, seo_description, hero_image_url, is_published)
+  (page_key, page_title, hero_title, hero_subtitle, seo_description, hero_image_url,
+   hero_images, hero_mode, is_published)
 VALUES
   (
     'home',
@@ -112,6 +115,36 @@ VALUES
     'Safaris, beach escapes, camping, road trips and group adventures made for real people.',
     'Book small-group safaris, beach escapes, camping, road trips and custom Kenya adventures with LinkUps Adventures.',
     '/images/adventure-hero.png',
+    JSON_ARRAY('/images/adventure-hero.png'),
+    'static',
+    TRUE
+  );
+
+INSERT IGNORE INTO site_content
+  (page_key, page_title, hero_title, hero_subtitle, seo_description, is_published)
+VALUES
+  (
+    'terms',
+    'Terms & Conditions',
+    'Terms & Conditions',
+    'Please read these terms before requesting or confirming a trip.',
+    'Terms for using the LinkUps Adventures website and requesting or booking travel experiences in Kenya.',
+    TRUE
+  ),
+  (
+    'privacy-policy',
+    'Privacy Policy',
+    'Privacy Policy',
+    'How LinkUps Adventures collects, uses, and protects personal information.',
+    'Learn how LinkUps Adventures handles account, enquiry, and booking information and how to contact us about privacy.',
+    TRUE
+  ),
+  (
+    'cancellation-policy',
+    'Cancellation Policy',
+    'Cancellation Policy',
+    'Please check the trip-specific payment and cancellation terms before paying.',
+    'Understand how to request a cancellation or change to a LinkUps Adventures booking.',
     TRUE
   );
 

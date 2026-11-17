@@ -326,6 +326,14 @@ export interface DestinationUpdate {
   isPublished?: boolean;
 }
 
+export type SiteContentHeroMode = typeof SiteContentHeroMode[keyof typeof SiteContentHeroMode];
+
+
+export const SiteContentHeroMode = {
+  static: 'static',
+  slideshow: 'slideshow',
+} as const;
+
 export interface SiteContent {
   pageKey: string;
   pageTitle: string;
@@ -339,9 +347,23 @@ export interface SiteContent {
   bodyContent: string | null;
   /** @nullable */
   heroImageUrl: string | null;
+  /**
+     * @maxItems 8
+     * @items.maxLength 500
+     */
+  heroImages: string[];
+  heroMode: SiteContentHeroMode;
   isPublished: boolean;
   updatedAt: string;
 }
+
+export type SiteContentInputHeroMode = typeof SiteContentInputHeroMode[keyof typeof SiteContentInputHeroMode];
+
+
+export const SiteContentInputHeroMode = {
+  static: 'static',
+  slideshow: 'slideshow',
+} as const;
 
 export interface SiteContentInput {
   /**
@@ -380,6 +402,12 @@ export interface SiteContentInput {
      * @nullable
      */
   heroImageUrl?: string | null;
+  /**
+     * @maxItems 8
+     * @items.maxLength 500
+     */
+  heroImages?: string[];
+  heroMode?: SiteContentInputHeroMode;
   isPublished: boolean;
 }
 
