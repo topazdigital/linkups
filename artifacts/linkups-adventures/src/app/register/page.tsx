@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useLocation } from 'wouter'
 import { getGetAuthSessionQueryKey, useGetAuthSession, useRegister } from '@workspace/api-client-react'
 import { useQueryClient } from '@tanstack/react-query'
+import { Logo } from '@/components/site-shell'
 
 function errorMessage(reason: unknown) {
   return reason instanceof Error ? reason.message : 'Your account could not be created. Please try again.'
@@ -53,7 +54,7 @@ export default function RegisterPage() {
   }
 
   return <main className="auth-page"><div className="auth-card">
-    <Link href="/" className="brand" data-testid="link-register-home"><span>LinkUps</span><small>ADVENTURES</small></Link>
+    <Logo data-testid="link-register-home" />
     <span className="eyebrow">Start collecting stories</span>
     <h1>Create your account.</h1>
     <p>Keep your profile and booking requests together. You can update your details any time.</p>

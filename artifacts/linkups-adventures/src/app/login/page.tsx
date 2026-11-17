@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useLocation } from 'wouter'
 import { useLogin, useGetAuthSession, getGetAuthSessionQueryKey } from '@workspace/api-client-react'
 import { useQueryClient } from '@tanstack/react-query'
+import { Logo } from '@/components/site-shell'
 
 function errorMessage(reason: unknown) {
   if (reason instanceof Error) return reason.message
@@ -46,7 +47,7 @@ export default function LoginPage() {
   }
 
   return <main className="auth-page"><div className="auth-card">
-    <Link href="/" className="brand" data-testid="link-login-home"><span>LinkUps</span><small>ADVENTURES</small></Link>
+    <Logo data-testid="link-login-home" />
     <span className="eyebrow">Your next adventure, one step closer</span>
     <h1>Welcome back.</h1>
     <p>Sign in to follow your booking requests and keep your travel details close.</p>

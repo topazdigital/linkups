@@ -16,8 +16,14 @@ export const siteImages = {
   camp: 'https://images.unsplash.com/photo-1504851149312-7a075b496cc7?auto=format&fit=crop&w=1400&q=85',
 }
 
-export function Logo({ light = false }: { light?: boolean }) {
-  return <Link href="/" className="brand" style={light ? { color: '#fff' } : undefined}><span>LinkUps</span><small>ADVENTURES</small></Link>
+type LogoProps = {
+  light?: boolean
+  className?: string
+  'data-testid'?: string
+}
+
+export function Logo({ light = false, className = '', 'data-testid': testId }: LogoProps) {
+  return <Link href="/" className={`brand logo-mark ${className}`.trim()} style={light ? { color: '#fff' } : undefined} aria-label="LinkUps Adventures home" data-testid={testId}><img src="/images/linkups-logo.png" alt="LinkUps Adventures" /></Link>
 }
 
 export function SiteHeader() {

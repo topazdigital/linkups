@@ -32,6 +32,7 @@ import {
   useUpdateEnquiry,
 } from '@workspace/api-client-react'
 import type { AdminUser, Adventure, Booking, Destination, Enquiry, SiteContent, SiteContentInput } from '@workspace/api-client-react'
+import { Logo } from '@/components/site-shell'
 import {
   CalendarCheck,
   FileText,
@@ -385,7 +386,7 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
 
   return <div className="admin-shell workspace-shell">
     <aside className={`admin-sidebar workspace-sidebar ${menuOpen ? 'open' : ''}`}>
-      <div className="admin-logo workspace-logo"><span>Linkups</span><small>ADVENTURES ADMIN</small></div>
+      <Logo light className="admin-logo workspace-logo" data-testid="link-admin-logo" />
       <button className="workspace-close" aria-label="Close workspace menu" data-testid="button-admin-close-menu" onClick={() => setMenuOpen(false)}><X /></button>
       <nav aria-label="Admin workspace" className="workspace-nav">
         {sections.map(({ name, icon: Icon }) => <button key={name} type="button" className={active === name ? 'active' : ''} data-testid={`tab-admin-${name.toLowerCase().replaceAll(' ', '-')}`} onClick={() => { setActive(name); setMenuOpen(false); clearMessages() }}><Icon />{name}{name === 'Bookings' && newBookings > 0 && <span>{newBookings}</span>}{name === 'Enquiries' && newEnquiries > 0 && <span>{newEnquiries}</span>}</button>)}

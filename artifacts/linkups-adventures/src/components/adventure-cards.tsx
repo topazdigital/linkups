@@ -16,7 +16,7 @@ export function AdventureCards({
   variant = "package",
   limit,
 }: AdventureCardsProps) {
-  const { adventures, loading, error } = useAdventures();
+  const { adventures, loading, error, previewMessage } = useAdventures();
   const visible = limit ? adventures.slice(0, limit) : adventures;
 
   if (loading) {
@@ -47,65 +47,71 @@ export function AdventureCards({
 
   if (variant === "adventure") {
     return (
-      <div className="adventure-grid">
-        {visible.map((adventure, index) => (
-          <article className="adventure-card" key={adventure.id}>
+      <>
+        {previewMessage && <div className="catalogue-message" role="status">{previewMessage}</div>}
+        <div className="adventure-grid">
+          {visible.map((adventure, index) => (
+            <article className="adventure-card" key={adventure.id}>
+              <img
+                src={adventure.heroImageUrl || "/images/adventure-hero.png"}
+                alt={adventure.title}
+              />
+              <div className="adventure-card-body">
+                <span className="card-icon">
+                  {index % 2 ? <Waves /> : <Camera />}
+                </span>
+                <h3>{adventure.title}</h3>
+                <p>
+                  {durationLabel(adventure.durationDays, adventure.durationNights)}
+                  {" · "}
+                  {adventure.category}
+                </p>
+                <span className="card-location">
+                  <MapPin /> Kenya
+                </span>
+                <strong>From {formatKes(adventure.price)} per person</strong>
+                <Link
+                  className="button orange small-button"
+                  href={`/adventures/${adventure.slug}`}
+                >
+                  Explore <ArrowRight />
+                </Link>
+              </div>
+            </article>
+          ))}
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      {previewMessage && <div className="catalogue-message" role="status">{previewMessage}</div>}
+      <div className="package-grid">
+        {visible.map((adventure) => (
+          <article className="package-card" key={adventure.id}>
             <img
               src={adventure.heroImageUrl || "/images/adventure-hero.png"}
               alt={adventure.title}
             />
-            <div className="adventure-card-body">
-              <span className="card-icon">
-                {index % 2 ? <Waves /> : <Camera />}
-              </span>
-              <h3>{adventure.title}</h3>
-              <p>
+            <div className="package-body">
+              <small>
                 {durationLabel(adventure.durationDays, adventure.durationNights)}
                 {" · "}
                 {adventure.category}
-              </p>
-              <span className="card-location">
-                <MapPin /> Kenya
-              </span>
+              </small>
+              <h3>{adventure.title}</h3>
               <strong>From {formatKes(adventure.price)} per person</strong>
               <Link
-                className="button orange small-button"
+                className="button orange small"
                 href={`/adventures/${adventure.slug}`}
               >
-                Explore <ArrowRight />
+                View package <ArrowRight />
               </Link>
             </div>
           </article>
         ))}
       </div>
-    );
-  }
-
-  return (
-    <div className="package-grid">
-      {visible.map((adventure) => (
-        <article className="package-card" key={adventure.id}>
-          <img
-            src={adventure.heroImageUrl || "/images/adventure-hero.png"}
-            alt={adventure.title}
-          />
-          <div className="package-body">
-            <small>
-              {durationLabel(adventure.durationDays, adventure.durationNights)}
-              {" · "}
-              {adventure.category}
-            </small>
-            <h3>{adventure.title}</h3>
-            <strong>From {formatKes(adventure.price)} per person</strong>
-            <Link
-              className="button orange small"
-              href={`/adventures/${adventure.slug}`}
-            >
-              View package <ArrowRight />
-            </Link>
-          </div>
-        </article>
-      ))}
-    </div>
+    </>
   );
 }
