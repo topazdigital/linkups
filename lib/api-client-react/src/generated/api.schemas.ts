@@ -383,6 +383,97 @@ export interface SiteContentInput {
   isPublished: boolean;
 }
 
+export interface Event {
+  id: number;
+  slug: string;
+  title: string;
+  description: string;
+  /** @pattern ^\d{4}-\d{2}-\d{2}$ */
+  eventDate: string;
+  location: string;
+  /** @nullable */
+  priceLabel: string | null;
+  /** @nullable */
+  heroImageUrl: string | null;
+  isPublished: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface EventInput {
+  /**
+     * @minLength 2
+     * @maxLength 180
+     * @pattern ^[a-z0-9]+(?:-[a-z0-9]+)*$
+     */
+  slug: string;
+  /**
+     * @minLength 2
+     * @maxLength 180
+     */
+  title: string;
+  /**
+     * @minLength 2
+     * @maxLength 2000
+     */
+  description: string;
+  /** @pattern ^\d{4}-\d{2}-\d{2}$ */
+  eventDate: string;
+  /**
+     * @minLength 2
+     * @maxLength 180
+     */
+  location: string;
+  /**
+     * @maxLength 160
+     * @nullable
+     */
+  priceLabel?: string | null;
+  /**
+     * @maxLength 500
+     * @nullable
+     */
+  heroImageUrl?: string | null;
+  isPublished: boolean;
+}
+
+export interface EventUpdate {
+  /**
+     * @minLength 2
+     * @maxLength 180
+     * @pattern ^[a-z0-9]+(?:-[a-z0-9]+)*$
+     */
+  slug?: string;
+  /**
+     * @minLength 2
+     * @maxLength 180
+     */
+  title?: string;
+  /**
+     * @minLength 2
+     * @maxLength 2000
+     */
+  description?: string;
+  /** @pattern ^\d{4}-\d{2}-\d{2}$ */
+  eventDate?: string;
+  /**
+     * @minLength 2
+     * @maxLength 180
+     */
+  location?: string;
+  /**
+     * @maxLength 160
+     * @nullable
+     */
+  priceLabel?: string | null;
+  /**
+     * @maxLength 500
+     * @nullable
+     */
+  heroImageUrl?: string | null;
+  isPublished?: boolean;
+}
+
 export interface AdventureItineraryDay {
   /** @maxLength 80 */
   day: string;

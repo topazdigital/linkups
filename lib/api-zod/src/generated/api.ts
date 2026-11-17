@@ -129,6 +129,28 @@ export const ListPublicAdventuresResponse = zod.array(ListPublicAdventuresRespon
 
 
 /**
+ * @summary List upcoming published events
+ */
+export const listPublicEventsResponseEventDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+
+
+export const ListPublicEventsResponseItem = zod.object({
+  "id": zod.number().int(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "eventDate": zod.string().regex(listPublicEventsResponseEventDateRegExp),
+  "location": zod.string(),
+  "priceLabel": zod.string().nullable(),
+  "heroImageUrl": zod.string().nullable(),
+  "isPublished": zod.boolean(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+export const ListPublicEventsResponse = zod.array(ListPublicEventsResponseItem)
+
+
+/**
  * @summary List published destinations
  */
 export const ListPublicDestinationsResponseItem = zod.object({
@@ -727,6 +749,138 @@ export const UpdateAdventureResponse = zod.object({
   "galleryImageUrls": zod.array(zod.string()),
   "isFeatured": zod.boolean(),
   "isPublished": zod.boolean()
+})
+
+
+/**
+ * @summary List all scheduled events
+ */
+export const listAdminEventsResponseEventDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+
+
+export const ListAdminEventsResponseItem = zod.object({
+  "id": zod.number().int(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "eventDate": zod.string().regex(listAdminEventsResponseEventDateRegExp),
+  "location": zod.string(),
+  "priceLabel": zod.string().nullable(),
+  "heroImageUrl": zod.string().nullable(),
+  "isPublished": zod.boolean(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+export const ListAdminEventsResponse = zod.array(ListAdminEventsResponseItem)
+
+
+/**
+ * @summary Create a scheduled event
+ */
+export const createEventBodySlugMin = 2;
+export const createEventBodySlugMax = 180;
+
+
+export const createEventBodySlugRegExp = new RegExp('^[a-z0-9]+(?:-[a-z0-9]+)*$');
+export const createEventBodyTitleMin = 2;
+export const createEventBodyTitleMax = 180;
+
+export const createEventBodyDescriptionMin = 2;
+export const createEventBodyDescriptionMax = 2000;
+
+export const createEventBodyEventDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const createEventBodyLocationMin = 2;
+export const createEventBodyLocationMax = 180;
+
+export const createEventBodyPriceLabelMax = 160;
+
+export const createEventBodyHeroImageUrlMax = 500;
+
+
+
+export const CreateEventBody = zod.object({
+  "slug": zod.string().min(createEventBodySlugMin).max(createEventBodySlugMax).regex(createEventBodySlugRegExp),
+  "title": zod.string().min(createEventBodyTitleMin).max(createEventBodyTitleMax),
+  "description": zod.string().min(createEventBodyDescriptionMin).max(createEventBodyDescriptionMax),
+  "eventDate": zod.string().regex(createEventBodyEventDateRegExp),
+  "location": zod.string().min(createEventBodyLocationMin).max(createEventBodyLocationMax),
+  "priceLabel": zod.string().max(createEventBodyPriceLabelMax).nullish(),
+  "heroImageUrl": zod.string().max(createEventBodyHeroImageUrlMax).nullish(),
+  "isPublished": zod.boolean()
+})
+
+export const createEventResponseEventDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+
+
+export const CreateEventResponse = zod.object({
+  "id": zod.number().int(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "eventDate": zod.string().regex(createEventResponseEventDateRegExp),
+  "location": zod.string(),
+  "priceLabel": zod.string().nullable(),
+  "heroImageUrl": zod.string().nullable(),
+  "isPublished": zod.boolean(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Edit or publish a scheduled event
+ */
+export const UpdateEventParams = zod.object({
+  "id": zod.coerce.number().int()
+})
+
+export const updateEventBodySlugMin = 2;
+export const updateEventBodySlugMax = 180;
+
+
+export const updateEventBodySlugRegExp = new RegExp('^[a-z0-9]+(?:-[a-z0-9]+)*$');
+export const updateEventBodyTitleMin = 2;
+export const updateEventBodyTitleMax = 180;
+
+export const updateEventBodyDescriptionMin = 2;
+export const updateEventBodyDescriptionMax = 2000;
+
+export const updateEventBodyEventDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const updateEventBodyLocationMin = 2;
+export const updateEventBodyLocationMax = 180;
+
+export const updateEventBodyPriceLabelMax = 160;
+
+export const updateEventBodyHeroImageUrlMax = 500;
+
+
+
+export const UpdateEventBody = zod.object({
+  "slug": zod.string().min(updateEventBodySlugMin).max(updateEventBodySlugMax).regex(updateEventBodySlugRegExp).optional(),
+  "title": zod.string().min(updateEventBodyTitleMin).max(updateEventBodyTitleMax).optional(),
+  "description": zod.string().min(updateEventBodyDescriptionMin).max(updateEventBodyDescriptionMax).optional(),
+  "eventDate": zod.string().regex(updateEventBodyEventDateRegExp).optional(),
+  "location": zod.string().min(updateEventBodyLocationMin).max(updateEventBodyLocationMax).optional(),
+  "priceLabel": zod.string().max(updateEventBodyPriceLabelMax).nullish(),
+  "heroImageUrl": zod.string().max(updateEventBodyHeroImageUrlMax).nullish(),
+  "isPublished": zod.boolean().optional()
+})
+
+export const updateEventResponseEventDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+
+
+export const UpdateEventResponse = zod.object({
+  "id": zod.number().int(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "eventDate": zod.string().regex(updateEventResponseEventDateRegExp),
+  "location": zod.string(),
+  "priceLabel": zod.string().nullable(),
+  "heroImageUrl": zod.string().nullable(),
+  "isPublished": zod.boolean(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
 })
 
 
