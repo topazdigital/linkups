@@ -252,11 +252,17 @@ router.patch(
       const column = columns[key];
       if (!column) continue;
       assignments.push(`${column} = ?`);
-      values.push(
+      const normalizedValue =
         typeof value === "string" && key !== "slug"
           ? value.trim() || null
-          : value,
-      );
+          : value;
+      if (
+        typeof normalizedValue === "string" ||
+        typeof normalizedValue === "boolean" ||
+        normalizedValue === null
+      ) {
+        values.push(normalizedValue);
+      }
     }
 
     await executeSql(

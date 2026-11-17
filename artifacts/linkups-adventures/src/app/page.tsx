@@ -6,6 +6,9 @@ import { ArrowRight, CalendarDays, Check, ChevronDown, Compass, Globe2, MapPin, 
 import { AdventureCards } from '@/components/adventure-cards'
 import { AdventureQuiz } from '@/components/conversion-tools'
 import { ReviewsMedia } from '@/components/reviews-media'
+import { getGetAuthSessionQueryKey, getGetPublicSiteContentQueryKey, useGetAuthSession, useGetPublicSiteContent, useLogout } from '@workspace/api-client-react'
+import { useQueryClient } from '@tanstack/react-query'
+import { useLocation } from 'wouter'
 
 const hero = '/images/group-travel-hero.png'
 const destinationHero = '/images/adventure-mountain.png'
@@ -33,14 +36,35 @@ const destinations = [
 
 function Header() {
   const [open, setOpen] = useState(false)
-  return <header className="site-header"><a href="#top" className="brand" aria-label="Linkups Adventures home"><span>LinkUps</span><small>ADVENTURES</small></a><nav className={open ? 'nav open' : 'nav'}>{[['Home', '/'], ['Adventures', '/adventures'], ['Destinations', '/destinations'], ['Group Travel', '/group-travel'], ['About Us', '/about'], ['Blog', '/blog'], ['Contact', '/contact']].map(([item, href]) => <Link key={item} href={href} onClick={() => setOpen(false)}>{item}</Link>)}</nav><div className="header-actions"><Search aria-label="Search" /><Link className="header-account" href="/login">Sign in</Link><Link className="header-account" href="/register">Register</Link><a className="button orange" href="/plan">Plan My Adventure</a><button className="menu-button" aria-label="Toggle navigation" onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</button></div></header>
+  const session = useGetAuthSession()
+  const logout = useLogout()
+  const queryClient = useQueryClient()
+  const [, setLocation] = useLocation()
+  const accountHref = session.data?.role === 'admin' ? '/admin' : '/dashboard'
+  function signOut() {
+    logout.mutate(undefined, { onSuccess: async () => { await queryClient.invalidateQueries({ queryKey: getGetAuthSessionQueryKey() }); setLocation('/') } })
+  }
+  return <header className="site-header">
+    <a href="#top" className="brand" aria-label="Linkups Adventures home" data-testid="link-home-brand"><span>LinkUps</span><small>ADVENTURES</small></a>
+    <nav className={open ? 'nav open' : 'nav'}>
+      {[['Home', '/'], ['Adventures', '/adventures'], ['Destinations', '/destinations'], ['Group Travel', '/group-travel'], ['About Us', '/about'], ['Blog', '/blog'], ['Contact', '/contact']].map(([item, href]) => <Link key={item} href={href} data-testid={`link-home-nav-${item.toLowerCase().replaceAll(' ', '-')}`} onClick={() => setOpen(false)}>{item}</Link>)}
+      {session.data?.authenticated ? <><Link className="home-mobile-link" href={accountHref} data-testid="link-home-menu-account" onClick={() => setOpen(false)}>My account</Link><button className="home-mobile-link" data-testid="button-home-menu-signout" onClick={signOut} disabled={logout.isPending}>{logout.isPending ? 'Signing out…' : 'Sign out'}</button></> : <><Link className="home-mobile-link" href="/login" data-testid="link-home-menu-login" onClick={() => setOpen(false)}>Sign in</Link><Link className="home-mobile-link" href="/register" data-testid="link-home-menu-register" onClick={() => setOpen(false)}>Register</Link></>}
+    </nav>
+    <div className="header-actions"><Search aria-label="Search" />
+      {session.data?.authenticated ? <><Link className="header-account" href={accountHref} data-testid="link-home-account">My account</Link><button className="header-account header-button" data-testid="button-home-signout" onClick={signOut} disabled={logout.isPending}>{logout.isPending ? 'Signing out…' : 'Sign out'}</button></> : <><Link className="header-account" href="/login" data-testid="link-home-login">Sign in</Link><Link className="header-account" href="/register" data-testid="link-home-register">Register</Link></>}
+      <a className="button orange" data-testid="link-home-plan" href="/plan">Plan My Adventure</a><button className="menu-button" aria-label="Toggle navigation" data-testid="button-home-menu-toggle" onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</button>
+    </div>
+  </header>
 }
 
 function SectionTitle({ eyebrow, title, light = false }: { eyebrow: string; title: string; light?: boolean }) { return <div className={`section-title ${light ? 'light' : ''}`}><span className="eyebrow">{eyebrow}</span><h2>{title}</h2></div> }
 
 export default function Page() {
+  const homeContent = useGetPublicSiteContent('home', { query: { queryKey: getGetPublicSiteContentQueryKey('home') } })
+  const publishedHome = homeContent.data?.isPublished ? homeContent.data : undefined
+  const heroImage = publishedHome?.heroImageUrl || hero
   return <div id="top"><Header /><main>
-    <section className="hero" style={{ backgroundImage: `linear-gradient(90deg, rgba(1,44,37,.82), rgba(1,44,37,.05)), url(${hero})` }}><div className="hero-copy"><span className="eyebrow orange-text">Explore Kenya</span><h1>Your next adventure <em>starts here.</em></h1><p>Safaris, beach escapes, camping, road trips and group adventures made for real people.</p><div className="hero-buttons"><a className="button orange" href="/adventures">Explore adventures <ArrowRight /></a><a className="button outline-light" href="/plan">Plan my adventure</a></div></div></section>
+    <section className="hero" data-testid="section-home-hero" style={{ backgroundImage: `linear-gradient(90deg, rgba(1,44,37,.82), rgba(1,44,37,.05)), url(${heroImage})` }}><div className="hero-copy"><span className="eyebrow orange-text">Explore Kenya</span><h1 data-testid="text-home-hero-title">{publishedHome?.heroTitle || <>Your next adventure <em>starts here.</em></>}</h1><p data-testid="text-home-hero-subtitle">{publishedHome?.heroSubtitle || 'Safaris, beach escapes, camping, road trips and group adventures made for real people.'}</p><div className="hero-buttons"><a className="button orange" data-testid="link-home-explore-adventures" href="/adventures">Explore adventures <ArrowRight /></a><a className="button outline-light" data-testid="link-home-hero-plan" href="/plan">Plan my adventure</a></div></div></section>
     <section className="adventure-types"><SectionTitle eyebrow="What kind of adventure are you looking for?" title="Find your kind of wild" /><div className="type-grid">{[['Safari', images.mara], ['Beach Escapes', images.beach], ['Camping & Outdoors', images.package], ['Road Trips', images.contact], ['Group Escapes', images.group], ['Couples & Family', images.beach]].map(([name, image]) => <a className="type-card" href="/adventures" key={name}><img src={image} alt="" /><div><strong>{name}</strong><small>Explore experiences</small></div></a>)}</div><a className="button dark center" href="/adventures">Explore all adventures <ArrowRight /></a></section>
     <section id="destinations" className="destinations"><div className="section-row"><SectionTitle eyebrow="Our destinations" title="Discover Kenya's best places" /><Link href="/destinations" className="text-link">View all destinations <ArrowRight /></Link></div><div className="destination-grid">{destinations.map(([name, detail, image]) => <Link className="destination-card" href={`/destinations/${name.toLowerCase().replaceAll(' ', '-')}`} key={name} style={{ backgroundImage: `linear-gradient(0deg, rgba(0,33,28,.82), transparent 65%), url(${image})` }}><div><h3>{name}</h3><p>{detail}</p><span>Explore <ArrowRight /></span></div></Link>)}</div></section>
     <section id="adventures" className="experience"><div className="experience-copy"><SectionTitle eyebrow="More than a trip" title="It's a Linkups experience." /><p>We believe the best adventures are not just about where you go. They're about who you're with, what you experience and the stories you bring home.</p><a className="button dark" href="/plan">Why Linkups? <ArrowRight /></a></div><div className="experience-photo" style={{ backgroundImage: `url(${images.group})` }}><strong>Real people.<br />Real adventures.</strong></div></section>

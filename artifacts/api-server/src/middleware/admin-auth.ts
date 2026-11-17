@@ -9,6 +9,10 @@ import {
   GetAdminSessionResponse,
 } from "@workspace/api-zod";
 import { Router, type IRouter } from "express";
+import {
+  clearCustomerSessionCookie,
+  destroyCustomerSession,
+} from "./user-auth";
 
 const SESSION_COOKIE = "linkups_admin_session";
 const SESSION_TTL_MS = 8 * 60 * 60 * 1000;
@@ -120,6 +124,9 @@ export async function createAdminSession(
     }
     userId = admin.id;
   }
+
+  await destroyCustomerSession(req);
+  clearCustomerSessionCookie(req, res);
 
   const token = randomBytes(32).toString("base64url");
   const expiresAt = new Date(Date.now() + SESSION_TTL_MS);

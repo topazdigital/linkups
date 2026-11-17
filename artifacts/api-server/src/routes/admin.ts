@@ -301,11 +301,16 @@ router.patch(
       const column = columns[key];
       if (!column) continue;
       assignments.push(`${column} = ?`);
-      values.push(
-        typeof rawValue === "string" && key !== "slug"
-          ? rawValue.trim()
-          : rawValue,
-      );
+      const value = typeof rawValue === "string" && key !== "slug"
+        ? rawValue.trim()
+        : rawValue;
+      if (
+        typeof value === "string" ||
+        typeof value === "number" ||
+        typeof value === "boolean"
+      ) {
+        values.push(value);
+      }
     }
 
     if (assignments.length === 0) {

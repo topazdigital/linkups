@@ -147,6 +147,8 @@ router.post("/auth/register", async (req, res): Promise<void> => {
     name,
     phone: parsed.data.phone?.trim() || null,
   };
+  await destroyAdminSession(req);
+  clearAdminSessionCookie(req, res);
   await createCustomerSession(req, res, identity);
   res.status(201).json(
     RegisterResponse.parse({
@@ -221,6 +223,8 @@ router.post("/auth/login", async (req, res): Promise<void> => {
   }
 
   failedLogins.delete(key);
+  await destroyAdminSession(req);
+  clearAdminSessionCookie(req, res);
   await createCustomerSession(req, res, {
     userId: customer.id,
     email: customer.email,

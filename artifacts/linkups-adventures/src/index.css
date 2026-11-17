@@ -36,3 +36,114 @@
 @media(max-width:900px){.type-grid,.packages .package-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.destination-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.experience{grid-template-columns:1fr}.upcoming-home-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.trust{grid-template-columns:1fr}}
 @media(max-width:600px){.site-header{height:68px}.nav{display:none}.nav.open{display:flex;position:absolute;top:68px;left:0;right:0;background:#fff;padding:18px 22px;flex-direction:column;box-shadow:0 8px 20px rgba(0,61,50,.12)}.header-account{display:none}.header-actions{gap:8px}.header-actions .button{padding:10px 13px;font-size:11px}.hero{min-height:560px;padding:42px 22px}.type-grid,.packages .package-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.type-card{min-height:175px}.type-card img{height:105px}.destination-grid{grid-template-columns:1fr 1fr;gap:10px}.destination-card,.destination-card:nth-child(n),.destination-card:nth-child(2),.destination-card:nth-child(3),.destination-card:nth-child(5),.destination-card:nth-child(6){height:225px!important;min-height:225px!important}.vibe-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 8px}.vibe-card img{width:88px;height:88px}.media-strip,.review-grid{grid-template-columns:1fr}.custom-trip{padding:42px 22px}.trust{padding:32px 22px}}
 }
+
+/* Account and workspace surfaces: a more personal extension of the public LinkUps identity. */
+.auth-page{min-height:100dvh;background:radial-gradient(ellipse at 12% 8%,#f8ddc7 0,transparent 34%),linear-gradient(135deg,#e7f1eb 0%,#fffaf0 72%);padding:28px}
+.auth-card{border:1px solid #d8e7de;border-radius:22px;background:rgba(255,253,248,.96);box-shadow:0 24px 70px rgba(0,61,50,.13)}
+.auth-card .brand{margin-bottom:34px}
+.auth-card h1{font-size:clamp(42px,6vw,54px);letter-spacing:-.025em}
+.auth-card>p{color:#667873;line-height:1.65}
+.auth-form .button{justify-content:center;min-height:48px;border:0;cursor:pointer}
+.auth-form .button:disabled,.admin-primary:disabled,.admin-secondary:disabled{opacity:.58;cursor:wait}
+.auth-foot a{text-decoration:underline;text-underline-offset:3px}
+.account-page{min-height:74dvh;padding:clamp(30px,6vw,76px) max(20px,calc((100% - 1160px)/2));background:linear-gradient(180deg,#eff6f1 0,#fffdf8 290px)}
+.account-heading{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:26px}
+.account-heading h1{font:clamp(42px,6vw,62px)/.95 var(--font-display);color:var(--green);margin:12px 0 8px}
+.account-heading p{margin:0;color:var(--muted)}
+.account-heading .button{white-space:nowrap}
+.account-grid{display:grid;grid-template-columns:minmax(280px,.78fr) 1.5fr;gap:20px}
+.account-panel{background:var(--surface);border:1px solid #dce9e1;border-radius:17px;padding:clamp(19px,3vw,28px);box-shadow:0 12px 34px rgba(0,61,50,.055)}
+.account-panel h2{font-size:19px;margin:0 0 7px;color:var(--green)}
+.account-panel>p{font-size:13px;line-height:1.6;color:var(--muted);margin:0 0 18px}
+.account-form{display:grid;gap:14px}
+.account-form label{display:grid;gap:7px;font-size:12px;font-weight:800;color:var(--green)}
+.account-form input{width:100%;min-height:45px;border:1px solid #d7e5dd;border-radius:9px;padding:11px 13px;background:#fffefa;color:var(--ink);font:inherit}
+.account-form input:focus,.workspace-input:focus,.workspace-textarea:focus{outline:2px solid #d8613244;border-color:var(--orange)}
+.account-form .button{justify-content:center;border:0;cursor:pointer}
+.booking-list{display:grid}
+.booking-row{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;padding:17px 0;border-top:1px solid #e5ece7}
+.booking-row h3{font-size:15px;margin:0 0 5px}
+.booking-row p{font-size:12px;color:var(--muted);margin:0;line-height:1.6}
+.booking-reference{font:11px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:#73857d}
+.account-status{display:inline-flex;width:max-content;border-radius:999px;padding:7px 10px;background:#e6f2e9;color:#28624d;font-size:10px;font-weight:900;letter-spacing:.03em;text-transform:uppercase}
+.account-status.cancelled,.account-status.failed{background:#fbe9df;color:#a94e2e}
+.account-empty{display:grid;justify-items:start;gap:10px;padding:27px 0 8px}
+.account-empty strong{font-size:17px;color:var(--green)}
+.account-empty p{max-width:410px;color:var(--muted);font-size:13px;line-height:1.6;margin:0}
+.account-empty .button{margin-top:4px}
+.account-skeleton{display:grid;gap:12px;padding-top:15px}
+.account-skeleton .skeleton{height:58px}
+.workspace-sidebar{position:sticky;top:0;height:100dvh}
+.workspace-logo{padding-bottom:35px}
+.workspace-sidebar nav button,.workspace-sidebar .workspace-logout{width:100%;display:flex;align-items:center;gap:11px;border:0;background:transparent;color:#d9ece6;border-radius:9px;padding:13px 14px;font:700 13px var(--font-body);text-align:left;cursor:pointer}
+.workspace-sidebar nav button svg,.workspace-sidebar .workspace-logout svg{width:18px;height:18px}
+.workspace-sidebar nav button.active,.workspace-sidebar nav button:hover,.workspace-sidebar .workspace-logout:hover{background:#ff6b12;color:#fff}
+.workspace-sidebar nav button span{margin-left:auto;border-radius:20px;background:#ffffff20;padding:3px 7px;font-size:10px}
+.workspace-close{display:none}
+.workspace-user{display:flex;align-items:center;gap:10px}
+.workspace-user-mark{display:grid;place-items:center;width:39px;height:39px;border-radius:50%;background:#f8eadb;color:#9f4d2d;font-size:14px;font-weight:900}
+.workspace-user b,.workspace-user small{display:block}
+.workspace-user b{font-size:12px;max-width:190px;overflow:hidden;text-overflow:ellipsis}
+.workspace-user small{font-size:10px;color:var(--muted);margin-top:3px}
+.workspace-header-kicker{margin:0 0 4px;color:var(--orange);font-size:11px;font-weight:900;letter-spacing:.09em;text-transform:uppercase}
+.workspace-header h1{font-size:27px;margin:0;color:var(--green)}
+.workspace-title h2{font:42px/1 var(--font-display);color:var(--green);margin:8px 0}
+.workspace-title .workspace-eyebrow{color:var(--orange);font-size:11px;font-weight:900;letter-spacing:.09em;text-transform:uppercase}
+.workspace-notice{margin:14px 0}
+.workspace-panel{background:#fffefa;border:1px solid #dce9e1;border-radius:14px;padding:20px;box-shadow:0 7px 24px rgba(0,61,50,.045)}
+.workspace-panel h3{margin:0;font-size:17px}
+.workspace-panel>p{font-size:12px;color:var(--muted);line-height:1.6}
+.workspace-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;background:#fffefa;border:1px solid #dce9e1;border-radius:14px;padding:20px}
+.workspace-form h3,.workspace-form .wide{grid-column:1/-1}
+.workspace-form h3{margin:0}
+.workspace-field{display:flex;flex-direction:column;gap:7px;font-size:11px;font-weight:900;color:var(--green)}
+.workspace-input,.workspace-textarea{width:100%;border:1px solid #d7e5df;border-radius:8px;background:#fff;padding:11px 12px;color:var(--ink);font:13px var(--font-body)}
+.workspace-textarea{resize:vertical;min-height:92px;line-height:1.55}
+.workspace-check{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:700}
+.workspace-check input{accent-color:var(--orange);width:17px;height:17px}
+.workspace-form-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.workspace-empty{padding:28px;text-align:center;color:var(--muted);font-size:13px}
+.workspace-table{min-width:760px}
+.workspace-table td small{display:block;color:var(--muted);font-size:11px;margin-top:4px;line-height:1.5}
+.workspace-table .button,.workspace-table button{cursor:pointer}
+.workspace-card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.workspace-content-card{display:flex;flex-direction:column;gap:10px}
+.workspace-content-card p{font-size:12px;line-height:1.55;color:var(--muted);margin:0}
+.workspace-content-card .workspace-form-actions{margin-top:auto}
+.workspace-skeletons{display:grid;gap:12px}
+.workspace-skeletons .skeleton{height:58px}
+.workspace-mobile-menu{display:none}
+.workspace-table-card{background:#fffefa}
+.home-mobile-link{display:none}
+@media(max-width:800px){
+ .account-heading{align-items:flex-start;flex-direction:column}
+ .account-grid{grid-template-columns:1fr}
+ .workspace-shell{display:block}
+ .workspace-sidebar{position:fixed;inset:0 auto 0 0;z-index:40;width:min(290px,86vw);height:100dvh;transform:translateX(-105%);transition:transform .2s ease;box-shadow:12px 0 40px #003d3230}
+ .workspace-sidebar.open{transform:translateX(0)}
+ .workspace-sidebar nav{flex-direction:column;overflow:visible}
+ .workspace-sidebar .admin-bottom{display:flex}
+ .workspace-close,.workspace-mobile-menu{display:inline-flex;align-items:center;justify-content:center;border:0;background:transparent;color:var(--green);padding:8px;cursor:pointer}
+ .workspace-close{position:absolute;top:18px;right:13px;color:#fff}
+ .workspace-header{gap:12px}
+ .workspace-header h1{font-size:22px}
+ .workspace-header-actions{margin-left:auto}
+ .workspace-user b{max-width:125px}
+ .workspace-card-grid{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+ .auth-page{padding:16px}
+ .auth-card{padding:23px}
+ .account-heading h1{font-size:48px}
+ .booking-row{grid-template-columns:1fr;align-items:start}
+ .workspace-header{align-items:flex-start;padding:18px}
+ .workspace-header-actions{gap:8px}
+ .workspace-header-actions .workspace-user small{display:none}
+ .workspace-form{grid-template-columns:1fr;padding:16px}
+ .workspace-form h3,.workspace-form .wide{grid-column:auto}
+ .workspace-title h2{font-size:36px}
+ .workspace-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:600px){
+ .nav.open .home-mobile-link{display:block;padding:13px 4px;border:0;border-bottom:1px solid #e5efeb;background:transparent;color:var(--green);font:700 13px var(--font-body);text-align:left;cursor:pointer}
+}
