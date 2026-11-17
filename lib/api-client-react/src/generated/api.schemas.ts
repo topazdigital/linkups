@@ -172,6 +172,217 @@ export interface AdminSession {
   email: string | null;
 }
 
+/**
+ * @nullable
+ */
+export type AuthSessionRole = typeof AuthSessionRole[keyof typeof AuthSessionRole] | null;
+
+
+export const AuthSessionRole = {
+  admin: 'admin',
+  customer: 'customer',
+} as const;
+
+export interface AuthSession {
+  authenticated: boolean;
+  /** @nullable */
+  role: AuthSessionRole;
+  /** @nullable */
+  email: string | null;
+  /** @nullable */
+  name: string | null;
+}
+
+export interface LoginInput {
+  /** @maxLength 190 */
+  email: string;
+  /**
+     * @minLength 8
+     * @maxLength 200
+     */
+  password: string;
+}
+
+export interface RegisterInput {
+  /**
+     * @minLength 2
+     * @maxLength 120
+     */
+  name: string;
+  /** @maxLength 190 */
+  email: string;
+  /** @maxLength 30 */
+  phone?: string;
+  /**
+     * @minLength 8
+     * @maxLength 200
+     */
+  password: string;
+}
+
+export interface UserProfile {
+  name: string;
+  email: string;
+  /** @nullable */
+  phone: string | null;
+}
+
+export interface UserProfileUpdate {
+  /**
+     * @minLength 2
+     * @maxLength 120
+     */
+  name: string;
+  /**
+     * @maxLength 30
+     * @nullable
+     */
+  phone?: string | null;
+}
+
+export interface CustomerDashboard {
+  profile: UserProfile;
+  bookings: Booking[];
+}
+
+export type AdminUserRole = typeof AdminUserRole[keyof typeof AdminUserRole];
+
+
+export const AdminUserRole = {
+  customer: 'customer',
+  admin: 'admin',
+} as const;
+
+export interface AdminUser {
+  id: number;
+  name: string;
+  email: string;
+  /** @nullable */
+  phone: string | null;
+  role: AdminUserRole;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface AdminUserUpdate {
+  isActive: boolean;
+}
+
+export interface Destination {
+  id: number;
+  name: string;
+  slug: string;
+  /** @nullable */
+  summary: string | null;
+  /** @nullable */
+  description: string | null;
+  /** @nullable */
+  imageUrl: string | null;
+  isFeatured: boolean;
+  isPublished: boolean;
+}
+
+export interface DestinationInput {
+  /**
+     * @minLength 2
+     * @maxLength 120
+     */
+  name: string;
+  /**
+     * @minLength 2
+     * @maxLength 140
+     * @pattern ^[a-z0-9]+(?:-[a-z0-9]+)*$
+     */
+  slug: string;
+  /** @maxLength 1000 */
+  summary?: string;
+  /** @maxLength 8000 */
+  description?: string;
+  /** @maxLength 500 */
+  imageUrl?: string;
+  isFeatured?: boolean;
+  isPublished: boolean;
+}
+
+export interface DestinationUpdate {
+  /**
+     * @minLength 2
+     * @maxLength 120
+     */
+  name?: string;
+  /**
+     * @minLength 2
+     * @maxLength 140
+     * @pattern ^[a-z0-9]+(?:-[a-z0-9]+)*$
+     */
+  slug?: string;
+  /** @maxLength 1000 */
+  summary?: string;
+  /** @maxLength 8000 */
+  description?: string;
+  /** @maxLength 500 */
+  imageUrl?: string;
+  isFeatured?: boolean;
+  isPublished?: boolean;
+}
+
+export interface SiteContent {
+  pageKey: string;
+  pageTitle: string;
+  /** @nullable */
+  heroTitle: string | null;
+  /** @nullable */
+  heroSubtitle: string | null;
+  /** @nullable */
+  seoDescription: string | null;
+  /** @nullable */
+  bodyContent: string | null;
+  /** @nullable */
+  heroImageUrl: string | null;
+  isPublished: boolean;
+  updatedAt: string;
+}
+
+export interface SiteContentInput {
+  /**
+     * @minLength 2
+     * @maxLength 60
+     * @pattern ^[a-z0-9-]+$
+     */
+  pageKey: string;
+  /**
+     * @minLength 2
+     * @maxLength 160
+     */
+  pageTitle: string;
+  /**
+     * @maxLength 240
+     * @nullable
+     */
+  heroTitle?: string | null;
+  /**
+     * @maxLength 2000
+     * @nullable
+     */
+  heroSubtitle?: string | null;
+  /**
+     * @maxLength 500
+     * @nullable
+     */
+  seoDescription?: string | null;
+  /**
+     * @maxLength 20000
+     * @nullable
+     */
+  bodyContent?: string | null;
+  /**
+     * @maxLength 500
+     * @nullable
+     */
+  heroImageUrl?: string | null;
+  isPublished: boolean;
+}
+
 export interface Adventure {
   id: number;
   slug: string;

@@ -104,6 +104,164 @@ export const ListPublicAdventuresResponse = zod.array(ListPublicAdventuresRespon
 
 
 /**
+ * @summary List published destinations
+ */
+export const ListPublicDestinationsResponseItem = zod.object({
+  "id": zod.number().int(),
+  "name": zod.string(),
+  "slug": zod.string(),
+  "summary": zod.string().nullable(),
+  "description": zod.string().nullable(),
+  "imageUrl": zod.string().nullable(),
+  "isFeatured": zod.boolean(),
+  "isPublished": zod.boolean()
+})
+export const ListPublicDestinationsResponse = zod.array(ListPublicDestinationsResponseItem)
+
+
+/**
+ * @summary Get published content for a website page
+ */
+export const getPublicSiteContentPathPageKeyRegExp = new RegExp('^[a-z0-9-]+$');
+
+
+export const GetPublicSiteContentParams = zod.object({
+  "pageKey": zod.coerce.string().regex(getPublicSiteContentPathPageKeyRegExp)
+})
+
+export const GetPublicSiteContentResponse = zod.object({
+  "pageKey": zod.string(),
+  "pageTitle": zod.string(),
+  "heroTitle": zod.string().nullable(),
+  "heroSubtitle": zod.string().nullable(),
+  "seoDescription": zod.string().nullable(),
+  "bodyContent": zod.string().nullable(),
+  "heroImageUrl": zod.string().nullable(),
+  "isPublished": zod.boolean(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Check the current account session
+ */
+export const GetAuthSessionResponse = zod.object({
+  "authenticated": zod.boolean(),
+  "role": zod.union([zod.literal('admin'),zod.literal('customer'),zod.literal(null)]).nullable(),
+  "email": zod.string().email().nullable(),
+  "name": zod.string().nullable()
+})
+
+
+/**
+ * @summary Sign in as an administrator or customer
+ */
+export const loginBodyEmailMax = 190;
+
+export const loginBodyPasswordMin = 8;
+export const loginBodyPasswordMax = 200;
+
+
+
+export const LoginBody = zod.object({
+  "email": zod.string().email().max(loginBodyEmailMax),
+  "password": zod.string().min(loginBodyPasswordMin).max(loginBodyPasswordMax)
+})
+
+export const LoginResponse = zod.object({
+  "authenticated": zod.boolean(),
+  "role": zod.union([zod.literal('admin'),zod.literal('customer'),zod.literal(null)]).nullable(),
+  "email": zod.string().email().nullable(),
+  "name": zod.string().nullable()
+})
+
+
+/**
+ * @summary Create a customer account
+ */
+export const registerBodyNameMin = 2;
+export const registerBodyNameMax = 120;
+
+export const registerBodyEmailMax = 190;
+
+export const registerBodyPhoneMax = 30;
+
+export const registerBodyPasswordMin = 8;
+export const registerBodyPasswordMax = 200;
+
+
+
+export const RegisterBody = zod.object({
+  "name": zod.string().min(registerBodyNameMin).max(registerBodyNameMax),
+  "email": zod.string().email().max(registerBodyEmailMax),
+  "phone": zod.string().max(registerBodyPhoneMax).optional(),
+  "password": zod.string().min(registerBodyPasswordMin).max(registerBodyPasswordMax)
+})
+
+export const RegisterResponse = zod.object({
+  "authenticated": zod.boolean(),
+  "role": zod.union([zod.literal('admin'),zod.literal('customer'),zod.literal(null)]).nullable(),
+  "email": zod.string().email().nullable(),
+  "name": zod.string().nullable()
+})
+
+
+/**
+ * @summary End the current account session
+ */
+export const LogoutResponse = zod.void()
+
+
+/**
+ * @summary Get the signed-in customer's profile and bookings
+ */
+export const GetCustomerDashboardResponse = zod.object({
+  "profile": zod.object({
+  "name": zod.string(),
+  "email": zod.string().email(),
+  "phone": zod.string().nullable()
+}),
+  "bookings": zod.array(zod.object({
+  "id": zod.number().int(),
+  "reference": zod.string(),
+  "fullName": zod.string(),
+  "email": zod.string(),
+  "phone": zod.string(),
+  "adventureTitle": zod.string().nullable(),
+  "travelDate": zod.coerce.date().nullable(),
+  "travellers": zod.number().int(),
+  "specialRequests": zod.string().nullable(),
+  "status": zod.enum(['new', 'confirmed', 'in_progress', 'completed', 'cancelled']),
+  "paymentStatus": zod.enum(['pending', 'paid', 'failed', 'refunded']),
+  "totalAmount": zod.number(),
+  "createdAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Update the signed-in customer's profile
+ */
+export const updateCustomerProfileBodyNameMin = 2;
+export const updateCustomerProfileBodyNameMax = 120;
+
+export const updateCustomerProfileBodyPhoneMax = 30;
+
+
+
+export const UpdateCustomerProfileBody = zod.object({
+  "name": zod.string().min(updateCustomerProfileBodyNameMin).max(updateCustomerProfileBodyNameMax),
+  "phone": zod.string().max(updateCustomerProfileBodyPhoneMax).nullish()
+})
+
+export const UpdateCustomerProfileResponse = zod.object({
+  "name": zod.string(),
+  "email": zod.string().email(),
+  "phone": zod.string().nullable()
+})
+
+
+/**
  * @summary Check the current admin session
  */
 export const GetAdminSessionResponse = zod.object({
@@ -355,6 +513,209 @@ export const UpdateAdventureResponse = zod.object({
   "heroImageUrl": zod.string().nullable(),
   "isFeatured": zod.boolean(),
   "isPublished": zod.boolean()
+})
+
+
+/**
+ * @summary List customer accounts
+ */
+export const ListAdminUsersResponseItem = zod.object({
+  "id": zod.number().int(),
+  "name": zod.string(),
+  "email": zod.string().email(),
+  "phone": zod.string().nullable(),
+  "role": zod.enum(['customer', 'admin']),
+  "isActive": zod.boolean(),
+  "createdAt": zod.coerce.date()
+})
+export const ListAdminUsersResponse = zod.array(ListAdminUsersResponseItem)
+
+
+/**
+ * @summary Activate or suspend a customer account
+ */
+export const UpdateAdminUserParams = zod.object({
+  "id": zod.coerce.number().int()
+})
+
+export const UpdateAdminUserBody = zod.object({
+  "isActive": zod.boolean()
+})
+
+export const UpdateAdminUserResponse = zod.object({
+  "id": zod.number().int(),
+  "name": zod.string(),
+  "email": zod.string().email(),
+  "phone": zod.string().nullable(),
+  "role": zod.enum(['customer', 'admin']),
+  "isActive": zod.boolean(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary List all destinations
+ */
+export const ListAdminDestinationsResponseItem = zod.object({
+  "id": zod.number().int(),
+  "name": zod.string(),
+  "slug": zod.string(),
+  "summary": zod.string().nullable(),
+  "description": zod.string().nullable(),
+  "imageUrl": zod.string().nullable(),
+  "isFeatured": zod.boolean(),
+  "isPublished": zod.boolean()
+})
+export const ListAdminDestinationsResponse = zod.array(ListAdminDestinationsResponseItem)
+
+
+/**
+ * @summary Add a destination
+ */
+export const createDestinationBodyNameMin = 2;
+export const createDestinationBodyNameMax = 120;
+
+export const createDestinationBodySlugMin = 2;
+export const createDestinationBodySlugMax = 140;
+
+
+export const createDestinationBodySlugRegExp = new RegExp('^[a-z0-9]+(?:-[a-z0-9]+)*$');
+export const createDestinationBodySummaryMax = 1000;
+
+export const createDestinationBodyDescriptionMax = 8000;
+
+export const createDestinationBodyImageUrlMax = 500;
+
+
+
+export const CreateDestinationBody = zod.object({
+  "name": zod.string().min(createDestinationBodyNameMin).max(createDestinationBodyNameMax),
+  "slug": zod.string().min(createDestinationBodySlugMin).max(createDestinationBodySlugMax).regex(createDestinationBodySlugRegExp),
+  "summary": zod.string().max(createDestinationBodySummaryMax).optional(),
+  "description": zod.string().max(createDestinationBodyDescriptionMax).optional(),
+  "imageUrl": zod.string().max(createDestinationBodyImageUrlMax).optional(),
+  "isFeatured": zod.boolean().optional(),
+  "isPublished": zod.boolean()
+})
+
+export const CreateDestinationResponse = zod.object({
+  "id": zod.number().int(),
+  "name": zod.string(),
+  "slug": zod.string(),
+  "summary": zod.string().nullable(),
+  "description": zod.string().nullable(),
+  "imageUrl": zod.string().nullable(),
+  "isFeatured": zod.boolean(),
+  "isPublished": zod.boolean()
+})
+
+
+/**
+ * @summary Edit or publish a destination
+ */
+export const UpdateDestinationParams = zod.object({
+  "id": zod.coerce.number().int()
+})
+
+export const updateDestinationBodyNameMin = 2;
+export const updateDestinationBodyNameMax = 120;
+
+export const updateDestinationBodySlugMin = 2;
+export const updateDestinationBodySlugMax = 140;
+
+
+export const updateDestinationBodySlugRegExp = new RegExp('^[a-z0-9]+(?:-[a-z0-9]+)*$');
+export const updateDestinationBodySummaryMax = 1000;
+
+export const updateDestinationBodyDescriptionMax = 8000;
+
+export const updateDestinationBodyImageUrlMax = 500;
+
+
+
+export const UpdateDestinationBody = zod.object({
+  "name": zod.string().min(updateDestinationBodyNameMin).max(updateDestinationBodyNameMax).optional(),
+  "slug": zod.string().min(updateDestinationBodySlugMin).max(updateDestinationBodySlugMax).regex(updateDestinationBodySlugRegExp).optional(),
+  "summary": zod.string().max(updateDestinationBodySummaryMax).optional(),
+  "description": zod.string().max(updateDestinationBodyDescriptionMax).optional(),
+  "imageUrl": zod.string().max(updateDestinationBodyImageUrlMax).optional(),
+  "isFeatured": zod.boolean().optional(),
+  "isPublished": zod.boolean().optional()
+})
+
+export const UpdateDestinationResponse = zod.object({
+  "id": zod.number().int(),
+  "name": zod.string(),
+  "slug": zod.string(),
+  "summary": zod.string().nullable(),
+  "description": zod.string().nullable(),
+  "imageUrl": zod.string().nullable(),
+  "isFeatured": zod.boolean(),
+  "isPublished": zod.boolean()
+})
+
+
+/**
+ * @summary List editable website page content
+ */
+export const ListAdminSiteContentResponseItem = zod.object({
+  "pageKey": zod.string(),
+  "pageTitle": zod.string(),
+  "heroTitle": zod.string().nullable(),
+  "heroSubtitle": zod.string().nullable(),
+  "seoDescription": zod.string().nullable(),
+  "bodyContent": zod.string().nullable(),
+  "heroImageUrl": zod.string().nullable(),
+  "isPublished": zod.boolean(),
+  "updatedAt": zod.coerce.date()
+})
+export const ListAdminSiteContentResponse = zod.array(ListAdminSiteContentResponseItem)
+
+
+/**
+ * @summary Save editable website page content
+ */
+export const saveAdminSiteContentBodyPageKeyMin = 2;
+export const saveAdminSiteContentBodyPageKeyMax = 60;
+
+
+export const saveAdminSiteContentBodyPageKeyRegExp = new RegExp('^[a-z0-9-]+$');
+export const saveAdminSiteContentBodyPageTitleMin = 2;
+export const saveAdminSiteContentBodyPageTitleMax = 160;
+
+export const saveAdminSiteContentBodyHeroTitleMax = 240;
+
+export const saveAdminSiteContentBodyHeroSubtitleMax = 2000;
+
+export const saveAdminSiteContentBodySeoDescriptionMax = 500;
+
+export const saveAdminSiteContentBodyBodyContentMax = 20000;
+
+export const saveAdminSiteContentBodyHeroImageUrlMax = 500;
+
+
+
+export const SaveAdminSiteContentBody = zod.object({
+  "pageKey": zod.string().min(saveAdminSiteContentBodyPageKeyMin).max(saveAdminSiteContentBodyPageKeyMax).regex(saveAdminSiteContentBodyPageKeyRegExp),
+  "pageTitle": zod.string().min(saveAdminSiteContentBodyPageTitleMin).max(saveAdminSiteContentBodyPageTitleMax),
+  "heroTitle": zod.string().max(saveAdminSiteContentBodyHeroTitleMax).nullish(),
+  "heroSubtitle": zod.string().max(saveAdminSiteContentBodyHeroSubtitleMax).nullish(),
+  "seoDescription": zod.string().max(saveAdminSiteContentBodySeoDescriptionMax).nullish(),
+  "bodyContent": zod.string().max(saveAdminSiteContentBodyBodyContentMax).nullish(),
+  "heroImageUrl": zod.string().max(saveAdminSiteContentBodyHeroImageUrlMax).nullish(),
+  "isPublished": zod.boolean()
+})
+
+export const SaveAdminSiteContentResponse = zod.object({
+  "pageKey": zod.string(),
+  "pageTitle": zod.string(),
+  "heroTitle": zod.string().nullable(),
+  "heroSubtitle": zod.string().nullable(),
+  "seoDescription": zod.string().nullable(),
+  "bodyContent": zod.string().nullable(),
+  "heroImageUrl": zod.string().nullable(),
+  "isPublished": zod.boolean(),
+  "updatedAt": zod.coerce.date()
 })
 
 

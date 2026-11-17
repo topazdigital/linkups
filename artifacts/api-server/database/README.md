@@ -7,3 +7,5 @@
 5. Do not put real credentials in this repository or in the public web root.
 
 The scripts do not drop tables or overwrite catalogue entries with matching slugs. If the account already has these tables, inspect the schema before importing anything.
+
+Customer registration, booking history, destination editing, and website content all use this same database. Re-running `schema.mysql` after an update is safe for existing tables and creates any newly added tables without deleting existing rows.

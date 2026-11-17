@@ -62,6 +62,36 @@ CREATE TABLE IF NOT EXISTS adventures (
   INDEX idx_adventures_published (is_published)
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS site_content (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  page_key VARCHAR(60) NOT NULL UNIQUE,
+  page_title VARCHAR(160) NOT NULL,
+  hero_title VARCHAR(240) NULL,
+  hero_subtitle TEXT NULL,
+  seo_description VARCHAR(500) NULL,
+  body_content LONGTEXT NULL,
+  hero_image_url VARCHAR(500) NULL,
+  is_published BOOLEAN NOT NULL DEFAULT FALSE,
+  updated_by BIGINT UNSIGNED NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE SET NULL,
+  INDEX idx_site_content_published (is_published)
+) ENGINE=InnoDB;
+
+INSERT IGNORE INTO site_content
+  (page_key, page_title, hero_title, hero_subtitle, seo_description, hero_image_url, is_published)
+VALUES
+  (
+    'home',
+    'Home',
+    'Your next adventure starts here.',
+    'Safaris, beach escapes, camping, road trips and group adventures made for real people.',
+    'Book small-group safaris, beach escapes, camping, road trips and custom Kenya adventures with LinkUps Adventures.',
+    '/images/adventure-hero.png',
+    TRUE
+  );
+
 CREATE TABLE IF NOT EXISTS bookings (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   reference VARCHAR(30) NOT NULL UNIQUE,

@@ -10,6 +10,7 @@ import {
 } from "@workspace/api-zod";
 import { adventureColumns, adventureResponse, type AdventureRow } from "../lib/adventure";
 import { executeSql, selectRows } from "../lib/mysql";
+import { findCustomerIdentity } from "../middleware/user-auth";
 
 const router: IRouter = Router();
 
@@ -71,6 +72,7 @@ router.post("/bookings", async (req, res): Promise<void> => {
   }
 
   const input = parsed.data;
+  const customer = await findCustomerIdentity(req);
   const adventureSlug = input.adventureSlug?.trim() || null;
   let adventureId: number | string | null = null;
   let unitPrice = 0;
@@ -100,11 +102,12 @@ router.post("/bookings", async (req, res): Promise<void> => {
 
   await executeSql(
     `INSERT INTO bookings
-       (reference, adventure_id, full_name, email, phone, travel_date,
+       (reference, user_id, adventure_id, full_name, email, phone, travel_date,
         travellers, special_requests, total_amount)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       reference,
+      customer?.userId ?? null,
       adventureId,
       input.fullName.trim(),
       input.email.trim().toLowerCase(),

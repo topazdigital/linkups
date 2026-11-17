@@ -15,6 +15,7 @@ import HomePage from '@/app/page';
 import LoginPage from '@/app/login/page';
 import PlanPage from '@/app/plan/page';
 import RegisterPage from '@/app/register/page';
+import DashboardPage from '@/app/dashboard/page';
 import TravelGuidePage from '@/app/travel-guide/page';
 import UpcomingTripsPage from '@/app/upcoming-trips/page';
 import { Route, Router as WouterRouter, Switch, useLocation } from 'wouter';
@@ -41,6 +42,7 @@ function AppRoutes() {
         <Route path="/" component={HomePage} />
         <Route path="/about" component={AboutPage} />
         <Route path="/admin" component={AdminPage} />
+        <Route path="/dashboard" component={DashboardPage} />
         <Route path="/adventures" component={AdventuresPage} />
         <Route path="/adventures/:slug">
           {(params) => <AdventureDetailPage slug={params.slug} />}

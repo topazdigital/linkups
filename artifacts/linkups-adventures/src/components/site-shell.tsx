@@ -3,6 +3,10 @@
 import { Link } from 'wouter'
 import { useState } from 'react'
 import { Menu, X, ArrowRight } from 'lucide-react'
+import { useGetAuthSession, useLogout } from '@workspace/api-client-react'
+import { useQueryClient } from '@tanstack/react-query'
+import { getGetAuthSessionQueryKey } from '@workspace/api-client-react'
+import { useLocation } from 'wouter'
 
 export const siteImages = {
   mara: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=1400&q=85',
@@ -18,12 +22,17 @@ export function Logo({ light = false }: { light?: boolean }) {
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false)
+  const session = useGetAuthSession()
+  const logout = useLogout()
+  const queryClient = useQueryClient()
+  const [, setLocation] = useLocation()
   const links = [['Adventures', '/adventures'], ['Destinations', '/destinations'], ['Upcoming Trips', '/upcoming-trips'], ['Compare Trips', '/compare'], ['Travel Guide', '/travel-guide'], ['Group Travel', '/group-travel'], ['About Us', '/about'], ['Blog', '/blog'], ['Contact', '/contact']]
-  return <header className="site-header"><Logo /><nav className={open ? 'nav open' : 'nav'}>{links.map(([label, href]) => <Link href={href} key={href} onClick={() => setOpen(false)}>{label}</Link>)}</nav><div className="header-actions"><Link className="header-account" href="/login">Sign in</Link><Link className="header-account" href="/register">Register</Link><Link className="button orange" href="/plan">Plan My Adventure <ArrowRight /></Link><button className="menu-button" aria-label="Toggle navigation" onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</button></div></header>
+  const accountHref = session.data?.role === 'admin' ? '/admin' : '/dashboard'
+  return <header className="site-header"><Logo /><nav className={open ? 'nav open' : 'nav'}>{links.map(([label, href]) => <Link href={href} key={href} onClick={() => setOpen(false)}>{label}</Link>)}</nav><div className="header-actions">{session.data?.authenticated ? <><Link className="header-account" href={accountHref}>My account</Link><button className="header-account header-button" data-testid="button-sign-out" onClick={() => logout.mutate(undefined, { onSuccess: () => { queryClient.invalidateQueries({ queryKey: getGetAuthSessionQueryKey() }); setLocation('/') } })}>Sign out</button></> : <><Link className="header-account" data-testid="link-sign-in" href="/login">Sign in</Link><Link className="header-account" data-testid="link-register" href="/register">Register</Link></>}<Link className="button orange" href="/plan">Plan My Adventure <ArrowRight /></Link><button className="menu-button" aria-label="Toggle navigation" onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</button></div></header>
 }
 
 export function SiteFooter() {
-  return <footer><div className="footer-main"><div><Logo light /><p>Where fun meets adventures.</p></div><div><strong>Explore</strong><Link href="/adventures">Adventures</Link><Link href="/destinations">Destinations</Link><Link href="/group-travel">Group Travel</Link><Link href="/blog">Blog</Link></div><div><strong>Contact</strong><a href="tel:0726843677">0726 843 677</a><a href="mailto:linkupsadventures@gmail.com">linkupsadventures@gmail.com</a><Link href="/contact">Send an enquiry</Link></div><div><strong>For the team</strong><Link href="/login">Admin sign in</Link><Link href="/admin">Admin portal</Link></div><div><strong>Payments</strong><p>M-Pesa Till<br /><b>5139557</b></p></div></div><div className="footer-bottom"><span>© 2026 Linkups Adventures. All rights reserved.</span><span>Terms & Conditions · Cancellation Policy · Privacy Policy</span></div></footer>
+  return <footer><div className="footer-main"><div><Logo light /><p>Where fun meets adventures.</p></div><div><strong>Explore</strong><Link href="/adventures">Adventures</Link><Link href="/destinations">Destinations</Link><Link href="/group-travel">Group Travel</Link><Link href="/blog">Blog</Link></div><div><strong>Contact</strong><a href="tel:0726843677">0726 843 677</a><a href="mailto:linkupsadventures@gmail.com">linkupsadventures@gmail.com</a><Link href="/contact">Send an enquiry</Link></div><div><strong>Your LinkUps</strong><Link href="/login">Sign in</Link><Link href="/register">Create an account</Link></div><div><strong>Payments</strong><p>M-Pesa Till<br /><b>5139557</b></p></div></div><div className="footer-bottom"><span>© 2026 Linkups Adventures. All rights reserved.</span><span>Terms & Conditions · Cancellation Policy · Privacy Policy</span></div></footer>
 }
 
 import { ConversionTools } from './conversion-tools'
