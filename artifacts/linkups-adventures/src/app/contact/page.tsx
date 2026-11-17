@@ -15,6 +15,15 @@ const faqs = [
 ]
 
 export default function ContactPage() {
+  const eventParams = typeof window === 'undefined'
+    ? null
+    : new URLSearchParams(window.location.search)
+  const eventTitle = eventParams?.get('eventTitle')?.trim() ?? ''
+  const eventDate = eventParams?.get('eventDate')?.trim() ?? ''
+  const eventLocation = eventParams?.get('eventLocation')?.trim() ?? ''
+  const eventMessage = eventTitle
+    ? `I'm interested in the ${eventTitle}${eventDate ? ` on ${eventDate}` : ''}${eventLocation ? ` in ${eventLocation}` : ''}. Please share more details.`
+    : ''
   const [sent, setSent] = useState(false)
   const [sending, setSending] = useState(false)
   const [error, setError] = useState('')
@@ -59,8 +68,8 @@ export default function ContactPage() {
           <input name="name" placeholder="Full Name *" required />
           <input name="email" type="email" placeholder="Email Address *" required />
           <input name="phone" placeholder="Phone Number" />
-          <select name="service" defaultValue=""><option value="">Select Service / Interest</option><option>Tours &amp; Travel</option><option>Group Booking</option><option>Custom Package</option></select>
-          <textarea name="message" placeholder="Your Message *" required />
+          <select name="service" defaultValue={eventTitle ? 'Tours & Travel' : ''}><option value="">Select Service / Interest</option><option>Tours &amp; Travel</option><option>Group Booking</option><option>Custom Package</option></select>
+          <textarea name="message" placeholder="Your Message *" defaultValue={eventMessage} required />
           {error && <div className="error-box" role="alert">{error}</div>}
           <button className="button orange" type="submit" disabled={sending}>{sending ? 'Sending…' : <><Send /> Send message</>}</button>
         </form>}

@@ -9,18 +9,22 @@ import {
   getListAdminAdventuresQueryKey,
   getListAdminBookingsQueryKey,
   getListAdminDestinationsQueryKey,
+  getListAdminEventsQueryKey,
   getListAdminEnquiriesQueryKey,
   getListAdminSiteContentQueryKey,
   getListAdminUsersQueryKey,
   getListPublicAdventuresQueryKey,
   getListPublicDestinationsQueryKey,
+  getListPublicEventsQueryKey,
   useAdminLogout,
   useCreateAdventure,
   useCreateDestination,
+  useCreateEvent,
   useGetAuthSession,
   useListAdminAdventures,
   useListAdminBookings,
   useListAdminDestinations,
+  useListAdminEvents,
   useListAdminEnquiries,
   useListAdminSiteContent,
   useListAdminUsers,
@@ -29,13 +33,15 @@ import {
   useUpdateAdventure,
   useUpdateBooking,
   useUpdateDestination,
+  useUpdateEvent,
   useUpdateEnquiry,
 } from '@workspace/api-client-react'
-import type { AdminUser, Adventure, Booking, Destination, Enquiry, SiteContent, SiteContentInput } from '@workspace/api-client-react'
+import type { AdminUser, Adventure, Booking, Destination, Enquiry, Event as ScheduledEvent, EventInput, SiteContent, SiteContentInput } from '@workspace/api-client-react'
 import { Logo } from '@/components/site-shell'
 import { formatAdventurePrice } from '@/lib/api'
 import {
   CalendarCheck,
+  CalendarDays,
   FileText,
   LayoutDashboard,
   LogOut,
@@ -48,7 +54,7 @@ import {
   X,
 } from 'lucide-react'
 
-type Section = 'Overview' | 'Bookings' | 'Enquiries' | 'Adventures' | 'Users' | 'Destinations' | 'Website content'
+type Section = 'Overview' | 'Bookings' | 'Enquiries' | 'Adventures' | 'Events' | 'Users' | 'Destinations' | 'Website content'
 type AdventureForm = {
   slug: string
   title: string
@@ -82,6 +88,16 @@ type DestinationForm = {
   isFeatured: boolean
   isPublished: boolean
 }
+type EventForm = {
+  slug: string
+  title: string
+  description: string
+  eventDate: string
+  location: string
+  priceLabel: string
+  heroImageUrl: string
+  isPublished: boolean
+}
 type ContentForm = {
   pageKey: string
   pageTitle: string
@@ -98,6 +114,7 @@ const sections: { name: Section; icon: typeof LayoutDashboard }[] = [
   { name: 'Bookings', icon: CalendarCheck },
   { name: 'Enquiries', icon: Mail },
   { name: 'Adventures', icon: Map },
+  { name: 'Events', icon: CalendarDays },
   { name: 'Users', icon: Users },
   { name: 'Destinations', icon: Map },
   { name: 'Website content', icon: FileText },
@@ -114,6 +131,10 @@ const blankAdventure: AdventureForm = {
 const blankDestination: DestinationForm = {
   name: '', slug: '', summary: '', description: '', imageUrl: '', isFeatured: false, isPublished: false,
 }
+const blankEvent: EventForm = {
+  slug: '', title: '', description: '', eventDate: '', location: '',
+  priceLabel: '', heroImageUrl: '', isPublished: false,
+}
 const blankContent: ContentForm = {
   pageKey: '', pageTitle: '', heroTitle: '', heroSubtitle: '', seoDescription: '',
   bodyContent: '', heroImageUrl: '', isPublished: false,
@@ -123,6 +144,20 @@ function formatDate(value: string | null | undefined) {
   if (!value) return 'Not specified'
   const date = new Date(value)
   return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString('en-KE', { dateStyle: 'medium' })
+}
+function formatEventDate(value: string) {
+  const [year, month, day] = value.split('-').map(Number)
+  return new Date(year, month - 1, day).toLocaleDateString('en-KE', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  })
+}
+function makeEventSlug(title: string, eventDate: string) {
+  const titleSlug = title.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+  const dateSuffix = eventDate.replaceAll('-', '')
+  const safeTitle = (titleSlug || 'linkups-event').slice(0, 179 - dateSuffix.length)
+  return `${safeTitle}-${dateSuffix}`
 }
 function readable(value: string) {
   return value.replaceAll('_', ' ').replace(/\b\w/g, (character) => character.toUpperCase())
@@ -211,12 +246,15 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
   const [adventureForm, setAdventureForm] = useState<AdventureForm>(blankAdventure)
   const [editingDestination, setEditingDestination] = useState<number | null>(null)
   const [destinationForm, setDestinationForm] = useState<DestinationForm>(blankDestination)
+  const [editingEvent, setEditingEvent] = useState<number | null>(null)
+  const [eventForm, setEventForm] = useState<EventForm>(blankEvent)
   const [contentForm, setContentForm] = useState<ContentForm>(blankContent)
   const [editingPage, setEditingPage] = useState('')
 
   const bookingsQuery = useListAdminBookings()
   const enquiriesQuery = useListAdminEnquiries()
   const adventuresQuery = useListAdminAdventures()
+  const eventsQuery = useListAdminEvents()
   const usersQuery = useListAdminUsers()
   const destinationsQuery = useListAdminDestinations()
   const contentQuery = useListAdminSiteContent()
@@ -224,6 +262,7 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
   const bookings = bookingsQuery.data ?? []
   const enquiries = enquiriesQuery.data ?? []
   const adventures = adventuresQuery.data ?? []
+  const events = eventsQuery.data ?? []
   const users = usersQuery.data ?? []
   const destinations = destinationsQuery.data ?? []
   const siteContent = contentQuery.data ?? []
@@ -232,6 +271,8 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
   const updateEnquiry = useUpdateEnquiry()
   const createAdventure = useCreateAdventure()
   const updateAdventure = useUpdateAdventure()
+  const createEvent = useCreateEvent()
+  const updateEvent = useUpdateEvent()
   const updateUser = useUpdateAdminUser()
   const createDestination = useCreateDestination()
   const updateDestination = useUpdateDestination()
@@ -242,18 +283,20 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
   const visibleBookings = useMemo(() => bookings.filter((item) => `${item.reference} ${item.fullName} ${item.email} ${item.adventureTitle ?? ''}`.toLowerCase().includes(queryText)), [bookings, queryText])
   const visibleEnquiries = useMemo(() => enquiries.filter((item) => `${item.name} ${item.email} ${item.service ?? ''} ${item.message}`.toLowerCase().includes(queryText)), [enquiries, queryText])
   const visibleAdventures = useMemo(() => adventures.filter((item) => `${item.title} ${item.slug} ${item.category} ${item.destinationName ?? ''}`.toLowerCase().includes(queryText)), [adventures, queryText])
+  const visibleEvents = useMemo(() => events.filter((item) => `${item.title} ${item.slug} ${item.location} ${item.eventDate}`.toLowerCase().includes(queryText)), [events, queryText])
   const visibleUsers = useMemo(() => users.filter((item) => `${item.name} ${item.email} ${item.phone ?? ''} ${item.role}`.toLowerCase().includes(queryText)), [users, queryText])
   const visibleDestinations = useMemo(() => destinations.filter((item) => `${item.name} ${item.slug} ${item.summary ?? ''}`.toLowerCase().includes(queryText)), [destinations, queryText])
   const visibleContent = useMemo(() => siteContent.filter((item) => `${item.pageTitle} ${item.pageKey}`.toLowerCase().includes(queryText)), [siteContent, queryText])
-  const allQueries = [bookingsQuery, enquiriesQuery, adventuresQuery, usersQuery, destinationsQuery, contentQuery]
+  const allQueries = [bookingsQuery, enquiriesQuery, adventuresQuery, eventsQuery, usersQuery, destinationsQuery, contentQuery]
   const loading = allQueries.some((item) => item.isLoading)
   const activeQueryError = active === 'Overview' ? allQueries.find((item) => item.error)?.error ?? null
     : active === 'Bookings' ? bookingsQuery.error
     : active === 'Enquiries' ? enquiriesQuery.error
       : active === 'Adventures' ? adventuresQuery.error
-        : active === 'Users' ? usersQuery.error
-          : active === 'Destinations' ? destinationsQuery.error
-            : active === 'Website content' ? contentQuery.error : null
+          : active === 'Events' ? eventsQuery.error
+            : active === 'Users' ? usersQuery.error
+              : active === 'Destinations' ? destinationsQuery.error
+                : active === 'Website content' ? contentQuery.error : null
 
   function showError(reason: unknown) {
     setNotice('')
@@ -371,6 +414,51 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
       setAdventureForm(blankAdventure)
     } catch (reason) { showError(reason) }
   }
+  function beginEventEdit(item: ScheduledEvent) {
+    clearMessages()
+    setEditingEvent(item.id)
+    setEventForm({
+      slug: item.slug,
+      title: item.title,
+      description: item.description,
+      eventDate: item.eventDate,
+      location: item.location,
+      priceLabel: item.priceLabel ?? '',
+      heroImageUrl: item.heroImageUrl ?? '',
+      isPublished: item.isPublished,
+    })
+  }
+  function resetEventForm() {
+    setEditingEvent(null)
+    setEventForm(blankEvent)
+    clearMessages()
+  }
+  async function submitEvent(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    clearMessages()
+    const title = eventForm.title.trim()
+    const data: EventInput = {
+      slug: eventForm.slug.trim().toLowerCase() || makeEventSlug(title, eventForm.eventDate),
+      title,
+      description: eventForm.description.trim(),
+      eventDate: eventForm.eventDate,
+      location: eventForm.location.trim(),
+      priceLabel: eventForm.priceLabel.trim() || null,
+      heroImageUrl: eventForm.heroImageUrl.trim() || null,
+      isPublished: eventForm.isPublished,
+    }
+    try {
+      if (editingEvent === null) await createEvent.mutateAsync({ data })
+      else await updateEvent.mutateAsync({ id: editingEvent, data })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: getListAdminEventsQueryKey() }),
+        queryClient.invalidateQueries({ queryKey: getListPublicEventsQueryKey() }),
+      ])
+      setNotice(editingEvent === null ? 'Event created.' : 'Event updated.')
+      setEditingEvent(null)
+      setEventForm(blankEvent)
+    } catch (reason) { showError(reason) }
+  }
   function beginDestinationEdit(destination: Destination) {
     clearMessages()
     setEditingDestination(destination.id)
@@ -457,6 +545,7 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
   }
 
   const isSavingAdventure = createAdventure.isPending || updateAdventure.isPending
+  const isSavingEvent = createEvent.isPending || updateEvent.isPending
   const isSavingDestination = createDestination.isPending || updateDestination.isPending
   const isSavingContent = saveSiteContent.isPending
   const newBookings = bookings.filter((item) => item.status === 'new').length
@@ -553,6 +642,26 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
             <label className="workspace-check"><input data-testid="check-adventure-featured" type="checkbox" checked={adventureForm.isFeatured} onChange={(event) => setAdventureForm({ ...adventureForm, isFeatured: event.target.checked })} /> Featured adventure</label>
             <label className="workspace-check"><input data-testid="check-adventure-published" type="checkbox" checked={adventureForm.isPublished} onChange={(event) => setAdventureForm({ ...adventureForm, isPublished: event.target.checked })} /> Published on website</label>
             <div className="workspace-form-actions wide"><button className="admin-primary" data-testid="button-adventure-save" type="submit" disabled={isSavingAdventure}>{isSavingAdventure ? 'Saving…' : editingAdventure === null ? 'Create adventure' : 'Save adventure'}</button>{editingAdventure !== null && <button className="admin-secondary" data-testid="button-adventure-cancel" type="button" onClick={resetAdventureForm}>Cancel</button>}</div>
+          </form>
+        </section>}
+
+        {active === 'Events' && <section className="admin-section">
+          <div className="admin-toolbar"><div><h3>Scheduled events</h3><p>Post dated LinkUps departures separately from flexible-date adventures.</p></div><button className="admin-primary" data-testid="button-event-new" onClick={resetEventForm}><Plus size={16} /> New event</button></div>
+          {eventsQuery.isLoading ? <div className="workspace-skeletons" role="status"><div className="skeleton" /></div> : <div className="admin-table-card workspace-table-card"><table className="admin-table workspace-table"><thead><tr><th>Event</th><th>Date</th><th>Location</th><th>Price</th><th>Visibility</th><th>Action</th></tr></thead><tbody>
+            {visibleEvents.map((item) => <tr key={item.id} data-testid={`row-admin-event-${item.id}`}><td><b>{item.title}</b><small>/{item.slug}</small></td><td>{formatEventDate(item.eventDate)}<small>Updated {formatDate(item.updatedAt)}</small></td><td>{item.location}</td><td>{item.priceLabel || 'Ask for details'}</td><td><span className={`status ${item.isPublished ? 'confirmed' : 'new'}`}>{item.isPublished ? 'Published' : 'Draft'}</span></td><td><button className="admin-secondary" data-testid={`button-event-edit-${item.id}`} onClick={() => beginEventEdit(item)}>Edit</button></td></tr>)}
+          </tbody></table>{visibleEvents.length === 0 && <p className="empty-state" data-testid="empty-admin-events">{queryText ? 'No events match this search.' : 'No scheduled events yet. Create one to add a dated departure.'}</p>}</div>}
+          <form className="workspace-form" onSubmit={submitEvent} data-testid="form-admin-event">
+            <h3>{editingEvent === null ? 'Add a scheduled event' : `Edit ${eventForm.title || 'event'}`}</h3>
+            <label className="workspace-field">Event title<input className="workspace-input" data-testid="input-event-title" required minLength={2} maxLength={180} value={eventForm.title} onChange={(event) => setEventForm({ ...eventForm, title: event.target.value })} /></label>
+            <label className="workspace-field">Event date<input className="workspace-input" data-testid="input-event-date" type="date" required value={eventForm.eventDate} onChange={(event) => setEventForm({ ...eventForm, eventDate: event.target.value })} /></label>
+            <label className="workspace-field">Location<input className="workspace-input" data-testid="input-event-location" required minLength={2} maxLength={180} value={eventForm.location} onChange={(event) => setEventForm({ ...eventForm, location: event.target.value })} placeholder="For example, Naivasha" /></label>
+            <label className="workspace-field">Price or booking note<input className="workspace-input" data-testid="input-event-price" maxLength={160} value={eventForm.priceLabel} onChange={(event) => setEventForm({ ...eventForm, priceLabel: event.target.value })} placeholder="For example, From KES 8,500 per person" /></label>
+            <label className="workspace-field wide">Description<textarea className="workspace-textarea" data-testid="input-event-description" required minLength={2} maxLength={2000} rows={4} value={eventForm.description} onChange={(event) => setEventForm({ ...eventForm, description: event.target.value })} placeholder="What makes this dated event special?" /></label>
+            <label className="workspace-field wide">URL slug<input className="workspace-input" data-testid="input-event-slug" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" maxLength={180} value={eventForm.slug} onChange={(event) => setEventForm({ ...eventForm, slug: event.target.value })} placeholder="Leave blank to generate from title and date" /><small>A unique slug is generated if this is left blank.</small></label>
+            <label className="workspace-field wide">Event image path or URL<input className="workspace-input" data-testid="input-event-image" maxLength={500} value={eventForm.heroImageUrl} onChange={(event) => setEventForm({ ...eventForm, heroImageUrl: event.target.value })} placeholder="/images/trips/example.jpg or https://…" /><small>Optional. The carousel uses a branded background if no image is provided.</small></label>
+            {eventForm.heroImageUrl && <div className="trip-image-preview-wrap wide"><span>Event image preview</span><img className="trip-image-preview" src={eventForm.heroImageUrl} alt="Event preview" /></div>}
+            <label className="workspace-check"><input data-testid="check-event-published" type="checkbox" checked={eventForm.isPublished} onChange={(event) => setEventForm({ ...eventForm, isPublished: event.target.checked })} /> Publish on the homepage carousel</label>
+            <div className="workspace-form-actions wide"><button className="admin-primary" data-testid="button-event-save" type="submit" disabled={isSavingEvent}>{isSavingEvent ? 'Saving…' : editingEvent === null ? 'Create event' : 'Save event'}</button>{editingEvent !== null && <button className="admin-secondary" data-testid="button-event-cancel" type="button" onClick={resetEventForm}>Cancel</button>}</div>
           </form>
         </section>}
 
