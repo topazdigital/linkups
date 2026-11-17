@@ -13,6 +13,7 @@ import {
   createAdminSession,
   destroyAdminSession,
   findAdminIdentity,
+  isConfiguredAdminEmail,
 } from "../middleware/admin-auth";
 import {
   clearCustomerSessionCookie,
@@ -177,8 +178,7 @@ router.post("/auth/login", async (req, res): Promise<void> => {
   }
 
   const email = parsed.data.email.trim().toLowerCase();
-  const configuredAdminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
-  if (configuredAdminEmail && email === configuredAdminEmail) {
+  if (isConfiguredAdminEmail(email)) {
     const authenticated = await createAdminSession(
       req,
       res,

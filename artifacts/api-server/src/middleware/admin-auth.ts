@@ -18,6 +18,23 @@ import {
 const SESSION_COOKIE = "linkups_admin_session";
 const SESSION_TTL_MS = 8 * 60 * 60 * 1000;
 
+function primaryAdminEmail(): string {
+  return process.env.ADMIN_EMAIL?.trim().toLowerCase() ?? "";
+}
+
+function configuredAdminEmails(): string[] {
+  return [
+    primaryAdminEmail(),
+    ...(process.env.ADMIN_EMAIL_ALIASES ?? "").split(","),
+  ]
+    .map((email) => email.trim().toLowerCase())
+    .filter((email, index, emails) => email.length > 0 && emails.indexOf(email) === index);
+}
+
+export function isConfiguredAdminEmail(email: string): boolean {
+  return configuredAdminEmails().includes(email.trim().toLowerCase());
+}
+
 export interface AdminIdentity {
   userId: number | string | null;
   email: string;
@@ -121,7 +138,7 @@ export async function createAdminSession(
   email: string,
   password: string,
 ): Promise<boolean> {
-  const configuredEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const configuredEmail = primaryAdminEmail();
   const configuredPassword = process.env.ADMIN_PASSWORD;
   const key = signingKey();
 
@@ -133,7 +150,7 @@ export async function createAdminSession(
   }
 
   if (
-    !equalSecret(email.trim().toLowerCase(), configuredEmail) ||
+    !isConfiguredAdminEmail(email) ||
     !equalSecret(password, configuredPassword)
   ) {
     return false;
@@ -156,13 +173,13 @@ export async function findAdminIdentity(
   const token = req.cookies?.[SESSION_COOKIE];
   if (!token || typeof token !== "string") return null;
 
-  const configuredEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const configuredEmails = configuredAdminEmails();
   const key = signingKey();
-  if (!configuredEmail || !key) return null;
+  if (configuredEmails.length === 0 || !key) return null;
 
   const session = decodeSession(token, key);
-  if (!session || session.email !== configuredEmail) return null;
-  return { userId: null, email: configuredEmail };
+  if (!session || !configuredEmails.includes(session.email)) return null;
+  return { userId: null, email: session.email };
 }
 
 export async function requireAdmin(
