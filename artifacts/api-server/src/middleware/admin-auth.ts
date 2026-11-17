@@ -1,7 +1,9 @@
-import { createHash, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
+import {
+  createHmac,
+  randomBytes,
+  timingSafeEqual,
+} from "node:crypto";
 import type { NextFunction, Request, Response } from "express";
-import type { RowDataPacket } from "mysql2/promise";
-import { executeSql, selectRows } from "../lib/mysql";
 import {
   AdminLoginBody,
   AdminLoginResponse,
@@ -11,26 +13,13 @@ import {
 import { Router, type IRouter } from "express";
 import {
   clearCustomerSessionCookie,
-  destroyCustomerSession,
 } from "./user-auth";
 
 const SESSION_COOKIE = "linkups_admin_session";
 const SESSION_TTL_MS = 8 * 60 * 60 * 1000;
 
-interface AdminSessionRow extends RowDataPacket {
-  id: string;
-  userId: number | string;
-  email: string;
-}
-
-interface AdminUserRow extends RowDataPacket {
-  id: number | string;
-  role: "customer" | "admin";
-  isActive: number | boolean;
-}
-
 export interface AdminIdentity {
-  userId: number | string;
+  userId: number | string | null;
   email: string;
 }
 
@@ -47,8 +36,63 @@ declare global {
   }
 }
 
-function hashToken(token: string): string {
-  return createHash("sha256").update(token).digest("hex");
+function signingKey(): Buffer | null {
+  const sessionSecret = process.env.SESSION_SECRET;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (!sessionSecret || !adminPassword) return null;
+
+  return createHmac("sha256", sessionSecret)
+    .update(`linkups-admin-session:${adminPassword}`)
+    .digest();
+}
+
+function encodeSession(email: string, expiresAt: number, key: Buffer): string {
+  const payload = Buffer.from(
+    JSON.stringify({
+      email,
+      expiresAt,
+      nonce: randomBytes(16).toString("base64url"),
+    }),
+  ).toString("base64url");
+  const signature = createHmac("sha256", key)
+    .update(payload)
+    .digest("base64url");
+  return `${payload}.${signature}`;
+}
+
+function decodeSession(token: string, key: Buffer): { email: string } | null {
+  const [payload, signature, extra] = token.split(".");
+  if (!payload || !signature || extra !== undefined) return null;
+
+  const expected = createHmac("sha256", key).update(payload).digest();
+  let received: Buffer;
+  try {
+    received = Buffer.from(signature, "base64url");
+  } catch {
+    return null;
+  }
+  if (
+    received.length !== expected.length ||
+    !timingSafeEqual(received, expected)
+  ) {
+    return null;
+  }
+
+  try {
+    const session = JSON.parse(
+      Buffer.from(payload, "base64url").toString("utf8"),
+    ) as { email?: unknown; expiresAt?: unknown };
+    if (
+      typeof session.email !== "string" ||
+      typeof session.expiresAt !== "number" ||
+      session.expiresAt <= Date.now()
+    ) {
+      return null;
+    }
+    return { email: session.email };
+  } catch {
+    return null;
+  }
 }
 
 function equalSecret(candidate: string, expected: string): boolean {
@@ -79,10 +123,11 @@ export async function createAdminSession(
 ): Promise<boolean> {
   const configuredEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
   const configuredPassword = process.env.ADMIN_PASSWORD;
+  const key = signingKey();
 
-  if (!configuredEmail || !configuredPassword) {
+  if (!configuredEmail || !configuredPassword || !key) {
     res.status(503).json({
-      error: "Admin credentials have not been configured on the server.",
+      error: "Admin sign-in has not been configured on the server.",
     });
     return false;
   }
@@ -94,48 +139,11 @@ export async function createAdminSession(
     return false;
   }
 
-  const admins = await selectRows<AdminUserRow>(
-    `SELECT id, role, is_active AS isActive
-     FROM users
-     WHERE email = ?
-     LIMIT 1`,
-    [configuredEmail],
-  );
-
-  let userId: number | string;
-  if (admins.length === 0) {
-    const created = await executeSql(
-      `INSERT INTO users (name, email, password_hash, role, is_active)
-       VALUES (?, ?, ?, 'admin', TRUE)`,
-      [
-        process.env.ADMIN_NAME?.trim() || "LinkUps Admin",
-        configuredEmail,
-        `environment-managed:${randomBytes(32).toString("hex")}`,
-      ],
-    );
-    userId = created.insertId;
-  } else {
-    const admin = admins[0];
-    if (admin.role !== "admin" || !Boolean(admin.isActive)) {
-      res.status(403).json({
-        error: "This account is not an active administrator.",
-      });
-      return true;
-    }
-    userId = admin.id;
-  }
-
-  await destroyCustomerSession(req);
   clearCustomerSessionCookie(req, res);
-
-  const token = randomBytes(32).toString("base64url");
-  const expiresAt = new Date(Date.now() + SESSION_TTL_MS);
-
-  await executeSql("DELETE FROM sessions WHERE expires_at <= NOW()");
-  await executeSql(
-    `INSERT INTO sessions (id, user_id, expires_at, token_hash)
-     VALUES (?, ?, ?, ?)`,
-    [randomUUID(), userId, expiresAt, hashToken(token)],
+  const token = encodeSession(
+    configuredEmail,
+    Date.now() + SESSION_TTL_MS,
+    key,
   );
 
   res.cookie(SESSION_COOKIE, token, cookieOptions(req));
@@ -148,22 +156,13 @@ export async function findAdminIdentity(
   const token = req.cookies?.[SESSION_COOKIE];
   if (!token || typeof token !== "string") return null;
 
-  const sessions = await selectRows<AdminSessionRow>(
-    `SELECT s.id, s.user_id AS userId, u.email
-     FROM sessions s
-     INNER JOIN users u ON u.id = s.user_id
-     WHERE s.token_hash = ?
-       AND s.expires_at > NOW()
-       AND u.role = 'admin'
-       AND u.is_active = TRUE
-     LIMIT 1`,
-    [hashToken(token)],
-  );
+  const configuredEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const key = signingKey();
+  if (!configuredEmail || !key) return null;
 
-  const session = sessions[0];
-  return session
-    ? { userId: session.userId, email: session.email }
-    : null;
+  const session = decodeSession(token, key);
+  if (!session || session.email !== configuredEmail) return null;
+  return { userId: null, email: configuredEmail };
 }
 
 export async function requireAdmin(
@@ -185,12 +184,7 @@ export async function requireAdmin(
 }
 
 export async function destroyAdminSession(req: Request): Promise<void> {
-  const token = req.cookies?.[SESSION_COOKIE];
-  if (!token || typeof token !== "string") return;
-
-  await executeSql("DELETE FROM sessions WHERE token_hash = ?", [
-    hashToken(token),
-  ]);
+  void req;
 }
 
 export function clearAdminSessionCookie(req: Request, res: Response): void {
