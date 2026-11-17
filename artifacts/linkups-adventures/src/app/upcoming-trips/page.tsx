@@ -1,6 +1,7 @@
 import { ArrowRight } from 'lucide-react'
 import { Link } from 'wouter'
 import { AdventureCards } from '@/components/adventure-cards'
+import { EventCarousel } from '@/components/event-carousel'
 import { PageFrame, SectionTitle } from '@/components/site-shell'
 
 export default function UpcomingTripsPage() {
@@ -14,13 +15,14 @@ export default function UpcomingTripsPage() {
         </div>
       </section>
       <main className="upcoming-page">
+        <EventCarousel />
         <section className="departure-notice">
           <div>
-            <strong>Departure dates are confirmed on request.</strong>
+            <strong>Looking for a flexible-date adventure?</strong>
             <p>
-              We do not publish fixed departure dates or live seat counts yet.
-              Send your preferred dates and group size, and our team will check
-              availability with you before confirming a booking.
+              The trips below can be requested for dates that work for you. Our
+              team will confirm availability and details before booking.
+              Scheduled events above have their own published dates.
             </p>
           </div>
           <Link className="button orange" href="/plan">
