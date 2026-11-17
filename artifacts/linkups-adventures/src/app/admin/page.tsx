@@ -348,8 +348,20 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
       isPublished: adventureForm.isPublished,
     }
     try {
-      if (editingAdventure === null) await createAdventure.mutateAsync({ data })
-      else await updateAdventure.mutateAsync({ id: editingAdventure, data })
+      if (editingAdventure === null) {
+        await createAdventure.mutateAsync({
+          data: {
+            ...data,
+            pricingNote: data.pricingNote ?? undefined,
+            description: data.description ?? undefined,
+            tagline: data.tagline ?? undefined,
+            accommodation: data.accommodation ?? undefined,
+            heroImageUrl: data.heroImageUrl ?? undefined,
+          },
+        })
+      } else {
+        await updateAdventure.mutateAsync({ id: editingAdventure, data })
+      }
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: getListAdminAdventuresQueryKey() }),
         queryClient.invalidateQueries({ queryKey: getListPublicAdventuresQueryKey() }),

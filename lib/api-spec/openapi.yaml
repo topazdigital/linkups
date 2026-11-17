@@ -899,7 +899,7 @@ components:
         price: { type: number, minimum: 0 }
         priceUsd: { type: ["number", "null"], minimum: 0 }
         pricingNote: { type: ["string", "null"], maxLength: 1000 }
-        description: { type: string, maxLength: 8000 }
+        description: { type: ["string", "null"], maxLength: 8000 }
         tagline: { type: ["string", "null"], maxLength: 240 }
         accommodation: { type: ["string", "null"], maxLength: 500 }
         destinationId: { type: ["integer", "null"], minimum: 1 }
@@ -927,7 +927,7 @@ components:
           type: array
           maxItems: 20
           items: { type: string, maxLength: 180 }
-        heroImageUrl: { type: string, maxLength: 500 }
+        heroImageUrl: { type: ["string", "null"], maxLength: 500 }
         galleryImageUrls:
           type: array
           maxItems: 30

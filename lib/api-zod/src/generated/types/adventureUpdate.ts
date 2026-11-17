@@ -46,8 +46,11 @@ export interface AdventureUpdate {
      * @nullable
      */
   pricingNote?: string | null;
-  /** @maxLength 8000 */
-  description?: string;
+  /**
+     * @maxLength 8000
+     * @nullable
+     */
+  description?: string | null;
   /**
      * @maxLength 240
      * @nullable
@@ -90,8 +93,11 @@ export interface AdventureUpdate {
      * @items.maxLength 180
      */
   idealFor?: string[];
-  /** @maxLength 500 */
-  heroImageUrl?: string;
+  /**
+     * @maxLength 500
+     * @nullable
+     */
+  heroImageUrl?: string | null;
   /**
      * @maxItems 30
      * @items.maxLength 500

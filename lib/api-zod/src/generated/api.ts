@@ -670,7 +670,7 @@ export const UpdateAdventureBody = zod.object({
   "price": zod.number().min(updateAdventureBodyPriceMin).optional(),
   "priceUsd": zod.number().min(updateAdventureBodyPriceUsdMin).nullish(),
   "pricingNote": zod.string().max(updateAdventureBodyPricingNoteMax).nullish(),
-  "description": zod.string().max(updateAdventureBodyDescriptionMax).optional(),
+  "description": zod.string().max(updateAdventureBodyDescriptionMax).nullish(),
   "tagline": zod.string().max(updateAdventureBodyTaglineMax).nullish(),
   "accommodation": zod.string().max(updateAdventureBodyAccommodationMax).nullish(),
   "destinationId": zod.number().int().min(1).nullish(),
@@ -684,7 +684,7 @@ export const UpdateAdventureBody = zod.object({
   "excluded": zod.array(zod.string().max(updateAdventureBodyExcludedItemMax)).max(updateAdventureBodyExcludedMax).optional(),
   "optionalActivities": zod.array(zod.string().max(updateAdventureBodyOptionalActivitiesItemMax)).max(updateAdventureBodyOptionalActivitiesMax).optional(),
   "idealFor": zod.array(zod.string().max(updateAdventureBodyIdealForItemMax)).max(updateAdventureBodyIdealForMax).optional(),
-  "heroImageUrl": zod.string().max(updateAdventureBodyHeroImageUrlMax).optional(),
+  "heroImageUrl": zod.string().max(updateAdventureBodyHeroImageUrlMax).nullish(),
   "galleryImageUrls": zod.array(zod.string().max(updateAdventureBodyGalleryImageUrlsItemMax)).max(updateAdventureBodyGalleryImageUrlsMax).optional(),
   "isFeatured": zod.boolean().optional(),
   "isPublished": zod.boolean().optional()

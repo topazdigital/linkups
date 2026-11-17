@@ -127,6 +127,9 @@ export const tours: Adventure[] = [
       "Seafood or Swahili lunch",
       "Drinking water",
       "Basic safety briefing and life jackets",
+      "Cultural tour and entertainment",
+      "Dolphin watching during the season",
+      "Mangrove tour",
     ],
     excluded: [
       "Marine park fees",
@@ -135,10 +138,7 @@ export const tours: Adventure[] = [
       "Alcoholic drinks, tips and personal purchases",
       "Optional activities outside the agreed itinerary",
     ],
-    optionalActivities: [
-      "Additional cultural or mangrove tours",
-      "Dolphin watching during the season",
-    ],
+    optionalActivities: [],
     idealFor: ["Couples", "Friends", "Families", "International visitors"],
     heroImageUrl: "/images/trips/watamu-blue-bliss.jpg",
     galleryImageUrls: [],
