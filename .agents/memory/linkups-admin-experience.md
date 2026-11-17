@@ -8,7 +8,8 @@ description: User requirements for public account navigation, admin access contr
 - Customer self-registration and sign-in are enabled; successful customer sign-in goes to `/dashboard`.
 - The admin workspace should allow editing the public website content, not just booking, enquiry, and adventure records.
 - Existing adventures are date-flexible and travellers choose preferred dates; admin-posted fixed-date events are a separate content type. Never invent dates for flexible adventures.
+- Do not disclose the website hosting provider or infrastructure location in public website content.
 
-**Why:** The user explicitly requested this access and content-management behavior for LinkUps.
+**Why:** The user explicitly requested this access and content-management behavior for LinkUps and asked that hosting details remain private.
 
-**How to apply:** Preserve these rules when changing LinkUps navigation, authentication, database schema, admin APIs, content editor, or event listings. Keep fixed-date events separate from flexible-date trips.
+**How to apply:** Preserve these rules when changing LinkUps navigation, authentication, database schema, admin APIs, content editor, policies, or event listings. Keep fixed-date events separate from flexible-date trips and do not name the hosting provider or location publicly.
