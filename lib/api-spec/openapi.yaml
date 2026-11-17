@@ -767,7 +767,31 @@ components:
         isPublished: { type: boolean }
     Adventure:
       type: object
-      required: [id, slug, title, category, durationDays, durationNights, price, description, heroImageUrl, isFeatured, isPublished]
+      required:
+        - id
+        - slug
+        - title
+        - category
+        - durationDays
+        - durationNights
+        - price
+        - priceUsd
+        - pricingNote
+        - description
+        - tagline
+        - accommodation
+        - destinationId
+        - destinationName
+        - highlights
+        - itinerary
+        - included
+        - excluded
+        - optionalActivities
+        - idealFor
+        - heroImageUrl
+        - galleryImageUrls
+        - isFeatured
+        - isPublished
       properties:
         id: { type: integer }
         slug: { type: string }
@@ -776,10 +800,46 @@ components:
         durationDays: { type: integer }
         durationNights: { type: integer }
         price: { type: number }
+        priceUsd: { type: ["number", "null"] }
+        pricingNote: { type: ["string", "null"] }
         description: { type: ["string", "null"] }
+        tagline: { type: ["string", "null"] }
+        accommodation: { type: ["string", "null"] }
+        destinationId: { type: ["integer", "null"] }
+        destinationName: { type: ["string", "null"] }
+        highlights:
+          type: array
+          items: { type: string }
+        itinerary:
+          type: array
+          items: { $ref: "#/components/schemas/AdventureItineraryDay" }
+        included:
+          type: array
+          items: { type: string }
+        excluded:
+          type: array
+          items: { type: string }
+        optionalActivities:
+          type: array
+          items: { type: string }
+        idealFor:
+          type: array
+          items: { type: string }
         heroImageUrl: { type: ["string", "null"] }
+        galleryImageUrls:
+          type: array
+          items: { type: string }
         isFeatured: { type: boolean }
         isPublished: { type: boolean }
+    AdventureItineraryDay:
+      type: object
+      required: [day, title, details]
+      properties:
+        day: { type: string, maxLength: 80 }
+        title: { type: string, maxLength: 180 }
+        details:
+          type: array
+          items: { type: string, maxLength: 1000 }
     AdventureInput:
       type: object
       required: [slug, title, category, durationDays, durationNights, price, isPublished]
@@ -790,8 +850,41 @@ components:
         durationDays: { type: integer, minimum: 1, maximum: 90 }
         durationNights: { type: integer, minimum: 0, maximum: 90 }
         price: { type: number, minimum: 0 }
+        priceUsd: { type: ["number", "null"], minimum: 0 }
+        pricingNote: { type: string, maxLength: 1000 }
         description: { type: string, maxLength: 8000 }
+        tagline: { type: string, maxLength: 240 }
+        accommodation: { type: string, maxLength: 500 }
+        destinationId: { type: ["integer", "null"], minimum: 1 }
+        highlights:
+          type: array
+          maxItems: 20
+          items: { type: string, maxLength: 300 }
+        itinerary:
+          type: array
+          maxItems: 90
+          items: { $ref: "#/components/schemas/AdventureItineraryDay" }
+        included:
+          type: array
+          maxItems: 50
+          items: { type: string, maxLength: 300 }
+        excluded:
+          type: array
+          maxItems: 50
+          items: { type: string, maxLength: 300 }
+        optionalActivities:
+          type: array
+          maxItems: 50
+          items: { type: string, maxLength: 300 }
+        idealFor:
+          type: array
+          maxItems: 20
+          items: { type: string, maxLength: 180 }
         heroImageUrl: { type: string, maxLength: 500 }
+        galleryImageUrls:
+          type: array
+          maxItems: 30
+          items: { type: string, maxLength: 500 }
         isFeatured: { type: boolean }
         isPublished: { type: boolean }
     AdventureUpdate:
@@ -804,8 +897,41 @@ components:
         durationDays: { type: integer, minimum: 1, maximum: 90 }
         durationNights: { type: integer, minimum: 0, maximum: 90 }
         price: { type: number, minimum: 0 }
+        priceUsd: { type: ["number", "null"], minimum: 0 }
+        pricingNote: { type: ["string", "null"], maxLength: 1000 }
         description: { type: string, maxLength: 8000 }
+        tagline: { type: ["string", "null"], maxLength: 240 }
+        accommodation: { type: ["string", "null"], maxLength: 500 }
+        destinationId: { type: ["integer", "null"], minimum: 1 }
+        highlights:
+          type: array
+          maxItems: 20
+          items: { type: string, maxLength: 300 }
+        itinerary:
+          type: array
+          maxItems: 90
+          items: { $ref: "#/components/schemas/AdventureItineraryDay" }
+        included:
+          type: array
+          maxItems: 50
+          items: { type: string, maxLength: 300 }
+        excluded:
+          type: array
+          maxItems: 50
+          items: { type: string, maxLength: 300 }
+        optionalActivities:
+          type: array
+          maxItems: 50
+          items: { type: string, maxLength: 300 }
+        idealFor:
+          type: array
+          maxItems: 20
+          items: { type: string, maxLength: 180 }
         heroImageUrl: { type: string, maxLength: 500 }
+        galleryImageUrls:
+          type: array
+          maxItems: 30
+          items: { type: string, maxLength: 500 }
         isFeatured: { type: boolean }
         isPublished: { type: boolean }
 

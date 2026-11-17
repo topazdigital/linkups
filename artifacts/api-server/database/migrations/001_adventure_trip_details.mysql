@@ -1,0 +1,11 @@
+-- Apply once to an existing LinkUps database after schema.mysql has created
+-- the adventures table. Fresh databases already include these columns.
+ALTER TABLE adventures
+  ADD COLUMN price_usd DECIMAL(12,2) NULL AFTER price,
+  ADD COLUMN pricing_note TEXT NULL AFTER price_usd,
+  ADD COLUMN tagline VARCHAR(240) NULL AFTER description,
+  ADD COLUMN accommodation VARCHAR(500) NULL AFTER tagline,
+  ADD COLUMN highlights JSON NULL AFTER accommodation,
+  ADD COLUMN optional_activities JSON NULL AFTER excluded,
+  ADD COLUMN ideal_for JSON NULL AFTER optional_activities,
+  ADD COLUMN gallery_image_urls JSON NULL AFTER hero_image_url;

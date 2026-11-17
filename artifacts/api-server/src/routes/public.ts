@@ -22,9 +22,10 @@ interface PriceRow extends RowDataPacket {
 router.get("/adventures", async (_req, res): Promise<void> => {
   const rows = await selectRows<AdventureRow>(
     `SELECT ${adventureColumns}
-     FROM adventures
-     WHERE is_published = TRUE
-     ORDER BY is_featured DESC, title ASC`,
+     FROM adventures a
+     LEFT JOIN destinations d ON d.id = a.destination_id
+     WHERE a.is_published = TRUE
+     ORDER BY a.is_featured DESC, a.title ASC`,
   );
   res.json(
     ListPublicAdventuresResponse.parse(rows.map(adventureResponse)),

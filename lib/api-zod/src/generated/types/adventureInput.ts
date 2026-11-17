@@ -5,6 +5,7 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { AdventureItineraryDay } from './adventureItineraryDay';
 
 export interface AdventureInput {
   /**
@@ -35,10 +36,58 @@ export interface AdventureInput {
   durationNights: number;
   /** @minimum 0 */
   price: number;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  priceUsd?: number | null;
+  /** @maxLength 1000 */
+  pricingNote?: string;
   /** @maxLength 8000 */
   description?: string;
+  /** @maxLength 240 */
+  tagline?: string;
+  /** @maxLength 500 */
+  accommodation?: string;
+  /**
+     * @minimum 1
+     * @nullable
+     */
+  destinationId?: number | null;
+  /**
+     * @maxItems 20
+     * @items.maxLength 300
+     */
+  highlights?: string[];
+  /** @maxItems 90 */
+  itinerary?: AdventureItineraryDay[];
+  /**
+     * @maxItems 50
+     * @items.maxLength 300
+     */
+  included?: string[];
+  /**
+     * @maxItems 50
+     * @items.maxLength 300
+     */
+  excluded?: string[];
+  /**
+     * @maxItems 50
+     * @items.maxLength 300
+     */
+  optionalActivities?: string[];
+  /**
+     * @maxItems 20
+     * @items.maxLength 180
+     */
+  idealFor?: string[];
   /** @maxLength 500 */
   heroImageUrl?: string;
+  /**
+     * @maxItems 30
+     * @items.maxLength 500
+     */
+  galleryImageUrls?: string[];
   isFeatured?: boolean;
   isPublished: boolean;
 }

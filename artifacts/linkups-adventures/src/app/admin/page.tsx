@@ -33,6 +33,7 @@ import {
 } from '@workspace/api-client-react'
 import type { AdminUser, Adventure, Booking, Destination, Enquiry, SiteContent, SiteContentInput } from '@workspace/api-client-react'
 import { Logo } from '@/components/site-shell'
+import { formatAdventurePrice } from '@/lib/api'
 import {
   CalendarCheck,
   FileText,
@@ -52,11 +53,23 @@ type AdventureForm = {
   slug: string
   title: string
   category: string
+  destinationId: string
   durationDays: string
   durationNights: string
   price: string
+  priceUsd: string
+  pricingNote: string
   description: string
+  tagline: string
+  accommodation: string
+  highlightsText: string
+  itineraryText: string
+  includedText: string
+  excludedText: string
+  optionalActivitiesText: string
+  idealForText: string
   heroImageUrl: string
+  galleryImageUrlsText: string
   isFeatured: boolean
   isPublished: boolean
 }
@@ -92,8 +105,11 @@ const sections: { name: Section; icon: typeof LayoutDashboard }[] = [
 const bookingStatuses: Booking['status'][] = ['new', 'confirmed', 'in_progress', 'completed', 'cancelled']
 const enquiryStatuses: Enquiry['status'][] = ['new', 'read', 'replied', 'archived']
 const blankAdventure: AdventureForm = {
-  slug: '', title: '', category: '', durationDays: '1', durationNights: '0', price: '0',
-  description: '', heroImageUrl: '', isFeatured: false, isPublished: false,
+  slug: '', title: '', category: '', destinationId: '', durationDays: '1', durationNights: '0',
+  price: '0', priceUsd: '', pricingNote: '', description: '', tagline: '', accommodation: '',
+  highlightsText: '', itineraryText: '', includedText: '', excludedText: '',
+  optionalActivitiesText: '', idealForText: '', heroImageUrl: '', galleryImageUrlsText: '',
+  isFeatured: false, isPublished: false,
 }
 const blankDestination: DestinationForm = {
   name: '', slug: '', summary: '', description: '', imageUrl: '', isFeatured: false, isPublished: false,
@@ -113,6 +129,34 @@ function readable(value: string) {
 }
 function money(value: number) {
   return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits: 0 }).format(value)
+}
+function linesToList(value: string) {
+  return value.split(/\r?\n/).map((line) => line.trim()).filter(Boolean)
+}
+function itineraryToText(itinerary: Adventure['itinerary']) {
+  return itinerary.map((day) => [
+    `${day.day} — ${day.title}`,
+    ...day.details.map((detail) => `• ${detail}`),
+  ].join('\n')).join('\n\n')
+}
+function parseItineraryText(value: string): Adventure['itinerary'] {
+  const sections: Adventure['itinerary'] = []
+  let current: Adventure['itinerary'][number] | null = null
+  for (const rawLine of value.split(/\r?\n/)) {
+    const line = rawLine.trim().replace(/^[-•]\s*/, '')
+    if (!line) continue
+    const heading = line.match(/^(Day\s+\d+|Full day|Early morning|Flight day|Sunrise)\s*[—–:-]\s*(.+)$/i)
+    if (heading) {
+      current = { day: heading[1], title: heading[2], details: [] }
+      sections.push(current)
+    } else if (current) {
+      current.details.push(line)
+    } else {
+      current = { day: 'Itinerary', title: 'Trip plan', details: [line] }
+      sections.push(current)
+    }
+  }
+  return sections
 }
 function errorText(reason: unknown) {
   return reason instanceof Error ? reason.message : 'The request could not be completed. Please try again.'
@@ -197,7 +241,7 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
   const queryText = query.trim().toLowerCase()
   const visibleBookings = useMemo(() => bookings.filter((item) => `${item.reference} ${item.fullName} ${item.email} ${item.adventureTitle ?? ''}`.toLowerCase().includes(queryText)), [bookings, queryText])
   const visibleEnquiries = useMemo(() => enquiries.filter((item) => `${item.name} ${item.email} ${item.service ?? ''} ${item.message}`.toLowerCase().includes(queryText)), [enquiries, queryText])
-  const visibleAdventures = useMemo(() => adventures.filter((item) => `${item.title} ${item.slug} ${item.category}`.toLowerCase().includes(queryText)), [adventures, queryText])
+  const visibleAdventures = useMemo(() => adventures.filter((item) => `${item.title} ${item.slug} ${item.category} ${item.destinationName ?? ''}`.toLowerCase().includes(queryText)), [adventures, queryText])
   const visibleUsers = useMemo(() => users.filter((item) => `${item.name} ${item.email} ${item.phone ?? ''} ${item.role}`.toLowerCase().includes(queryText)), [users, queryText])
   const visibleDestinations = useMemo(() => destinations.filter((item) => `${item.name} ${item.slug} ${item.summary ?? ''}`.toLowerCase().includes(queryText)), [destinations, queryText])
   const visibleContent = useMemo(() => siteContent.filter((item) => `${item.pageTitle} ${item.pageKey}`.toLowerCase().includes(queryText)), [siteContent, queryText])
@@ -255,9 +299,20 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
     setEditingAdventure(adventure.id)
     setAdventureForm({
       slug: adventure.slug, title: adventure.title, category: adventure.category,
+      destinationId: adventure.destinationId === null ? '' : String(adventure.destinationId),
       durationDays: String(adventure.durationDays), durationNights: String(adventure.durationNights),
-      price: String(adventure.price), description: adventure.description ?? '',
-      heroImageUrl: adventure.heroImageUrl ?? '', isFeatured: adventure.isFeatured, isPublished: adventure.isPublished,
+      price: String(adventure.price), priceUsd: adventure.priceUsd === null ? '' : String(adventure.priceUsd),
+      pricingNote: adventure.pricingNote ?? '', description: adventure.description ?? '',
+      tagline: adventure.tagline ?? '', accommodation: adventure.accommodation ?? '',
+      highlightsText: adventure.highlights.join('\n'),
+      itineraryText: itineraryToText(adventure.itinerary),
+      includedText: adventure.included.join('\n'),
+      excludedText: adventure.excluded.join('\n'),
+      optionalActivitiesText: adventure.optionalActivities.join('\n'),
+      idealForText: adventure.idealFor.join('\n'),
+      heroImageUrl: adventure.heroImageUrl ?? '',
+      galleryImageUrlsText: adventure.galleryImageUrls.join('\n'),
+      isFeatured: adventure.isFeatured, isPublished: adventure.isPublished,
     })
   }
   function resetAdventureForm() {
@@ -272,11 +327,23 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
       slug: adventureForm.slug.trim().toLowerCase(),
       title: adventureForm.title.trim(),
       category: adventureForm.category.trim(),
+      destinationId: adventureForm.destinationId ? Number(adventureForm.destinationId) : null,
       durationDays: Number(adventureForm.durationDays),
       durationNights: Number(adventureForm.durationNights),
       price: Number(adventureForm.price),
-      description: adventureForm.description.trim(),
-      heroImageUrl: adventureForm.heroImageUrl.trim(),
+      priceUsd: adventureForm.priceUsd.trim() ? Number(adventureForm.priceUsd) : null,
+      pricingNote: adventureForm.pricingNote.trim() || null,
+      description: adventureForm.description.trim() || null,
+      tagline: adventureForm.tagline.trim() || null,
+      accommodation: adventureForm.accommodation.trim() || null,
+      highlights: linesToList(adventureForm.highlightsText),
+      itinerary: parseItineraryText(adventureForm.itineraryText),
+      included: linesToList(adventureForm.includedText),
+      excluded: linesToList(adventureForm.excludedText),
+      optionalActivities: linesToList(adventureForm.optionalActivitiesText),
+      idealFor: linesToList(adventureForm.idealForText),
+      heroImageUrl: adventureForm.heroImageUrl.trim() || null,
+      galleryImageUrls: linesToList(adventureForm.galleryImageUrlsText),
       isFeatured: adventureForm.isFeatured,
       isPublished: adventureForm.isPublished,
     }
@@ -445,18 +512,32 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
         {active === 'Adventures' && <section className="admin-section">
           <div className="admin-toolbar"><div><h3>Adventure catalogue</h3><p>Create and manage the published safaris, beach breaks and trips featured on LinkUps.</p></div><button className="admin-primary" data-testid="button-adventure-new" onClick={resetAdventureForm}><Plus size={16} /> New adventure</button></div>
           {adventuresQuery.isLoading ? <div className="workspace-skeletons" role="status"><div className="skeleton" /></div> : <div className="admin-table-card workspace-table-card"><table className="admin-table workspace-table"><thead><tr><th>Adventure</th><th>Category</th><th>Duration</th><th>Price / person</th><th>Visibility</th><th>Action</th></tr></thead><tbody>
-            {visibleAdventures.map((adventure) => <tr key={adventure.id} data-testid={`row-admin-adventure-${adventure.id}`}><td><b>{adventure.title}</b><small>/{adventure.slug}</small></td><td>{adventure.category}</td><td>{adventure.durationDays} days · {adventure.durationNights} nights</td><td>{money(adventure.price)}</td><td><span className={`status ${adventure.isPublished ? 'confirmed' : 'new'}`}>{adventure.isPublished ? 'Published' : 'Draft'}</span>{adventure.isFeatured && <small>Featured</small>}</td><td><button className="admin-secondary" data-testid={`button-adventure-edit-${adventure.id}`} onClick={() => beginAdventureEdit(adventure)}>Edit</button></td></tr>)}
+            {visibleAdventures.map((adventure) => <tr key={adventure.id} data-testid={`row-admin-adventure-${adventure.id}`}><td><b>{adventure.title}</b><small>{adventure.destinationName || adventure.category} · /{adventure.slug}</small></td><td>{adventure.category}</td><td>{adventure.durationDays} days · {adventure.durationNights} nights</td><td>{formatAdventurePrice(adventure)}</td><td><span className={`status ${adventure.isPublished ? 'confirmed' : 'new'}`}>{adventure.isPublished ? 'Published' : 'Draft'}</span>{adventure.isFeatured && <small>Featured</small>}</td><td><button className="admin-secondary" data-testid={`button-adventure-edit-${adventure.id}`} onClick={() => beginAdventureEdit(adventure)}>Edit</button></td></tr>)}
           </tbody></table>{visibleAdventures.length === 0 && <p className="empty-state" data-testid="empty-admin-adventures">No adventures found. Start with a new listing below.</p>}</div>}
           <form className="workspace-form" onSubmit={submitAdventure} data-testid="form-admin-adventure">
             <h3>{editingAdventure === null ? 'Add an adventure' : 'Edit adventure'}</h3>
             <label className="workspace-field">Adventure title<input className="workspace-input" data-testid="input-adventure-title" required minLength={2} maxLength={180} value={adventureForm.title} onChange={(event) => setAdventureForm({ ...adventureForm, title: event.target.value })} /></label>
             <label className="workspace-field">URL slug<input className="workspace-input" data-testid="input-adventure-slug" required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" maxLength={200} value={adventureForm.slug} onChange={(event) => setAdventureForm({ ...adventureForm, slug: event.target.value })} /></label>
             <label className="workspace-field">Category<input className="workspace-input" data-testid="input-adventure-category" required minLength={2} maxLength={80} value={adventureForm.category} onChange={(event) => setAdventureForm({ ...adventureForm, category: event.target.value })} /></label>
+            <label className="workspace-field">Destination<select className="workspace-input" data-testid="select-adventure-destination" value={adventureForm.destinationId} onChange={(event) => setAdventureForm({ ...adventureForm, destinationId: event.target.value })}><option value="">No linked destination</option>{destinations.map((destination) => <option value={destination.id} key={destination.id}>{destination.name}</option>)}</select></label>
             <label className="workspace-field">Days<input className="workspace-input" data-testid="input-adventure-days" type="number" min="1" max="90" required value={adventureForm.durationDays} onChange={(event) => setAdventureForm({ ...adventureForm, durationDays: event.target.value })} /></label>
             <label className="workspace-field">Nights<input className="workspace-input" data-testid="input-adventure-nights" type="number" min="0" max="90" required value={adventureForm.durationNights} onChange={(event) => setAdventureForm({ ...adventureForm, durationNights: event.target.value })} /></label>
-            <label className="workspace-field">Price per person (KES)<input className="workspace-input" data-testid="input-adventure-price" type="number" min="0" step="1" required value={adventureForm.price} onChange={(event) => setAdventureForm({ ...adventureForm, price: event.target.value })} /></label>
-            <label className="workspace-field wide">Hero image URL<input className="workspace-input" data-testid="input-adventure-image" type="url" maxLength={500} value={adventureForm.heroImageUrl} onChange={(event) => setAdventureForm({ ...adventureForm, heroImageUrl: event.target.value })} /></label>
-            <label className="workspace-field wide">Description<textarea className="workspace-textarea" data-testid="input-adventure-description" maxLength={8000} rows={4} value={adventureForm.description} onChange={(event) => setAdventureForm({ ...adventureForm, description: event.target.value })} /></label>
+            <label className="workspace-field">Resident price (KES per person)<input className="workspace-input" data-testid="input-adventure-price" type="number" min="0" step="1" required value={adventureForm.price} onChange={(event) => setAdventureForm({ ...adventureForm, price: event.target.value })} /><small>Enter 0 when the price is confirmed by enquiry.</small></label>
+            <label className="workspace-field">Non-resident price (USD)<input className="workspace-input" data-testid="input-adventure-price-usd" type="number" min="0" step="1" value={adventureForm.priceUsd} onChange={(event) => setAdventureForm({ ...adventureForm, priceUsd: event.target.value })} /></label>
+            <label className="workspace-field">Tagline<input className="workspace-input" data-testid="input-adventure-tagline" maxLength={240} value={adventureForm.tagline} onChange={(event) => setAdventureForm({ ...adventureForm, tagline: event.target.value })} /></label>
+            <label className="workspace-field">Accommodation<input className="workspace-input" data-testid="input-adventure-accommodation" maxLength={500} value={adventureForm.accommodation} onChange={(event) => setAdventureForm({ ...adventureForm, accommodation: event.target.value })} /></label>
+            <label className="workspace-field wide">Price and availability notes<textarea className="workspace-textarea" data-testid="input-adventure-pricing-note" maxLength={1000} rows={2} value={adventureForm.pricingNote} onChange={(event) => setAdventureForm({ ...adventureForm, pricingNote: event.target.value })} placeholder="For example: rates confirmed on enquiry; park fees excluded." /></label>
+            <label className="workspace-field wide">Short description<textarea className="workspace-textarea" data-testid="input-adventure-description" maxLength={8000} rows={4} value={adventureForm.description} onChange={(event) => setAdventureForm({ ...adventureForm, description: event.target.value })} /></label>
+            <label className="workspace-field wide">Highlights (one per line)<textarea className="workspace-textarea" data-testid="input-adventure-highlights" rows={4} value={adventureForm.highlightsText} onChange={(event) => setAdventureForm({ ...adventureForm, highlightsText: event.target.value })} /></label>
+            <label className="workspace-field wide">Day-by-day itinerary<textarea className="workspace-textarea" data-testid="input-adventure-itinerary" rows={8} value={adventureForm.itineraryText} onChange={(event) => setAdventureForm({ ...adventureForm, itineraryText: event.target.value })} placeholder={'Day 1 — Arrival and explore\n• Activity or timing\n\nDay 2 — Main adventure\n• Activity or timing'} /><small>Start sections with “Day 1 — Title”. Add each activity on a new line.</small></label>
+            <label className="workspace-field">What’s included (one per line)<textarea className="workspace-textarea" data-testid="input-adventure-included" rows={5} value={adventureForm.includedText} onChange={(event) => setAdventureForm({ ...adventureForm, includedText: event.target.value })} /></label>
+            <label className="workspace-field">What’s excluded (one per line)<textarea className="workspace-textarea" data-testid="input-adventure-excluded" rows={5} value={adventureForm.excludedText} onChange={(event) => setAdventureForm({ ...adventureForm, excludedText: event.target.value })} /></label>
+            <label className="workspace-field">Optional activities (one per line)<textarea className="workspace-textarea" data-testid="input-adventure-optional" rows={4} value={adventureForm.optionalActivitiesText} onChange={(event) => setAdventureForm({ ...adventureForm, optionalActivitiesText: event.target.value })} /></label>
+            <label className="workspace-field">Ideal for (one per line)<textarea className="workspace-textarea" data-testid="input-adventure-ideal-for" rows={4} value={adventureForm.idealForText} onChange={(event) => setAdventureForm({ ...adventureForm, idealForText: event.target.value })} /></label>
+            <label className="workspace-field wide">Main image path or URL<input className="workspace-input" data-testid="input-adventure-image" maxLength={500} value={adventureForm.heroImageUrl} onChange={(event) => setAdventureForm({ ...adventureForm, heroImageUrl: event.target.value })} placeholder="/images/trips/example.jpg or https://…" /><small>Use a public image URL or a path to an image in the website’s public folder.</small></label>
+            {adventureForm.heroImageUrl && <div className="trip-image-preview-wrap wide"><span>Main image preview</span><img className="trip-image-preview" src={adventureForm.heroImageUrl} alt="Main trip preview" /></div>}
+            <label className="workspace-field wide">Gallery image paths or URLs (one per line)<textarea className="workspace-textarea" data-testid="input-adventure-gallery" rows={4} value={adventureForm.galleryImageUrlsText} onChange={(event) => setAdventureForm({ ...adventureForm, galleryImageUrlsText: event.target.value })} placeholder={'/images/trips/gallery-1.jpg\nhttps://…'} /><small>Choose multiple supporting photos. The main image is shown separately.</small></label>
+            {linesToList(adventureForm.galleryImageUrlsText).length > 0 && <div className="trip-gallery-preview wide">{linesToList(adventureForm.galleryImageUrlsText).map((image, index) => <img src={image} alt={`Trip gallery preview ${index + 1}`} key={`${image}-${index}`} />)}</div>}
             <label className="workspace-check"><input data-testid="check-adventure-featured" type="checkbox" checked={adventureForm.isFeatured} onChange={(event) => setAdventureForm({ ...adventureForm, isFeatured: event.target.checked })} /> Featured adventure</label>
             <label className="workspace-check"><input data-testid="check-adventure-published" type="checkbox" checked={adventureForm.isPublished} onChange={(event) => setAdventureForm({ ...adventureForm, isPublished: event.target.checked })} /> Published on website</label>
             <div className="workspace-form-actions wide"><button className="admin-primary" data-testid="button-adventure-save" type="submit" disabled={isSavingAdventure}>{isSavingAdventure ? 'Saving…' : editingAdventure === null ? 'Create adventure' : 'Save adventure'}</button>{editingAdventure !== null && <button className="admin-secondary" data-testid="button-adventure-cancel" type="button" onClick={resetAdventureForm}>Cancel</button>}</div>

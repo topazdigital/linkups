@@ -13,6 +13,7 @@ export * from './adminUserRole';
 export * from './adminUserUpdate';
 export * from './adventure';
 export * from './adventureInput';
+export * from './adventureItineraryDay';
 export * from './adventureUpdate';
 export * from './authSession';
 export * from './authSessionRole';

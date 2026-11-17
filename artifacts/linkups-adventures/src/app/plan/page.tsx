@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from 'react'
 import { PageFrame } from '@/components/site-shell'
-import { ApiRequestError, createBooking, formatKes } from '@/lib/api'
+import { ApiRequestError, createBooking, formatAdventurePrice, formatKes } from '@/lib/api'
 import { useAdventures } from '@/lib/use-adventures'
 
 export default function PlanPage() {
@@ -58,12 +58,12 @@ export default function PlanPage() {
       <label>What are you planning?
         <select name="adventureSlug" value={selectedAdventure} onChange={(event) => setSelectedAdventure(event.target.value)}>
           <option value="">Custom trip / not sure yet</option>
-          {adventures.map((adventure) => <option value={adventure.slug} key={adventure.id}>{adventure.title} — {formatKes(adventure.price)} per person</option>)}
+          {adventures.map((adventure) => <option value={adventure.slug} key={adventure.id}>{adventure.title} — {formatAdventurePrice(adventure)}{adventure.price > 0 || adventure.priceUsd ? ' per person' : ''}</option>)}
         </select>
       </label>
       {adventuresLoading && <small>Loading published adventures…</small>}
       {adventuresError && <small role="status">The catalogue is unavailable. You can still request a custom trip.</small>}
-      {selected && <p className="booking-estimate">Current listed price: {formatKes(selected.price)} per person. Final price and availability are confirmed by our team.</p>}
+      {selected && <p className="booking-estimate">Current listed price: {formatAdventurePrice(selected)}{selected.price > 0 || selected.priceUsd ? ' per person' : ''}. Final price and availability are confirmed by our team.</p>}
       <div className="form-two"><label>Preferred date<input name="travelDate" type="date" /></label><label>Travellers<input name="travellers" type="number" min="1" max="40" defaultValue="1" required /></label></div>
       <div className="form-two"><label>Budget per person<input name="budget" placeholder="KES 20,000" /></label><label>Transport<select name="transport" defaultValue=""><option value="">Preference</option><option>Private vehicle</option><option>Shared vehicle</option><option>Open to options</option></select></label></div>
       <label>Accommodation preference<select name="accommodation" defaultValue=""><option value="">Select one</option><option>Budget</option><option>Comfort</option><option>Luxury</option><option>Open to options</option></select></label>

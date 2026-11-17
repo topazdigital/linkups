@@ -1,6 +1,6 @@
 import { ArrowRight, Camera, MapPin, Waves } from "lucide-react";
 import { Link } from "wouter";
-import { formatKes } from "@/lib/api";
+import { formatAdventurePrice } from "@/lib/api";
 import { useAdventures } from "@/lib/use-adventures";
 
 type AdventureCardsProps = {
@@ -67,9 +67,9 @@ export function AdventureCards({
                   {adventure.category}
                 </p>
                 <span className="card-location">
-                  <MapPin /> Kenya
+                  <MapPin /> {adventure.destinationName || "Kenya"}
                 </span>
-                <strong>From {formatKes(adventure.price)} per person</strong>
+                <strong>{formatAdventurePrice(adventure)}{adventure.price > 0 || adventure.priceUsd ? " per person" : ""}</strong>
                 <Link
                   className="button orange small-button"
                   href={`/adventures/${adventure.slug}`}
@@ -101,7 +101,7 @@ export function AdventureCards({
                 {adventure.category}
               </small>
               <h3>{adventure.title}</h3>
-              <strong>From {formatKes(adventure.price)} per person</strong>
+              <strong>{formatAdventurePrice(adventure)}{adventure.price > 0 || adventure.priceUsd ? " per person" : ""}</strong>
               <Link
                 className="button orange small"
                 href={`/adventures/${adventure.slug}`}

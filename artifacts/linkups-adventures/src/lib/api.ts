@@ -87,3 +87,14 @@ export function formatKes(value: number): string {
     maximumFractionDigits: 0,
   }).format(value);
 }
+
+export function formatAdventurePrice(
+  adventure: Pick<Adventure, "price" | "priceUsd">,
+): string {
+  const prices: string[] = [];
+  if (adventure.price > 0) prices.push(formatKes(adventure.price));
+  if (adventure.priceUsd && adventure.priceUsd > 0) {
+    prices.push(`USD ${new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(adventure.priceUsd)}`);
+  }
+  return prices.length ? prices.join(" · ") : "Price on request";
+}

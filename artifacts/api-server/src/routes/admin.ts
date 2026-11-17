@@ -216,8 +216,9 @@ router.get(
   async (_req, res): Promise<void> => {
     const rows = await selectRows<AdventureRow>(
       `SELECT ${adventureColumns}
-       FROM adventures
-       ORDER BY is_featured DESC, title ASC`,
+       FROM adventures a
+       LEFT JOIN destinations d ON d.id = a.destination_id
+       ORDER BY a.is_featured DESC, a.title ASC`,
     );
     res.json(
       ListAdminAdventuresResponse.parse(rows.map(adventureResponse)),
@@ -238,24 +239,42 @@ router.post(
     const input = body.data;
     const result = await executeSql(
       `INSERT INTO adventures
-         (slug, title, category, duration_days, duration_nights, price,
-          description, hero_image_url, is_featured, is_published)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+         (destination_id, slug, title, category, duration_days, duration_nights,
+          price, price_usd, pricing_note, description, tagline, accommodation,
+          highlights, itinerary, included, excluded, optional_activities,
+          ideal_for, hero_image_url, gallery_image_urls, is_featured, is_published)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
+        input.destinationId ?? null,
         input.slug,
         input.title.trim(),
         input.category.trim(),
         input.durationDays,
         input.durationNights,
         input.price,
+        input.priceUsd ?? null,
+        input.pricingNote?.trim() || null,
         input.description?.trim() || null,
+        input.tagline?.trim() || null,
+        input.accommodation?.trim() || null,
+        JSON.stringify(input.highlights ?? []),
+        JSON.stringify(input.itinerary ?? []),
+        JSON.stringify(input.included ?? []),
+        JSON.stringify(input.excluded ?? []),
+        JSON.stringify(input.optionalActivities ?? []),
+        JSON.stringify(input.idealFor ?? []),
         input.heroImageUrl?.trim() || null,
+        JSON.stringify(input.galleryImageUrls ?? []),
         input.isFeatured ?? false,
         input.isPublished,
       ],
     );
     const rows = await selectRows<AdventureRow>(
-      `SELECT ${adventureColumns} FROM adventures WHERE id = ? LIMIT 1`,
+      `SELECT ${adventureColumns}
+       FROM adventures a
+       LEFT JOIN destinations d ON d.id = a.destination_id
+       WHERE a.id = ?
+       LIMIT 1`,
       [result.insertId],
     );
     res
@@ -282,17 +301,38 @@ router.patch(
     }
 
     const columns: Record<string, string> = {
+      destinationId: "destination_id",
       slug: "slug",
       title: "title",
       category: "category",
       durationDays: "duration_days",
       durationNights: "duration_nights",
       price: "price",
+      priceUsd: "price_usd",
+      pricingNote: "pricing_note",
       description: "description",
+      tagline: "tagline",
+      accommodation: "accommodation",
+      highlights: "highlights",
+      itinerary: "itinerary",
+      included: "included",
+      excluded: "excluded",
+      optionalActivities: "optional_activities",
+      idealFor: "ideal_for",
       heroImageUrl: "hero_image_url",
+      galleryImageUrls: "gallery_image_urls",
       isFeatured: "is_featured",
       isPublished: "is_published",
     };
+    const jsonFields = new Set([
+      "highlights",
+      "itinerary",
+      "included",
+      "excluded",
+      "optionalActivities",
+      "idealFor",
+      "galleryImageUrls",
+    ]);
     const assignments: string[] = [];
     const values: SqlParameter[] = [];
 
@@ -301,15 +341,21 @@ router.patch(
       const column = columns[key];
       if (!column) continue;
       assignments.push(`${column} = ?`);
-      const value = typeof rawValue === "string" && key !== "slug"
-        ? rawValue.trim()
-        : rawValue;
-      if (
-        typeof value === "string" ||
-        typeof value === "number" ||
-        typeof value === "boolean"
+      if (jsonFields.has(key)) {
+        values.push(JSON.stringify(rawValue));
+      } else if (rawValue === null) {
+        values.push(null);
+      } else if (typeof rawValue === "string") {
+        values.push(
+          key !== "slug" && key !== "title" && key !== "category"
+            ? rawValue.trim() || null
+            : rawValue.trim(),
+        );
+      } else if (
+        typeof rawValue === "number" ||
+        typeof rawValue === "boolean"
       ) {
-        values.push(value);
+        values.push(rawValue);
       }
     }
 
@@ -328,7 +374,11 @@ router.patch(
     );
 
     const rows = await selectRows<AdventureRow>(
-      `SELECT ${adventureColumns} FROM adventures WHERE id = ? LIMIT 1`,
+      `SELECT ${adventureColumns}
+       FROM adventures a
+       LEFT JOIN destinations d ON d.id = a.destination_id
+       WHERE a.id = ?
+       LIMIT 1`,
       [params.data.id],
     );
     if (!rows[0]) {

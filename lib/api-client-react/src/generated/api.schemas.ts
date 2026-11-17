@@ -383,6 +383,15 @@ export interface SiteContentInput {
   isPublished: boolean;
 }
 
+export interface AdventureItineraryDay {
+  /** @maxLength 80 */
+  day: string;
+  /** @maxLength 180 */
+  title: string;
+  /** @items.maxLength 1000 */
+  details: string[];
+}
+
 export interface Adventure {
   id: number;
   slug: string;
@@ -392,9 +401,28 @@ export interface Adventure {
   durationNights: number;
   price: number;
   /** @nullable */
+  priceUsd: number | null;
+  /** @nullable */
+  pricingNote: string | null;
+  /** @nullable */
   description: string | null;
   /** @nullable */
+  tagline: string | null;
+  /** @nullable */
+  accommodation: string | null;
+  /** @nullable */
+  destinationId: number | null;
+  /** @nullable */
+  destinationName: string | null;
+  highlights: string[];
+  itinerary: AdventureItineraryDay[];
+  included: string[];
+  excluded: string[];
+  optionalActivities: string[];
+  idealFor: string[];
+  /** @nullable */
   heroImageUrl: string | null;
+  galleryImageUrls: string[];
   isFeatured: boolean;
   isPublished: boolean;
 }
@@ -428,10 +456,58 @@ export interface AdventureInput {
   durationNights: number;
   /** @minimum 0 */
   price: number;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  priceUsd?: number | null;
+  /** @maxLength 1000 */
+  pricingNote?: string;
   /** @maxLength 8000 */
   description?: string;
+  /** @maxLength 240 */
+  tagline?: string;
+  /** @maxLength 500 */
+  accommodation?: string;
+  /**
+     * @minimum 1
+     * @nullable
+     */
+  destinationId?: number | null;
+  /**
+     * @maxItems 20
+     * @items.maxLength 300
+     */
+  highlights?: string[];
+  /** @maxItems 90 */
+  itinerary?: AdventureItineraryDay[];
+  /**
+     * @maxItems 50
+     * @items.maxLength 300
+     */
+  included?: string[];
+  /**
+     * @maxItems 50
+     * @items.maxLength 300
+     */
+  excluded?: string[];
+  /**
+     * @maxItems 50
+     * @items.maxLength 300
+     */
+  optionalActivities?: string[];
+  /**
+     * @maxItems 20
+     * @items.maxLength 180
+     */
+  idealFor?: string[];
   /** @maxLength 500 */
   heroImageUrl?: string;
+  /**
+     * @maxItems 30
+     * @items.maxLength 500
+     */
+  galleryImageUrls?: string[];
   isFeatured?: boolean;
   isPublished: boolean;
 }
@@ -465,10 +541,67 @@ export interface AdventureUpdate {
   durationNights?: number;
   /** @minimum 0 */
   price?: number;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  priceUsd?: number | null;
+  /**
+     * @maxLength 1000
+     * @nullable
+     */
+  pricingNote?: string | null;
   /** @maxLength 8000 */
   description?: string;
+  /**
+     * @maxLength 240
+     * @nullable
+     */
+  tagline?: string | null;
+  /**
+     * @maxLength 500
+     * @nullable
+     */
+  accommodation?: string | null;
+  /**
+     * @minimum 1
+     * @nullable
+     */
+  destinationId?: number | null;
+  /**
+     * @maxItems 20
+     * @items.maxLength 300
+     */
+  highlights?: string[];
+  /** @maxItems 90 */
+  itinerary?: AdventureItineraryDay[];
+  /**
+     * @maxItems 50
+     * @items.maxLength 300
+     */
+  included?: string[];
+  /**
+     * @maxItems 50
+     * @items.maxLength 300
+     */
+  excluded?: string[];
+  /**
+     * @maxItems 50
+     * @items.maxLength 300
+     */
+  optionalActivities?: string[];
+  /**
+     * @maxItems 20
+     * @items.maxLength 180
+     */
+  idealFor?: string[];
   /** @maxLength 500 */
   heroImageUrl?: string;
+  /**
+     * @maxItems 30
+     * @items.maxLength 500
+     */
+  galleryImageUrls?: string[];
   isFeatured?: boolean;
   isPublished?: boolean;
 }

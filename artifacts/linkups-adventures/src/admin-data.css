@@ -252,6 +252,44 @@
   height: 17px;
 }
 
+.workspace-field small {
+  color: #64736f;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.trip-image-preview-wrap {
+  display: grid;
+  gap: 8px;
+  color: #52645f;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.trip-image-preview {
+  width: min(100%, 520px);
+  height: 220px;
+  border: 1px solid #dce9e1;
+  border-radius: 10px;
+  background: #f3f8f5;
+  object-fit: cover;
+}
+
+.trip-gallery-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 9px;
+}
+
+.trip-gallery-preview img {
+  width: 100%;
+  height: 90px;
+  border-radius: 8px;
+  background: #f3f8f5;
+  object-fit: cover;
+}
+
 @media (max-width: 800px) {
   .admin-sidebar nav button,
   .admin-bottom button {
@@ -305,6 +343,10 @@
 
   .admin-section > .admin-form-grid {
     padding: 16px;
+  }
+
+  .trip-image-preview {
+    height: 180px;
   }
 
   .admin-list-row {

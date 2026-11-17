@@ -5,6 +5,7 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { AdventureItineraryDay } from './adventureItineraryDay';
 
 export interface Adventure {
   id: number;
@@ -15,9 +16,28 @@ export interface Adventure {
   durationNights: number;
   price: number;
   /** @nullable */
+  priceUsd: number | null;
+  /** @nullable */
+  pricingNote: string | null;
+  /** @nullable */
   description: string | null;
   /** @nullable */
+  tagline: string | null;
+  /** @nullable */
+  accommodation: string | null;
+  /** @nullable */
+  destinationId: number | null;
+  /** @nullable */
+  destinationName: string | null;
+  highlights: string[];
+  itinerary: AdventureItineraryDay[];
+  included: string[];
+  excluded: string[];
+  optionalActivities: string[];
+  idealFor: string[];
+  /** @nullable */
   heroImageUrl: string | null;
+  galleryImageUrls: string[];
   isFeatured: boolean;
   isPublished: boolean;
 }
