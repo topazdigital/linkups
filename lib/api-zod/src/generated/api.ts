@@ -85,6 +85,23 @@ export const CreateBookingResponse = zod.object({
 
 
 /**
+ * @summary Save an email newsletter opt-in
+ */
+export const createNewsletterSubscriptionBodyEmailMax = 190;
+
+
+
+export const CreateNewsletterSubscriptionBody = zod.object({
+  "email": zod.string().email().max(createNewsletterSubscriptionBodyEmailMax),
+  "consent": zod.boolean()
+})
+
+export const CreateNewsletterSubscriptionResponse = zod.object({
+  "status": zod.enum(['subscribed'])
+})
+
+
+/**
  * @summary List published adventures
  */
 export const listPublicAdventuresResponseItineraryItemDayMax = 80;

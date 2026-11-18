@@ -51,7 +51,8 @@ for file in \
   database/seed.mysql \
   database/migrations/001_adventure_trip_details.mysql \
   database/migrations/002_scheduled_events.mysql \
-  database/migrations/003_site_content_pages_and_hero.mysql
+  database/migrations/003_site_content_pages_and_hero.mysql \
+  database/migrations/004_newsletter_subscribers.mysql
 do
   if [[ ! -s "$BUNDLE/$file" ]]; then
     echo "Missing deployment file: $BUNDLE/$file"

@@ -1,0 +1,11 @@
+-- Persist only email addresses that explicitly opt in to newsletter updates.
+CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(190) NOT NULL UNIQUE,
+  consented_at DATETIME NOT NULL,
+  consent_text_version VARCHAR(40) NOT NULL,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_newsletter_active (is_active, consented_at)
+) ENGINE=InnoDB;

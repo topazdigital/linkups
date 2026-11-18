@@ -68,6 +68,26 @@ paths:
                 $ref: "#/components/schemas/BookingCreated"
         "400":
           description: Invalid booking request
+  /newsletter-subscriptions:
+    post:
+      operationId: createNewsletterSubscription
+      tags: [public]
+      summary: Save an email newsletter opt-in
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewsletterSubscriptionInput"
+      responses:
+        "201":
+          description: Subscription saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NewsletterSubscriptionCreated"
+        "400":
+          description: Invalid newsletter opt-in
   /adventures:
     get:
       operationId: listPublicAdventures
@@ -658,6 +678,17 @@ components:
         travelDate: { type: ["string", "null"], format: date }
         travellers: { type: integer, minimum: 1, maximum: 40 }
         specialRequests: { type: string, maxLength: 8000 }
+    NewsletterSubscriptionInput:
+      type: object
+      required: [email, consent]
+      properties:
+        email: { type: string, format: email, maxLength: 190 }
+        consent: { type: boolean }
+    NewsletterSubscriptionCreated:
+      type: object
+      required: [status]
+      properties:
+        status: { type: string, enum: [subscribed] }
     BookingCreated:
       type: object
       required: [reference, status, totalAmount]

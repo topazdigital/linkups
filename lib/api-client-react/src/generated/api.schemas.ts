@@ -73,6 +73,23 @@ export interface BookingInput {
   specialRequests?: string;
 }
 
+export interface NewsletterSubscriptionInput {
+  /** @maxLength 190 */
+  email: string;
+  consent: boolean;
+}
+
+export type NewsletterSubscriptionCreatedStatus = typeof NewsletterSubscriptionCreatedStatus[keyof typeof NewsletterSubscriptionCreatedStatus];
+
+
+export const NewsletterSubscriptionCreatedStatus = {
+  subscribed: 'subscribed',
+} as const;
+
+export interface NewsletterSubscriptionCreated {
+  status: NewsletterSubscriptionCreatedStatus;
+}
+
 export type BookingCreatedStatus = typeof BookingCreatedStatus[keyof typeof BookingCreatedStatus];
 
 

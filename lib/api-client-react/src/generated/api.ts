@@ -45,6 +45,8 @@ import type {
   EventUpdate,
   HealthStatus,
   LoginInput,
+  NewsletterSubscriptionCreated,
+  NewsletterSubscriptionInput,
   RegisterInput,
   SiteContent,
   SiteContentInput,
@@ -331,6 +333,94 @@ export const useCreateBooking = <TError = ErrorType<void>,
         TContext
       > => {
       return useMutation(getCreateBookingMutationOptions(options));
+    }
+
+export const getCreateNewsletterSubscriptionUrl = () => {
+
+
+
+
+  return `/api/newsletter-subscriptions`
+}
+
+/**
+ * @summary Save an email newsletter opt-in
+ */
+export const createNewsletterSubscription = async (newsletterSubscriptionInput: NewsletterSubscriptionInput, options?: Parameters<typeof customFetch>[1]): Promise<NewsletterSubscriptionCreated> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<NewsletterSubscriptionCreated>(getCreateNewsletterSubscriptionUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(newsletterSubscriptionInput)
+  }
+);}
+
+
+
+
+
+export const getCreateNewsletterSubscriptionMutationKey = () => ['createNewsletterSubscription'] as const;
+
+export const getCreateNewsletterSubscriptionMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createNewsletterSubscription>>, TError,CreateNewsletterSubscriptionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createNewsletterSubscription>>, TError,CreateNewsletterSubscriptionMutationVariables, TContext> => {
+
+const mutationKey = getCreateNewsletterSubscriptionMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createNewsletterSubscription>>, CreateNewsletterSubscriptionMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  createNewsletterSubscription(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateNewsletterSubscriptionMutationResult = NonNullable<Awaited<ReturnType<typeof createNewsletterSubscription>>>
+    export type CreateNewsletterSubscriptionMutationBody = BodyType<NewsletterSubscriptionInput>
+    export type CreateNewsletterSubscriptionMutationError = ErrorType<void>
+    export type CreateNewsletterSubscriptionMutationVariables = {data: BodyType<NewsletterSubscriptionInput>}
+
+    /**
+ * @summary Save an email newsletter opt-in
+ */
+export const useCreateNewsletterSubscription = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createNewsletterSubscription>>, TError,CreateNewsletterSubscriptionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createNewsletterSubscription>>,
+        TError,
+        CreateNewsletterSubscriptionMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateNewsletterSubscriptionMutationOptions(options));
     }
 
 export const getListPublicAdventuresUrl = () => {
