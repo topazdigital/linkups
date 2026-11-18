@@ -24,7 +24,3 @@ export function ReviewsMedia() {
   </section>
 }
 
-export function SiteStructuredData() {
-  const data = { '@context': 'https://schema.org', '@type': 'TravelAgency', name: 'LinkUps Adventures', url: 'https://linkupsadventures.com', telephone: '+254726843677', email: 'linkupsadventures@gmail.com', areaServed: 'Kenya', sameAs: ['https://instagram.com/linkupsadventures'] }
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
-}

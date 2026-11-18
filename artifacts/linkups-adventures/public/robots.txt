@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /api/
 
-Sitemap: https://linkupsadventures.com/sitemap.xml
+Sitemap: https://linkupsadventures.co.ke/sitemap.xml

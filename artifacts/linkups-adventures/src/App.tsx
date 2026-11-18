@@ -1,5 +1,5 @@
 import { ErrorBoundary } from '@/components/error-boundary';
-import { SiteStructuredData } from '@/components/reviews-media';
+import { SeoManager } from '@/components/seo-manager';
 import { PageFrame } from '@/components/site-shell';
 import AboutPage from '@/app/about/page';
 import AdminPage from '@/app/admin/page';
@@ -73,7 +73,7 @@ function AppRoutes() {
 function App() {
   return (
     <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-      <SiteStructuredData />
+      <SeoManager />
       <AppRoutes />
     </WouterRouter>
   );
