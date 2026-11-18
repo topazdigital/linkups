@@ -1,2 +1,2 @@
-- [Hosting isolation](hosting-isolation.md) — keep LinkUps deployment separate from the other Node.js sites on the user's server.
+- [Hosting isolation](hosting-isolation.md) — keep LinkUps isolated and target only its PM2-managed app on the assigned port.
 - [LinkUps admin experience](linkups-admin-experience.md) — admin access stays role-protected and site content should be editable through the admin workspace.
