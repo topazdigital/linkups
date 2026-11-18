@@ -1,7 +1,7 @@
 # MySQL setup
 
 1. In DirectAdmin, create or confirm the LinkUps MySQL database and a user with access to it. The database shown in phpMyAdmin was `admin_linkups`; confirm that the app's `MYSQL_DATABASE` setting matches.
-2. Configure `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_DATABASE`, `MYSQL_USER`, and `MYSQL_PASSWORD` in the DirectAdmin Node application's private environment. Keep these values out of GitHub and the public web root.
+2. Set `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_DATABASE`, `MYSQL_USER`, and `MYSQL_PASSWORD` in the DirectAdmin Node application's private environment, or copy `.env.example` to `.env` in the app's private root and replace the placeholders. The app-root `.env` is loaded at startup; values already provided by DirectAdmin or PM2 take precedence. Keep `.env` out of GitHub and outside the public web root.
 3. Build and upload the hosted release, then restart the LinkUps Node app. On startup, the app creates its migration ledger, initializes the baseline schema if needed, applies pending migrations, and seeds the initial adventure catalogue only when both catalogue tables are empty.
 4. For an existing database, the baseline uses `CREATE TABLE IF NOT EXISTS`; it does not delete or rewrite existing rows. Pending numbered migrations are applied once and recorded in `linkups_schema_migrations`. A failed migration prevents the new server process from starting, so it will not serve code that expects an unapplied schema.
 5. If MySQL settings are absent, the website can still start, but the database migrations are skipped and database-backed routes remain unavailable. The startup log states this explicitly.

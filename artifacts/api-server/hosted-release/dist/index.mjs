@@ -5348,10 +5348,10 @@ var require_raw_body = __commonJS({
       if (done) {
         return readStream(stream, encoding, length, limit, wrap(done));
       }
-      return new Promise(function executor(resolve, reject) {
+      return new Promise(function executor(resolve2, reject) {
         readStream(stream, encoding, length, limit, function onRead(err, buf) {
           if (err) return reject(err);
-          resolve(buf);
+          resolve2(buf);
         });
       });
     }
@@ -18794,11 +18794,11 @@ var require_view = __commonJS({
     var debug = require_src()("express:view");
     var path3 = __require("node:path");
     var fs = __require("node:fs");
-    var dirname = path3.dirname;
+    var dirname2 = path3.dirname;
     var basename = path3.basename;
     var extname = path3.extname;
     var join = path3.join;
-    var resolve = path3.resolve;
+    var resolve2 = path3.resolve;
     module.exports = View;
     function View(name, options) {
       var opts = options || {};
@@ -18832,8 +18832,8 @@ var require_view = __commonJS({
       debug('lookup "%s"', name);
       for (var i = 0; i < roots.length && !path4; i++) {
         var root = roots[i];
-        var loc = resolve(root, name);
-        var dir = dirname(loc);
+        var loc = resolve2(root, name);
+        var dir = dirname2(loc);
         var file = basename(loc);
         path4 = this.resolve(dir, file);
       }
@@ -18857,7 +18857,7 @@ var require_view = __commonJS({
       });
       sync = false;
     };
-    View.prototype.resolve = function resolve2(dir, file) {
+    View.prototype.resolve = function resolve3(dir, file) {
       var ext = this.ext;
       var path4 = join(dir, file);
       var stat = tryStat(path4);
@@ -21132,7 +21132,7 @@ var require_application = __commonJS({
     var compileETag = require_utils3().compileETag;
     var compileQueryParser = require_utils3().compileQueryParser;
     var compileTrust = require_utils3().compileTrust;
-    var resolve = __require("node:path").resolve;
+    var resolve2 = __require("node:path").resolve;
     var once = require_once();
     var Router11 = require_router();
     var slice = Array.prototype.slice;
@@ -21186,7 +21186,7 @@ var require_application = __commonJS({
       this.mountpath = "/";
       this.locals.settings = this.settings;
       this.set("view", View);
-      this.set("views", resolve("views"));
+      this.set("views", resolve2("views"));
       this.set("jsonp callback name", "callback");
       if (env === "production") {
         this.enable("view cache");
@@ -22627,7 +22627,7 @@ var require_send = __commonJS({
     var extname = path3.extname;
     var join = path3.join;
     var normalize = path3.normalize;
-    var resolve = path3.resolve;
+    var resolve2 = path3.resolve;
     var sep = path3.sep;
     var BYTES_RANGE_REGEXP = /^ *bytes=/;
     var MAX_MAXAGE = 60 * 60 * 24 * 365 * 1e3;
@@ -22656,7 +22656,7 @@ var require_send = __commonJS({
       this._maxage = opts.maxAge || opts.maxage;
       this._maxage = typeof this._maxage === "string" ? ms(this._maxage) : Number(this._maxage);
       this._maxage = !isNaN(this._maxage) ? Math.min(Math.max(0, this._maxage), MAX_MAXAGE) : 0;
-      this._root = opts.root ? resolve(opts.root) : null;
+      this._root = opts.root ? resolve2(opts.root) : null;
     }
     util2.inherits(SendStream, Stream);
     SendStream.prototype.error = function error(status, err) {
@@ -22805,7 +22805,7 @@ var require_send = __commonJS({
           return res;
         }
         parts = normalize(path4).split(sep);
-        path4 = resolve(path4);
+        path4 = resolve2(path4);
       }
       if (containsDotFile(parts)) {
         debug('%s dotfile "%s"', this._dotfiles, path4);
@@ -23183,7 +23183,7 @@ var require_response = __commonJS({
     var cookie = require_cookie();
     var send = require_send();
     var extname = path3.extname;
-    var resolve = path3.resolve;
+    var resolve2 = path3.resolve;
     var vary = require_vary();
     var { Buffer: Buffer2 } = __require("node:buffer");
     var res = Object.create(http.ServerResponse.prototype);
@@ -23389,7 +23389,7 @@ var require_response = __commonJS({
       }
       opts = Object.create(opts);
       opts.headers = headers;
-      var fullPath = !opts.root ? resolve(path4) : path4;
+      var fullPath = !opts.root ? resolve2(path4) : path4;
       return this.sendFile(fullPath, opts, done);
     };
     res.contentType = res.type = function contentType(type) {
@@ -23638,7 +23638,7 @@ var require_serve_static = __commonJS({
     var encodeUrl = require_encodeurl();
     var escapeHtml = require_escape_html();
     var parseUrl = require_parseurl();
-    var resolve = __require("path").resolve;
+    var resolve2 = __require("path").resolve;
     var send = require_send();
     var url = __require("url");
     module.exports = serveStatic;
@@ -23657,7 +23657,7 @@ var require_serve_static = __commonJS({
         throw new TypeError("option setHeaders must be function");
       }
       opts.maxage = opts.maxage || opts.maxAge || 0;
-      opts.root = resolve(root);
+      opts.root = resolve2(root);
       var onDirectory = redirect ? createRedirectDirectoryListener() : createNotFoundDirectoryListener();
       return function serveStatic2(req, res, next) {
         if (req.method !== "GET" && req.method !== "HEAD") {
@@ -28459,6 +28459,18 @@ var require_logger = __commonJS({
   }
 });
 
+// src/lib/load-env.ts
+import { existsSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+var envFilePath = resolve(
+  dirname(fileURLToPath(import.meta.url)),
+  "../.env"
+);
+if (existsSync(envFilePath)) {
+  process.loadEnvFile(envFilePath);
+}
+
 // src/app.ts
 var import_express11 = __toESM(require_express2(), 1);
 var import_cookie_parser = __toESM(require_cookie_parser(), 1);
@@ -33257,13 +33269,13 @@ function hashToken(token) {
   return createHash("sha256").update(token).digest("hex");
 }
 function derivePasswordKey(password, salt, keyLength = PASSWORD_KEY_LENGTH) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve2, reject) => {
     scrypt(password, salt, keyLength, (error, derivedKey) => {
       if (error) {
         reject(error);
         return;
       }
-      resolve(derivedKey);
+      resolve2(derivedKey);
     });
   });
 }

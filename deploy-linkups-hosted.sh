@@ -5,6 +5,19 @@ REPO_DIR="/home/admin/apps/linkups-source"
 APP_DIR="/home/admin/domains/linkupsadventures.co.ke/linkups-app"
 BUNDLE="$REPO_DIR/artifacts/api-server/hosted-release"
 APP_PORT="5002"
+AFTER_PULL=0
+ASSUME_YES=0
+
+for arg in "$@"; do
+  case "$arg" in
+    --after-pull) AFTER_PULL=1 ;;
+    --yes) ASSUME_YES=1 ;;
+    *)
+      echo "Usage: $0 [--after-pull] [--yes]" >&2
+      exit 2
+      ;;
+  esac
+done
 
 if [[ ! -d "$REPO_DIR/.git" ]]; then
   echo "LinkUps source checkout not found; stopping."
@@ -16,9 +29,13 @@ if [[ "$(id -un)" != "admin" ]]; then
   exit 1
 fi
 
-if [[ "${1:-}" != "--after-pull" ]]; then
+if [[ "$AFTER_PULL" -ne 1 ]]; then
   GIT_TERMINAL_PROMPT=0 git -C "$REPO_DIR" pull --ff-only origin main
-  exec bash "$REPO_DIR/deploy-linkups-hosted.sh" --after-pull
+  next_args=(--after-pull)
+  if [[ "$ASSUME_YES" -eq 1 ]]; then
+    next_args+=(--yes)
+  fi
+  exec bash "$REPO_DIR/deploy-linkups-hosted.sh" "${next_args[@]}"
 fi
 
 if [[ "$(git -C "$REPO_DIR" branch --show-current)" != "main" ]]; then
@@ -49,10 +66,12 @@ fi
 
 commit="$(git -C "$REPO_DIR" rev-parse --short HEAD)"
 echo "GitHub main commit ready to deploy: $commit"
-read -r -p "Type DEPLOY LINKUPS to replace release files and restart its app: " answer
-if [[ "$answer" != "DEPLOY LINKUPS" ]]; then
-  echo "Cancelled; live files were not changed."
-  exit 0
+if [[ "$ASSUME_YES" -ne 1 ]]; then
+  read -r -p "Type DEPLOY LINKUPS to replace release files and restart its app: " answer
+  if [[ "$answer" != "DEPLOY LINKUPS" ]]; then
+    echo "Cancelled; live files were not changed."
+    exit 0
+  fi
 fi
 
 cp -a "$BUNDLE/." "$APP_DIR/"

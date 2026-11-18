@@ -12,6 +12,7 @@ Kenya adventure-travel website for browsing trips, requesting bookings, and mana
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API client and validation types
 - API environment: `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD`, and `SESSION_SECRET`
 - Admin environment: `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and `ADMIN_NAME`
+- On the hosted server, configure these in DirectAdmin or in an app-root `.env` copied from `artifacts/api-server/.env.example`; never commit `.env` or put it under `public/`.
 - GitHub Actions deploys `main` to the LinkUps DirectAdmin app; configure the repository secrets listed in `Deployment`.
 
 ## Deployment
@@ -19,7 +20,7 @@ Kenya adventure-travel website for browsing trips, requesting bookings, and mana
 - `.github/workflows/deploy-linkups.yml` builds and uploads the hosted release on pushes to `main`, then restarts only the `linkups` PM2 app and checks its health.
 - The workflow uploads the bundled MySQL schema, seed, and migrations without deleting server files. On restart, MySQL setup runs only when the LinkUps app has complete `MYSQL_*` settings; incomplete settings stop startup, while no settings skip database setup.
 - Add these GitHub repository secrets: `LINKUPS_DEPLOY_HOST`, `LINKUPS_DEPLOY_KEY` (private SSH key for the `admin` account), and `LINKUPS_KNOWN_HOSTS` (verified SSH host-key line).
-- To manually deploy the latest `main` from the server as root, run `su - admin -c 'bash /home/admin/apps/linkups-source/deploy-linkups-hosted.sh'` and enter `DEPLOY LINKUPS` when prompted.
+- To deploy the latest `main` from the server as root without a confirmation prompt, run `su - admin -c 'cd /home/admin/apps/linkups-source && GIT_TERMINAL_PROMPT=0 git pull --ff-only origin main && bash ./deploy-linkups-hosted.sh --after-pull --yes'`. This replaces only the LinkUps app release, restarts its PM2 process, checks health, and runs pending MySQL migrations at startup when database settings are complete.
 
 ## Stack
 
@@ -42,7 +43,7 @@ Kenya adventure-travel website for browsing trips, requesting bookings, and mana
 
 - The production database is external MySQL, not Replit's managed PostgreSQL. The DirectAdmin/phpMyAdmin database shown for LinkUps is `admin_linkups`; verify the configured `MYSQL_DATABASE` before running production SQL.
 - Keep the hosted LinkUps service isolated from the user's other sites. Do not stop or reconfigure unrelated processes, ports, virtual hosts, or certificates.
-- Keep database credentials in secure environment settings; never place them in source code or public files.
+- Keep database credentials in DirectAdmin's private environment or the server's private app-root `.env`; never commit them or place them in public files.
 - The imported Next.js app is preserved in `.migration-backup/`; the runnable website is the Vite artifact.
 
 ## Product
