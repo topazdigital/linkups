@@ -1,44 +1,58 @@
-# [Project name]
+# LinkUps Adventures
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Kenya adventure-travel website for browsing trips, requesting bookings, and managing customer and site content.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- `pnpm install` — install workspace dependencies
+- `pnpm --filter @workspace/linkups-adventures run dev` — run the Vite website
+- `pnpm --filter @workspace/api-server run dev` — run the Express API
+- `pnpm run typecheck` — typecheck workspace packages
+- `pnpm --filter @workspace/api-spec run codegen` — regenerate API client and validation types
+- API environment: `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD`, and `SESSION_SECRET`
+- Admin environment: `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and `ADMIN_NAME`
 
 ## Stack
 
-- pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- pnpm workspace, React + Vite, Wouter, TypeScript
+- API: Express 5, with shared OpenAPI-generated client types
+- Production data store: DirectAdmin-hosted MySQL through `mysql2`
+- The app does not run database DDL at startup.
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/linkups-adventures/` — React/Vite website and public assets
+- `artifacts/api-server/` — API routes, MySQL connection, production bundle, and SQL files
+- `artifacts/api-server/database/schema.mysql` — current complete MySQL schema for new/empty databases
+- `artifacts/api-server/database/migrations/` — incremental MySQL schema changes
+- `artifacts/api-server/database/seed.mysql` — adventure and destination catalogue seed
+- `lib/api-spec/openapi.yaml` — API contract source
+- `.migration-backup/` — preserved imported Next.js source; do not deploy it directly
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- The production database is external MySQL, not Replit's managed PostgreSQL. The DirectAdmin/phpMyAdmin database shown for LinkUps is `admin_linkups`; verify the configured `MYSQL_DATABASE` before running production SQL.
+- Keep the hosted LinkUps service isolated from the user's other sites. Do not stop or reconfigure unrelated processes, ports, virtual hosts, or certificates.
+- Keep database credentials in secure environment settings; never place them in source code or public files.
+- The imported Next.js app is preserved in `.migration-backup/`; the runnable website is the Vite artifact.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+The public site presents Kenyan adventures and destinations, accepts booking and enquiry requests, supports customer accounts, and provides an admin workspace for bookings and editable website content.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- When a code change requires a new MySQL table or column, include an idempotent migration and apply it to the production database as part of the same requested release whenever secure production access is available. Do not leave the schema change as an undocumented manual follow-up. Verify the resulting production schema.
+- If production access is unavailable, say so plainly and provide the exact SQL for the user to import; never claim that a migration was applied when it was not. Do not ask for credentials in chat.
+- Preserve existing production rows. Do not use destructive schema changes without the user's explicit approval.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Use the MySQL schema and migrations under `artifacts/api-server/database/`; the Replit PostgreSQL `db push` command is not the production migration path for this app.
+- The imported backup also contains an older `database/schema.mysql` that creates/uses `linkups_adventures`. For production, use the current schema under `artifacts/api-server/database/` and select the intended database in phpMyAdmin first.
+- The current HTTPS endpoint was observed presenting a certificate for `mail.betcheza.co.ke`, which does not cover `linkupsadventures.co.ke`. Install a LinkUps-domain certificate in DirectAdmin and verify it before enabling an HTTP-to-HTTPS redirect.
+- Do not force HTTPS while the certificate is invalid for the LinkUps hostname; visitors would be redirected to a browser certificate warning.
+- Obtain the hosting-assigned port for LinkUps from DirectAdmin. Never guess a port or reuse one assigned to another site.
 
 ## Pointers
 
