@@ -8,6 +8,7 @@ import './index.css';
 import './admin-data.css';
 import './brand.css';
 import './content-pages.css';
+import './image-performance.css';
 
 const queryClient = new QueryClient();
 

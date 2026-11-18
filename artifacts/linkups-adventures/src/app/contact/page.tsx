@@ -51,7 +51,7 @@ export default function ContactPage() {
   }
 
   return <PageFrame>
-    <section className="contact-hero" style={{ backgroundImage: "linear-gradient(90deg,rgba(0,42,35,.86),rgba(0,42,35,.2)),url('/images/group-travel-hero.png')" }}>
+    <section className="contact-hero" style={{ backgroundImage: "linear-gradient(90deg,rgba(0,42,35,.86),rgba(0,42,35,.2)),url('/images/group-travel-hero.webp')" }}>
       <div><span className="contact-ribbon">Get in touch</span><h1>Contact us<br /><em>we&apos;d love to hear from you!</em></h1><p>Have a question, need help with a booking, or want to plan your next adventure? Our team is here to assist you. Reach out — we&apos;re just a message away!</p></div>
     </section>
     <section className="contact-main">

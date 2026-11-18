@@ -6,6 +6,7 @@ import { AdventureCards } from '@/components/adventure-cards'
 import { PageFrame } from '@/components/site-shell'
 import { formatAdventurePrice } from '@/lib/api'
 import { useAdventures } from '@/lib/use-adventures'
+import { optimizedImageUrl, SiteImage } from '@/components/site-image'
 import './trip-detail.css'
 
 export default function AdventureDetailPage({ slug }: { slug: string }) {
@@ -28,7 +29,7 @@ export default function AdventureDetailPage({ slug }: { slug: string }) {
   const priceLabel = formatAdventurePrice(adventure)
   return <PageFrame>
     <main className="tour-detail">
-      <section className="tour-hero" data-testid="section-adventure-hero" style={{ backgroundImage: `linear-gradient(90deg,rgba(1,44,37,.9),rgba(1,44,37,.18)),url(${adventure.heroImageUrl || '/images/adventure-hero.png'})` }}>
+      <section className="tour-hero" data-testid="section-adventure-hero" style={{ backgroundImage: `linear-gradient(90deg,rgba(1,44,37,.9),rgba(1,44,37,.18)),url(${optimizedImageUrl(adventure.heroImageUrl || '/images/adventure-hero.png')})` }}>
         <div className="tour-hero-copy">
           <span className="eyebrow orange-text">Linkups Adventures · Kenya</span>
           <h1>{adventure.title}</h1>
@@ -48,11 +49,11 @@ export default function AdventureDetailPage({ slug }: { slug: string }) {
             <div className="tour-checks"><span><Check /> Flexible date planning</span><span><Check /> A team to guide your booking</span><span><Check /> Details confirmed before payment</span></div>
             <Link className="button orange" href={`/plan?tour=${encodeURIComponent(adventure.slug)}`}>Request a booking</Link>
           </div>
-          <img className="tour-image" data-testid="img-adventure-main" src={adventure.heroImageUrl || '/images/adventure-hero.png'} alt={`${adventure.title} main trip image`} />
+          <SiteImage className="tour-image" data-testid="img-adventure-main" src={adventure.heroImageUrl || '/images/adventure-hero.png'} alt={`${adventure.title} main trip image`} />
         </div>
         {galleryImages.length > 0 && <section className="trip-gallery" aria-label={`${adventure.title} photo gallery`} data-testid="gallery-adventure">
           <div><span className="eyebrow">A closer look</span><h2>Trip gallery</h2></div>
-          <div className="trip-gallery-grid">{galleryImages.map((image, index) => <img src={image} alt={`${adventure.title} gallery photo ${index + 1}`} key={`${image}-${index}`} data-testid={`img-adventure-gallery-${index + 1}`} />)}</div>
+          <div className="trip-gallery-grid">{galleryImages.map((image, index) => <SiteImage src={image} alt={`${adventure.title} gallery photo ${index + 1}`} key={`${image}-${index}`} data-testid={`img-adventure-gallery-${index + 1}`} />)}</div>
         </section>}
         <section className="itinerary" data-testid="section-adventure-itinerary">
           <span className="eyebrow">Your trip, thoughtfully planned</span>

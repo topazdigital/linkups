@@ -2,6 +2,7 @@ import { ArrowRight, Camera, MapPin, Waves } from "lucide-react";
 import { Link } from "wouter";
 import { formatAdventurePrice } from "@/lib/api";
 import { useAdventures } from "@/lib/use-adventures";
+import { SiteImage } from "@/components/site-image";
 
 type AdventureCardsProps = {
   variant?: "package" | "adventure";
@@ -52,7 +53,7 @@ export function AdventureCards({
         <div className="adventure-grid">
           {visible.map((adventure, index) => (
             <article className="adventure-card" key={adventure.id}>
-              <img
+              <SiteImage
                 src={adventure.heroImageUrl || "/images/adventure-hero.png"}
                 alt={adventure.title}
               />
@@ -90,7 +91,7 @@ export function AdventureCards({
       <div className="package-grid">
         {visible.map((adventure) => (
           <article className="package-card" key={adventure.id}>
-            <img
+            <SiteImage
               src={adventure.heroImageUrl || "/images/adventure-hero.png"}
               alt={adventure.title}
             />

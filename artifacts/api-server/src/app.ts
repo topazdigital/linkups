@@ -1,5 +1,6 @@
 import express, { type Express } from "express";
 import cookieParser from "cookie-parser";
+import compression from "compression";
 import pinoHttp from "pino-http";
 import path from "node:path";
 import router from "./routes";
@@ -8,6 +9,7 @@ import { DatabaseUnavailableError } from "./lib/mysql";
 
 const app: Express = express();
 app.set("trust proxy", 1);
+app.use(compression({ threshold: 1024 }));
 
 app.use(
   pinoHttp({
@@ -37,7 +39,36 @@ app.use("/api", router);
 const staticDirectory = process.env["STATIC_DIR"];
 if (staticDirectory) {
   const staticRoot = path.resolve(process.cwd(), staticDirectory);
-  app.use(express.static(staticRoot, { index: "index.html" }));
+  app.use(
+    express.static(staticRoot, {
+      index: "index.html",
+      setHeaders(res, filePath) {
+        const relativePath = path
+          .relative(staticRoot, filePath)
+          .split(path.sep)
+          .join("/");
+
+        if (
+          relativePath.startsWith("assets/") &&
+          /-[A-Za-z0-9_-]{8,}\.(?:js|css)$/.test(relativePath)
+        ) {
+          res.setHeader(
+            "Cache-Control",
+            "public, max-age=31536000, immutable",
+          );
+        } else if (
+          /\.(?:avif|webp|png|jpe?g|svg|woff2?)$/i.test(relativePath)
+        ) {
+          res.setHeader(
+            "Cache-Control",
+            "public, max-age=604800, stale-while-revalidate=2592000",
+          );
+        } else {
+          res.setHeader("Cache-Control", "no-cache");
+        }
+      },
+    }),
+  );
   app.use((req, res, next) => {
     if (
       (req.method !== "GET" && req.method !== "HEAD") ||

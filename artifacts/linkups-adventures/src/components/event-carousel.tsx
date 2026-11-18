@@ -4,6 +4,7 @@ import { Link } from 'wouter'
 import { ArrowLeft, ArrowRight, CalendarDays, MapPin, Pause, Play } from 'lucide-react'
 import { getListPublicEventsQueryKey, useListPublicEvents } from '@workspace/api-client-react'
 import type { Event } from '@workspace/api-client-react'
+import { optimizedImageUrl } from '@/components/site-image'
 
 function eventDate(value: string) {
   const [year, month, day] = value.split('-').map(Number)
@@ -84,7 +85,7 @@ export function EventCarousel() {
     {eventsQuery.isLoading ? <div className="events-loading" role="status" data-testid="status-events-loading"><div className="skeleton" /><div className="skeleton" /></div> :
       eventsQuery.error ? <div className="events-message" role="alert" data-testid="error-public-events"><span>Upcoming departures are taking a moment to load.</span><button type="button" onClick={() => void eventsQuery.refetch()} data-testid="button-events-retry">Try again</button></div> :
         <div className="events-stage">
-          {events.map((item, index) => <article className={`event-slide ${index === active ? 'is-active' : ''}`} key={item.id} aria-hidden={index !== active} data-testid={`card-public-event-${item.id}`} style={{ backgroundImage: item.heroImageUrl ? `linear-gradient(90deg, rgba(9,43,37,.91), rgba(9,43,37,.18)), url("${item.heroImageUrl}")` : 'linear-gradient(115deg, #16483f, #32725e)' }}>
+          {events.map((item, index) => <article className={`event-slide ${index === active ? 'is-active' : ''}`} key={item.id} aria-hidden={index !== active} data-testid={`card-public-event-${item.id}`} style={{ backgroundImage: item.heroImageUrl ? `linear-gradient(90deg, rgba(9,43,37,.91), rgba(9,43,37,.18)), url("${optimizedImageUrl(item.heroImageUrl)}")` : 'linear-gradient(115deg, #16483f, #32725e)' }}>
             <div className="event-slide-copy"><span className="event-label">LinkUps scheduled adventure</span><h3>{item.title}</h3><p>{item.description}</p><div className="event-meta"><span><CalendarDays />{eventDate(item.eventDate)}</span><span><MapPin />{item.location}</span>{item.priceLabel && <strong>{item.priceLabel}</strong>}</div><Link className="button orange event-cta" href={eventContactLink(item)} data-testid={`link-event-enquire-${item.id}`}>Ask about this event <ArrowRight /></Link></div>
             <div className="event-slide-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</div>
           </article>)}

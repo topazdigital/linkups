@@ -7,13 +7,14 @@ import { useGetAuthSession, useLogout } from '@workspace/api-client-react'
 import { useQueryClient } from '@tanstack/react-query'
 import { getGetAuthSessionQueryKey } from '@workspace/api-client-react'
 import { useLocation } from 'wouter'
+import { optimizedImageUrl, SiteImage } from '@/components/site-image'
 
 export const siteImages = {
-  mara: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=1400&q=85',
-  coast: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1400&q=85',
-  group: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1400&q=85',
-  mountain: 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1400&q=85',
-  camp: 'https://images.unsplash.com/photo-1504851149312-7a075b496cc7?auto=format&fit=crop&w=1400&q=85',
+  mara: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=1100&q=70',
+  coast: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1100&q=70',
+  group: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1100&q=70',
+  mountain: 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1100&q=70',
+  camp: 'https://images.unsplash.com/photo-1504851149312-7a075b496cc7?auto=format&fit=crop&w=1100&q=70',
 }
 
 type LogoProps = {
@@ -23,7 +24,7 @@ type LogoProps = {
 }
 
 export function Logo({ light = false, className = '', 'data-testid': testId }: LogoProps) {
-  return <Link href="/" className={`brand logo-mark ${className}`.trim()} style={light ? { color: '#fff' } : undefined} aria-label="LinkUps Adventures home" data-testid={testId}><img src="/images/linkups-logo.png" alt="LinkUps Adventures" /></Link>
+  return <Link href="/" className={`brand logo-mark ${className}`.trim()} style={light ? { color: '#fff' } : undefined} aria-label="LinkUps Adventures home" data-testid={testId}><SiteImage src="/images/linkups-logo.png" alt="LinkUps Adventures" loading="eager" /></Link>
 }
 
 export function SiteHeader() {
@@ -46,13 +47,13 @@ import { ConversionTools } from './conversion-tools'
 export function PageFrame({ children }: { children: React.ReactNode }) { return <><SiteHeader /><main>{children}</main><SiteFooter /><ConversionTools /></> }
 
 export function Hero({ eyebrow, title, description, image }: { eyebrow: string; title: React.ReactNode; description: string; image: string }) {
-  return <section className="hero" style={{ backgroundImage: `linear-gradient(90deg, rgba(1,44,37,.86), rgba(1,44,37,.14)), url(${image})` }}><div className="hero-copy"><span className="eyebrow orange-text">{eyebrow}</span><h1>{title}</h1><p>{description}</p><Link className="button orange" href="/plan">Plan my adventure <ArrowRight /></Link></div></section>
+  return <section className="hero" style={{ backgroundImage: `linear-gradient(90deg, rgba(1,44,37,.86), rgba(1,44,37,.14)), url(${optimizedImageUrl(image)})` }}><div className="hero-copy"><span className="eyebrow orange-text">{eyebrow}</span><h1>{title}</h1><p>{description}</p><Link className="button orange" href="/plan">Plan my adventure <ArrowRight /></Link></div></section>
 }
 
 export function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) { return <div className="section-title"><span className="eyebrow">{eyebrow}</span><h2>{title}</h2></div> }
 
 export function TourCard({ slug, name, price, image, detail }: { slug: string; name: string; price: string; image: string; detail: string }) {
-  return <article className="package-card"><img src={image} alt={name} /><div className="package-body"><small>{detail}</small><h3>{name}</h3><strong>{price}</strong><Link className="button orange small" href={`/adventures/${slug}`}>View package <ArrowRight /></Link></div></article>
+  return <article className="package-card"><SiteImage src={image} alt={name} /><div className="package-body"><small>{detail}</small><h3>{name}</h3><strong>{price}</strong><Link className="button orange small" href={`/adventures/${slug}`}>View package <ArrowRight /></Link></div></article>
 }
 
 export const tours = [
