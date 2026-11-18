@@ -43,14 +43,14 @@ export default function LoginPage() {
   }
 
   if (session.isLoading) {
-    return <main className="auth-page"><div className="auth-card" role="status" data-testid="status-session-check"><div className="skeleton" /><p>Checking your LinkUps account…</p></div></main>
+    return <main className="auth-page"><div className="auth-card auth-card-login" role="status" data-testid="status-session-check"><div className="skeleton" /><p>Checking your LinkUps account…</p></div></main>
   }
 
-  return <main className="auth-page"><div className="auth-card">
+  return <main className="auth-page"><div className="auth-card auth-card-login">
     <Logo data-testid="link-login-home" />
     <span className="eyebrow">Your next adventure, one step closer</span>
     <h1>Welcome back.</h1>
-    <p>Sign in to follow your booking requests and keep your travel details close.</p>
+    <p>Sign in to manage your saved trips and booking requests.</p>
     <form onSubmit={submit} className="auth-form" data-testid="form-login">
       <label>Email address<input data-testid="input-login-email" name="email" required type="email" autoComplete="email" placeholder="you@example.com" /></label>
       <label>Password<input data-testid="input-login-password" name="password" required minLength={8} type="password" autoComplete="current-password" placeholder="At least 8 characters" /></label>

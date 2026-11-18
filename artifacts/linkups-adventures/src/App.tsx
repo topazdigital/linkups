@@ -1,6 +1,6 @@
 import { ErrorBoundary } from '@/components/error-boundary';
 import { SeoManager } from '@/components/seo-manager';
-import { PageFrame } from '@/components/site-shell';
+import { MobileBottomNav, PageFrame } from '@/components/site-shell';
 import AboutPage from '@/app/about/page';
 import AdminPage from '@/app/admin/page';
 import AdventuresPage from '@/app/adventures/page';
@@ -36,37 +36,44 @@ function NotFoundPage() {
 
 function AppRoutes() {
   const [location] = useLocation();
+  const showMobileNavigation =
+    location !== '/login' &&
+    location !== '/register' &&
+    !location.startsWith('/admin');
 
   return (
-    <ErrorBoundary resetKey={location}>
-      <Switch>
-        <Route path="/" component={HomePage} />
-        <Route path="/about" component={AboutPage} />
-        <Route path="/admin" component={AdminPage} />
-        <Route path="/dashboard" component={DashboardPage} />
-        <Route path="/adventures" component={AdventuresPage} />
-        <Route path="/adventures/:slug">
-          {(params) => <AdventureDetailPage slug={params.slug} />}
-        </Route>
-        <Route path="/blog" component={BlogPage} />
-        <Route path="/compare" component={ComparePage} />
-        <Route path="/contact" component={ContactPage} />
-        <Route path="/destinations" component={DestinationsPage} />
-        <Route path="/destinations/:slug">
-          {(params) => <DestinationDetailPage slug={params.slug} />}
-        </Route>
-        <Route path="/group-travel" component={GroupTravelPage} />
-        <Route path="/login" component={LoginPage} />
-        <Route path="/plan" component={PlanPage} />
-        <Route path="/register" component={RegisterPage} />
-        <Route path="/travel-guide" component={TravelGuidePage} />
-        <Route path="/upcoming-trips" component={UpcomingTripsPage} />
-        <Route path="/:pageKey">
-          {(params) => <PublicContentPage pageKey={params.pageKey} />}
-        </Route>
-        <Route component={NotFoundPage} />
-      </Switch>
-    </ErrorBoundary>
+    <>
+      <ErrorBoundary resetKey={location}>
+        <Switch>
+          <Route path="/" component={HomePage} />
+          <Route path="/about" component={AboutPage} />
+          <Route path="/admin" component={AdminPage} />
+          <Route path="/dashboard" component={DashboardPage} />
+          <Route path="/adventures" component={AdventuresPage} />
+          <Route path="/adventures/:slug">
+            {(params) => <AdventureDetailPage slug={params.slug} />}
+          </Route>
+          <Route path="/blog" component={BlogPage} />
+          <Route path="/compare" component={ComparePage} />
+          <Route path="/contact" component={ContactPage} />
+          <Route path="/destinations" component={DestinationsPage} />
+          <Route path="/destinations/:slug">
+            {(params) => <DestinationDetailPage slug={params.slug} />}
+          </Route>
+          <Route path="/group-travel" component={GroupTravelPage} />
+          <Route path="/login" component={LoginPage} />
+          <Route path="/plan" component={PlanPage} />
+          <Route path="/register" component={RegisterPage} />
+          <Route path="/travel-guide" component={TravelGuidePage} />
+          <Route path="/upcoming-trips" component={UpcomingTripsPage} />
+          <Route path="/:pageKey">
+            {(params) => <PublicContentPage pageKey={params.pageKey} />}
+          </Route>
+          <Route component={NotFoundPage} />
+        </Switch>
+      </ErrorBoundary>
+      {showMobileNavigation && <MobileBottomNav />}
+    </>
   );
 }
 

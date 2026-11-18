@@ -50,20 +50,20 @@ export default function RegisterPage() {
   }
 
   if (session.isLoading) {
-    return <main className="auth-page"><div className="auth-card" role="status" data-testid="status-session-check"><div className="skeleton" /><p>Preparing your account…</p></div></main>
+    return <main className="auth-page"><div className="auth-card auth-card-register" role="status" data-testid="status-session-check"><div className="skeleton" /><p>Preparing your account…</p></div></main>
   }
 
-  return <main className="auth-page"><div className="auth-card">
+  return <main className="auth-page"><div className="auth-card auth-card-register">
     <Logo data-testid="link-register-home" />
     <span className="eyebrow">Start collecting stories</span>
     <h1>Create your account.</h1>
-    <p>Keep your profile and booking requests together. You can update your details any time.</p>
-    <form onSubmit={submit} className="auth-form" data-testid="form-register">
+    <p>Save trips, enquiries and travel details in one place.</p>
+    <form onSubmit={submit} className="auth-form register-form" data-testid="form-register">
       <label>Full name<input data-testid="input-register-name" name="name" required minLength={2} maxLength={120} autoComplete="name" placeholder="Your name" /></label>
-      <label>Email address<input data-testid="input-register-email" name="email" required type="email" maxLength={190} autoComplete="email" placeholder="you@example.com" /></label>
+      <label>Email address<input data-testid="input-register-email" name="email" required type="email" maxLength={190} autoComplete="email" placeholder="you@mail.com" /></label>
       <label>Phone number <span className="muted">(optional)</span><input data-testid="input-register-phone" name="phone" type="tel" maxLength={30} autoComplete="tel" placeholder="+254 7…" /></label>
-      <label>Password<input data-testid="input-register-password" name="password" required minLength={8} maxLength={200} type="password" autoComplete="new-password" placeholder="At least 8 characters" /></label>
-      <label>Confirm password<input data-testid="input-register-confirm-password" name="confirmPassword" required minLength={8} type="password" autoComplete="new-password" placeholder="Enter it again" /></label>
+      <label>Password<input data-testid="input-register-password" name="password" required minLength={8} maxLength={200} type="password" autoComplete="new-password" placeholder="8+ characters" /></label>
+      <label>Confirm password<input data-testid="input-register-confirm-password" name="confirmPassword" required minLength={8} type="password" autoComplete="new-password" placeholder="Repeat it" /></label>
       {message && <div className="error-box" role="alert" data-testid="error-register">{message}</div>}
       <button data-testid="button-register-submit" className="button orange" type="submit" disabled={register.isPending}>{register.isPending ? 'Creating your account…' : 'Create account'}</button>
     </form>

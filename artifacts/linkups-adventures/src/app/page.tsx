@@ -2,15 +2,13 @@
 
 import { Link } from 'wouter'
 import { useEffect, useState, type ReactNode } from 'react'
-import { ArrowRight, CalendarDays, Check, ChevronDown, ChevronLeft, ChevronRight, Compass, Globe2, MapPin, Menu, Pause, Play, Search, Star, Users, X } from 'lucide-react'
+import { ArrowRight, CalendarDays, Check, ChevronDown, ChevronLeft, ChevronRight, Compass, Globe2, MapPin, Pause, Play, Star, Users } from 'lucide-react'
 import { AdventureCards } from '@/components/adventure-cards'
 import { Logo } from '@/components/site-shell'
 import { EventCarousel } from '@/components/event-carousel'
 import { AdventureQuiz } from '@/components/conversion-tools'
 import { ReviewsMedia } from '@/components/reviews-media'
-import { getGetAuthSessionQueryKey, getGetPublicSiteContentQueryKey, useGetAuthSession, useGetPublicSiteContent, useLogout } from '@workspace/api-client-react'
-import { useQueryClient } from '@tanstack/react-query'
-import { useLocation } from 'wouter'
+import { getGetPublicSiteContentQueryKey, useGetPublicSiteContent } from '@workspace/api-client-react'
 import { optimizedImageUrl, SiteImage } from '@/components/site-image'
 
 const hero = '/images/group-travel-hero.png'
@@ -38,24 +36,15 @@ const destinations = [
 ]
 
 function Header() {
-  const [open, setOpen] = useState(false)
-  const session = useGetAuthSession()
-  const logout = useLogout()
-  const queryClient = useQueryClient()
-  const [, setLocation] = useLocation()
-  const accountHref = session.data?.role === 'admin' ? '/admin' : '/dashboard'
-  function signOut() {
-    logout.mutate(undefined, { onSuccess: async () => { await queryClient.invalidateQueries({ queryKey: getGetAuthSessionQueryKey() }); setLocation('/') } })
-  }
+  const links = [['Home', '/'], ['Adventures', '/adventures'], ['Destinations', '/destinations'], ['Group Travel', '/group-travel'], ['About Us', '/about'], ['Blog', '/blog'], ['Contact', '/contact']]
+
   return <header className="site-header">
     <Logo data-testid="link-home-brand" />
-    <nav className={open ? 'nav open' : 'nav'}>
-      {[['Home', '/'], ['Adventures', '/adventures'], ['Destinations', '/destinations'], ['Group Travel', '/group-travel'], ['About Us', '/about'], ['Blog', '/blog'], ['Contact', '/contact']].map(([item, href]) => <Link key={item} href={href} data-testid={`link-home-nav-${item.toLowerCase().replaceAll(' ', '-')}`} onClick={() => setOpen(false)}>{item}</Link>)}
-      {session.data?.authenticated ? <><Link className="home-mobile-link" href={accountHref} data-testid="link-home-menu-account" onClick={() => setOpen(false)}>My account</Link><button className="home-mobile-link" data-testid="button-home-menu-signout" onClick={signOut} disabled={logout.isPending}>{logout.isPending ? 'Signing out…' : 'Sign out'}</button></> : <><Link className="home-mobile-link" href="/login" data-testid="link-home-menu-login" onClick={() => setOpen(false)}>Sign in</Link><Link className="home-mobile-link" href="/register" data-testid="link-home-menu-register" onClick={() => setOpen(false)}>Register</Link></>}
+    <nav className="nav" aria-label="Main navigation">
+      {links.map(([item, href]) => <Link key={item} href={href} data-testid={`link-home-nav-${item.toLowerCase().replaceAll(' ', '-')}`}>{item}</Link>)}
     </nav>
-    <div className="header-actions"><Search aria-label="Search" />
-      {session.data?.authenticated ? <><Link className="header-account" href={accountHref} data-testid="link-home-account">My account</Link><button className="header-account header-button" data-testid="button-home-signout" onClick={signOut} disabled={logout.isPending}>{logout.isPending ? 'Signing out…' : 'Sign out'}</button></> : <><Link className="header-account" href="/login" data-testid="link-home-login">Sign in</Link><Link className="header-account" href="/register" data-testid="link-home-register">Register</Link></>}
-      <a className="button orange" data-testid="link-home-plan" href="/plan">Plan My Adventure</a><button className="menu-button" aria-label="Toggle navigation" data-testid="button-home-menu-toggle" onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</button>
+    <div className="header-actions">
+      <Link className="button orange" data-testid="link-home-plan" href="/plan">Plan My Adventure</Link>
     </div>
   </header>
 }
@@ -172,7 +161,7 @@ export default function Page() {
     <section className="upcoming-home"><div className="section-row"><SectionTitle eyebrow="Questions about travel dates?" title="We’ll help you find the right departure." /><Link href="/plan" className="text-link">Ask about a trip date <ArrowRight /></Link></div><p className="vibe-intro">Departure dates and availability are confirmed by our team when you send a booking request.</p></section>
     <section className="custom-trip" id="contact" style={{ backgroundImage: `linear-gradient(90deg, rgba(0,44,36,.92), rgba(0,44,36,.45)), url(${optimizedImageUrl(destinationHero)})` }}><div><SectionTitle light eyebrow="Can't find exactly what you want?" title="Plan your custom trip" /><p>Tell us where you want to go, who you're travelling with, your dates and your budget. We'll build the experience around you.</p><a className="button orange" href="mailto:linkupsadventures@gmail.com">Start planning <ArrowRight /></a></div><div className="benefits">{['Custom itineraries', 'Group & family trips', 'Flexible budgets', 'Dedicated support'].map((item) => <span key={item}><Check /> {item}</span>)}</div></section>
     <AdventureQuiz /><ReviewsMedia /><section className="trust"><div><Star /><strong>Trusted by adventurers</strong><p>Thoughtful planning, local expertise and memories that last.</p></div><div><Users /><strong>For every traveller</strong><p>Solo explorers, couples, families, friends and teams.</p></div><div><Compass /><strong>Kenya, your way</strong><p>From savannahs to coastlines, discover more with Linkups.</p></div></section>
-  </main><footer><div className="footer-main"><div><Logo light className="footer-brand" /><p>Where fun meets adventures.</p></div><div><strong>Explore</strong><Link href="/adventures">Adventures</Link><Link href="/destinations">Destinations</Link><Link href="/group-travel">Group Travel</Link><Link href="/about">About Us</Link></div><div><strong>Contact</strong><a href="tel:0726843677">0726 843 677</a><a href="mailto:linkupsadventures@gmail.com">linkupsadventures@gmail.com</a><Link href="/contact">@LinkupsAdventures</Link></div><div><strong>Follow us</strong><div className="socials"><Globe2 /><Star /><Compass /></div></div><div><strong>Policies</strong><Link href="/terms">Terms &amp; Conditions</Link><Link href="/cancellation-policy">Cancellation Policy</Link><Link href="/privacy-policy">Privacy Policy</Link></div><div><strong>Payments</strong><p>M-Pesa Till<br /><b>5139557</b></p></div></div><div className="footer-bottom"><span>© 2026 Linkups Adventures. All rights reserved.</span><span>LinkUps Adventures · Kenya</span></div></footer></div>
+   </main><footer><div className="footer-main"><div><Logo light className="footer-brand" /><p>Where fun meets adventures.</p></div><div><strong>Explore</strong><Link href="/adventures">Adventures</Link><Link href="/destinations">Destinations</Link><Link href="/group-travel">Group Travel</Link><Link href="/about">About Us</Link></div><div><strong>Contact</strong><a href="tel:0726843677">0726 843 677</a><a href="mailto:linkupsadventures@gmail.com">linkupsadventures@gmail.com</a><Link href="/contact">@LinkupsAdventures</Link></div><div><strong>Your LinkUps</strong><Link href="/login">Sign in</Link><Link href="/register">Create an account</Link></div><div><strong>Follow us</strong><div className="socials"><Globe2 /><Star /><Compass /></div></div><div><strong>Policies</strong><Link href="/terms">Terms &amp; Conditions</Link><Link href="/cancellation-policy">Cancellation Policy</Link><Link href="/privacy-policy">Privacy Policy</Link></div><div><strong>Payments</strong><p>M-Pesa Till<br /><b>5139557</b></p></div></div><div className="footer-bottom"><span>© 2026 Linkups Adventures. All rights reserved.</span><span>LinkUps Adventures · Kenya</span></div></footer></div>
 }
 
 export { CalendarDays, MapPin, ChevronDown }

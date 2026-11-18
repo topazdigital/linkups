@@ -1,0 +1,768 @@
+/*
+ * Page-level responsive overrides.
+ * These load after the legacy page styles so phone and tablet layouts are not
+ * overwritten by later desktop declarations in index.css.
+ */
+
+@media (max-width: 1100px) {
+  .group-type-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .contact-main {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .contact-form-card {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 900px) {
+  .adventure-search {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: -22px 18px 0;
+  }
+
+  .adventure-search label {
+    min-width: 0;
+    border-right: 0;
+    border-bottom: 1px solid #e5eee9;
+  }
+
+  .adventure-search .button {
+    width: 100%;
+    justify-content: center;
+    grid-column: 1 / -1;
+  }
+
+  .category-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .adventure-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .why-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .group-type-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .group-why {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 30px;
+  }
+
+  .blog-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .blog-categories {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    padding: 14px 18px;
+    box-shadow: none;
+  }
+
+  .blog-categories a {
+    min-width: 0;
+    justify-content: center;
+    padding: 9px 10px;
+    font-size: 11px;
+    line-height: 1.25;
+    white-space: normal;
+  }
+
+  .blog-sidebar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .blog-cta {
+    grid-column: 1 / -1;
+  }
+
+  .contact-main {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .contact-form-card {
+    grid-column: 1 / -1;
+  }
+
+  .visit-section {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+
+  .faq-section {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  }
+
+  .faq-cta {
+    grid-column: 1 / -1;
+    min-height: 200px;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 20px;
+    text-align: left;
+  }
+}
+
+@media (max-width: 700px) {
+  .group-type-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .story-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .blog-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .featured-post {
+    grid-row: auto;
+  }
+
+  .blog-sidebar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .blog-cta {
+    grid-column: auto;
+  }
+
+  .faq-section {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .faq-cta {
+    grid-column: auto;
+    min-height: 240px;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .adventure-hero {
+    min-height: 440px;
+    padding: 58px 20px 44px;
+    background-position: center;
+  }
+
+  .adventure-hero h1 {
+    font-size: clamp(46px, 13vw, 64px);
+    line-height: 0.9;
+  }
+
+  .adventure-hero p {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .adventure-search {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 3px;
+    margin: -18px 14px 0;
+    padding: 10px;
+  }
+
+  .adventure-search label {
+    grid-template-columns: 20px minmax(0, 1fr);
+    padding: 10px 8px;
+  }
+
+  .adventure-search select {
+    width: 100%;
+    min-width: 0;
+    font-size: 12px;
+  }
+
+  .adventure-search .button {
+    grid-column: 1 / -1;
+    min-height: 44px;
+    margin-top: 6px;
+  }
+
+  .adventure-categories {
+    padding: 16px;
+  }
+
+  .category-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .category-tile img {
+    height: 104px;
+  }
+
+  .category-tile span {
+    font-size: 12px;
+  }
+
+  .category-tile small {
+    font-size: 10px;
+  }
+
+  .adventure-section {
+    padding: 34px 16px 44px;
+  }
+
+  .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .section-heading h2,
+  .vibe-section h2,
+  .why-section h2 {
+    font-size: clamp(38px, 11vw, 48px);
+    line-height: 0.95;
+  }
+
+  .adventure-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .adventure-card > img {
+    height: 125px;
+  }
+
+  .adventure-card-body {
+    padding: 10px;
+  }
+
+  .adventure-card h3 {
+    font-size: 13px;
+    line-height: 1.2;
+  }
+
+  .adventure-card p,
+  .card-location {
+    font-size: 10px;
+    line-height: 1.4;
+  }
+
+  .adventure-card .small-button {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    padding-inline: 8px;
+  }
+
+  .vibe-section {
+    padding: 38px 16px;
+  }
+
+  .vibe-grid,
+  .why-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .why-section {
+    padding: 40px 18px;
+  }
+
+  .destinations-hero {
+    min-height: 470px;
+    align-items: flex-end;
+    padding: 54px 20px 38px;
+    background-position: center;
+  }
+
+  .destinations-hero h1 {
+    font-size: clamp(42px, 12vw, 58px);
+    line-height: 0.9;
+    overflow-wrap: anywhere;
+  }
+
+  .destinations-hero p {
+    font-size: 14px;
+  }
+
+  .destinations-hero-features {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 13px 10px;
+  }
+
+  .destinations-hero-features span {
+    align-items: flex-start;
+    font-size: 10px;
+    line-height: 1.35;
+  }
+
+  .destinations-hero-features svg {
+    flex: none;
+  }
+
+  .our-destinations,
+  .featured-packages {
+    padding: 34px 16px;
+  }
+
+  .catalogue-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .catalogue-heading h2 {
+    font-size: clamp(36px, 10vw, 46px);
+    line-height: 0.95;
+  }
+
+  .destination-categories {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    justify-content: initial;
+    gap: 12px 6px;
+  }
+
+  .destination-categories span {
+    max-width: none;
+    font-size: 9px;
+    line-height: 1.25;
+  }
+
+  .destination-categories svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  .destination-showcase-grid,
+  .package-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .destination-showcase-card {
+    min-height: 190px;
+  }
+
+  .destination-showcase-card h3 {
+    font-size: 19px;
+    line-height: 1;
+  }
+
+  .destination-showcase-card p {
+    font-size: 10px;
+    line-height: 1.35;
+  }
+
+  .package-grid img,
+  .package-grid > article > img {
+    height: 118px;
+  }
+
+  .package-grid article > div {
+    min-width: 0;
+    padding: 10px;
+  }
+
+  .package-grid h3 {
+    overflow-wrap: anywhere;
+  }
+
+  .destination-bottom {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 20px 16px 34px;
+  }
+
+  .travel-essentials,
+  .custom-destination-trip {
+    min-width: 0;
+    padding: 20px;
+  }
+
+  .destination-contact {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+    padding: 28px 18px;
+  }
+
+  .destination-contact h2 {
+    font-size: 32px;
+    line-height: 0.95;
+  }
+
+  .destination-contact > a {
+    margin-left: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .group-hero {
+    min-height: 500px;
+    align-items: flex-end;
+    padding: 78px 20px 42px;
+    background-position: center;
+  }
+
+  .group-hero h1 {
+    font-size: clamp(43px, 12vw, 62px);
+    line-height: 0.9;
+  }
+
+  .group-hero p {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .group-feature-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 8px;
+  }
+
+  .group-feature-row span {
+    align-items: flex-start;
+    font-size: 10px;
+    line-height: 1.35;
+  }
+
+  .group-types,
+  .group-stories {
+    padding: 36px 18px 44px;
+  }
+
+  .group-heading h2,
+  .group-why h2 {
+    font-size: clamp(38px, 10.5vw, 48px);
+  }
+
+  .group-heading p {
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .group-type-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .group-type-card img {
+    height: 112px;
+  }
+
+  .group-type-body {
+    padding: 10px;
+  }
+
+  .group-type-body h3 {
+    font-size: 13px;
+    line-height: 1.2;
+  }
+
+  .group-type-body p {
+    min-height: 0;
+    font-size: 10px;
+    line-height: 1.4;
+  }
+
+  .group-why {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 42px 18px;
+    gap: 24px;
+  }
+
+  .benefit-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px 12px;
+  }
+
+  .group-enquiry {
+    min-width: 0;
+    padding: 20px;
+  }
+
+  .group-enquiry h2 {
+    font-size: 34px;
+  }
+
+  .group-enquiry input,
+  .group-enquiry select,
+  .group-enquiry textarea {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .story-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .group-contact-strip {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 18px;
+    padding: 34px 20px;
+  }
+
+  .group-contact-strip h2 {
+    font-size: clamp(34px, 9vw, 42px);
+    line-height: 0.95;
+  }
+
+  .group-contact-strip div {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .blog-hero {
+    min-height: 360px;
+    padding: 52px 20px 42px;
+    background-position: center;
+  }
+
+  .blog-eyebrow {
+    font-size: 27px;
+  }
+
+  .blog-hero h1 {
+    font-size: clamp(72px, 20vw, 100px);
+    line-height: 0.8;
+  }
+
+  .blog-hero p {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .blog-categories {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 14px 16px;
+    box-shadow: none;
+  }
+
+  .blog-categories a {
+    min-width: 0;
+    min-height: 44px;
+    justify-content: flex-start;
+    border: 1px solid #dfe9e5;
+    border-radius: 999px;
+    padding: 9px 10px;
+    font-size: 10px;
+    line-height: 1.25;
+  }
+
+  .blog-categories a svg {
+    flex: none;
+    width: 16px;
+  }
+
+  .blog-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+    padding: 20px 16px 54px;
+  }
+
+  .blog-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .featured-post {
+    grid-row: auto;
+  }
+
+  .blog-card,
+  .blog-card-body,
+  .blog-sidebar > * {
+    min-width: 0;
+  }
+
+  .blog-card > img,
+  .featured-post > img,
+  .secondary-post > img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+
+  .blog-card-body {
+    padding: 15px;
+  }
+
+  .blog-card h2,
+  .featured-post h2,
+  .secondary-post h2 {
+    font-size: 27px;
+    line-height: 1;
+    overflow-wrap: anywhere;
+  }
+
+  .blog-meta {
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+
+  .blog-sidebar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .newsletter-card,
+  .popular-card {
+    min-width: 0;
+    padding: 18px;
+  }
+
+  .newsletter-card input {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .popular-card > a {
+    min-width: 0;
+  }
+
+  .popular-card > a > span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .contact-hero {
+    min-height: 420px;
+    align-items: flex-end;
+    padding: 72px 20px 42px;
+    background-position: center;
+  }
+
+  .contact-hero h1 {
+    font-size: clamp(44px, 12vw, 64px);
+    line-height: 0.9;
+    overflow-wrap: anywhere;
+  }
+
+  .contact-hero p {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .contact-main {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+    padding: 32px 18px 48px;
+  }
+
+  .contact-form-card {
+    grid-column: auto;
+    min-width: 0;
+    padding: 18px;
+  }
+
+  .contact-form-card h2 {
+    gap: 8px;
+    margin: -18px -18px 16px;
+    padding: 13px 15px;
+    font-size: 28px;
+    line-height: 1;
+  }
+
+  .contact-form-card input,
+  .contact-form-card select,
+  .contact-form-card textarea {
+    width: 100%;
+    min-width: 0;
+    font-size: 14px;
+  }
+
+  .contact-form-card button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .contact-item {
+    align-items: flex-start;
+    gap: 11px;
+  }
+
+  .contact-item strong {
+    overflow-wrap: anywhere;
+  }
+
+  .contact-start {
+    margin-top: 0;
+    padding: 22px;
+  }
+
+  .visit-section {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    padding: 34px 18px;
+  }
+
+  .map-card {
+    min-height: 230px;
+  }
+
+  .faq-section {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .faq-image {
+    min-height: 210px;
+  }
+
+  .faq-list {
+    min-width: 0;
+    padding: 32px 20px;
+  }
+
+  .faq-item button {
+    align-items: flex-start;
+    padding: 16px 0;
+    line-height: 1.45;
+  }
+
+  .faq-item button svg {
+    flex: none;
+  }
+
+  .faq-cta {
+    min-height: 230px;
+    padding: 30px 20px;
+  }
+
+  .faq-cta h2 {
+    font-size: 42px;
+  }
+}
+
+@media (max-width: 380px) {
+  .destination-categories {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .contact-item > span {
+    flex: none;
+  }
+
+  .blog-categories {
+    gap: 7px;
+    padding-inline: 12px;
+  }
+}

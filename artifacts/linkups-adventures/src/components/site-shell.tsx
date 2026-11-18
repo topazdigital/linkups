@@ -1,11 +1,8 @@
 'use client'
 
 import { Link } from 'wouter'
-import { useState } from 'react'
-import { Menu, X, ArrowRight } from 'lucide-react'
-import { useGetAuthSession, useLogout } from '@workspace/api-client-react'
-import { useQueryClient } from '@tanstack/react-query'
-import { getGetAuthSessionQueryKey } from '@workspace/api-client-react'
+import { ArrowRight, CalendarDays, Compass, Home, MapPin, UserRound } from 'lucide-react'
+import { useGetAuthSession } from '@workspace/api-client-react'
 import { useLocation } from 'wouter'
 import { optimizedImageUrl, SiteImage } from '@/components/site-image'
 
@@ -28,14 +25,63 @@ export function Logo({ light = false, className = '', 'data-testid': testId }: L
 }
 
 export function SiteHeader() {
-  const [open, setOpen] = useState(false)
-  const session = useGetAuthSession()
-  const logout = useLogout()
-  const queryClient = useQueryClient()
-  const [, setLocation] = useLocation()
   const links = [['Adventures', '/adventures'], ['Destinations', '/destinations'], ['Upcoming Trips', '/upcoming-trips'], ['Compare Trips', '/compare'], ['Travel Guide', '/travel-guide'], ['Group Travel', '/group-travel'], ['About Us', '/about'], ['Blog', '/blog'], ['Contact', '/contact']]
-  const accountHref = session.data?.role === 'admin' ? '/admin' : '/dashboard'
-  return <header className="site-header"><Logo /><nav className={open ? 'nav open' : 'nav'}>{links.map(([label, href]) => <Link href={href} key={href} onClick={() => setOpen(false)}>{label}</Link>)}</nav><div className="header-actions">{session.data?.authenticated ? <><Link className="header-account" href={accountHref}>My account</Link><button className="header-account header-button" data-testid="button-sign-out" onClick={() => logout.mutate(undefined, { onSuccess: () => { queryClient.invalidateQueries({ queryKey: getGetAuthSessionQueryKey() }); setLocation('/') } })}>Sign out</button></> : <><Link className="header-account" data-testid="link-sign-in" href="/login">Sign in</Link><Link className="header-account" data-testid="link-register" href="/register">Register</Link></>}<Link className="button orange" href="/plan">Plan My Adventure <ArrowRight /></Link><button className="menu-button" aria-label="Toggle navigation" onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</button></div></header>
+  return (
+    <header className="site-header">
+      <Logo />
+      <nav className="nav" aria-label="Main navigation">
+        {links.map(([label, href]) => (
+          <Link href={href} key={href}>{label}</Link>
+        ))}
+      </nav>
+      <div className="header-actions">
+        <Link className="button orange" href="/plan">
+          Plan My Adventure <ArrowRight />
+        </Link>
+      </div>
+    </header>
+  )
+}
+
+export function MobileBottomNav() {
+  const [location] = useLocation()
+  const session = useGetAuthSession()
+  const accountHref = session.data?.authenticated
+    ? session.data.role === 'admin'
+      ? '/admin'
+      : '/dashboard'
+    : '/login'
+  const tabs = [
+    { label: 'Home', href: '/', Icon: Home },
+    { label: 'Adventures', href: '/adventures', Icon: Compass },
+    { label: 'Places', href: '/destinations', Icon: MapPin },
+    { label: 'Plan', href: '/plan', Icon: CalendarDays },
+    { label: 'My account', href: accountHref, Icon: UserRound },
+  ]
+
+  return (
+    <nav className="mobile-bottom-nav" aria-label="Mobile navigation">
+      {tabs.map(({ label, href, Icon }) => {
+        const isActive = href === '/'
+          ? location === '/'
+          : location === href || location.startsWith(`${href}/`)
+
+        return (
+          <Link
+            className={isActive ? 'mobile-tab active' : 'mobile-tab'}
+            href={href}
+            key={label}
+            aria-label={label}
+            aria-current={isActive ? 'page' : undefined}
+            data-testid={`mobile-nav-${label.toLowerCase().replaceAll(' ', '-')}`}
+          >
+            <Icon aria-hidden="true" />
+            <span>{label}</span>
+          </Link>
+        )
+      })}
+    </nav>
+  )
 }
 
 export function SiteFooter() {
@@ -44,7 +90,16 @@ export function SiteFooter() {
 
 import { ConversionTools } from './conversion-tools'
 
-export function PageFrame({ children }: { children: React.ReactNode }) { return <><SiteHeader /><main>{children}</main><SiteFooter /><ConversionTools /></> }
+export function PageFrame({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="site-frame">
+      <SiteHeader />
+      <main>{children}</main>
+      <SiteFooter />
+      <ConversionTools />
+    </div>
+  )
+}
 
 export function Hero({ eyebrow, title, description, image }: { eyebrow: string; title: React.ReactNode; description: string; image: string }) {
   return <section className="hero" style={{ backgroundImage: `linear-gradient(90deg, rgba(1,44,37,.86), rgba(1,44,37,.14)), url(${optimizedImageUrl(image)})` }}><div className="hero-copy"><span className="eyebrow orange-text">{eyebrow}</span><h1>{title}</h1><p>{description}</p><Link className="button orange" href="/plan">Plan my adventure <ArrowRight /></Link></div></section>
