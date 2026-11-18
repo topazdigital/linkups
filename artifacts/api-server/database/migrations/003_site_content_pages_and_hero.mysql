@@ -1,7 +1,8 @@
 -- Apply once to an existing LinkUps database if site_content does not yet have
 -- hero_images and hero_mode. Fresh databases include these fields in schema.mysql.
 ALTER TABLE site_content
-  ADD COLUMN hero_images JSON NULL AFTER hero_image_url,
+  ADD COLUMN hero_images JSON NULL AFTER hero_image_url;
+ALTER TABLE site_content
   ADD COLUMN hero_mode ENUM('static','slideshow') NOT NULL DEFAULT 'static' AFTER hero_images;
 
 UPDATE site_content

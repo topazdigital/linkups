@@ -180,3 +180,10 @@ CREATE TABLE IF NOT EXISTS enquiries (
   status ENUM('new','read','replied','archived') NOT NULL DEFAULT 'new',
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS linkups_schema_migrations (
+  version VARCHAR(191) NOT NULL PRIMARY KEY,
+  checksum CHAR(64) NOT NULL,
+  outcome VARCHAR(40) NOT NULL DEFAULT 'applied',
+  applied_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

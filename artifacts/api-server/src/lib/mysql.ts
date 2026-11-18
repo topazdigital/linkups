@@ -7,8 +7,18 @@ import {
 
 export type SqlParameter = string | number | boolean | Date | null;
 
+export interface MysqlConnectionConfig {
+  host: string;
+  port: number;
+  database: string;
+  user: string;
+  password: string;
+}
+
 export class DatabaseUnavailableError extends Error {
-  constructor(message = "The LinkUps database is not configured or reachable.") {
+  constructor(
+    message = "The LinkUps database is not configured or reachable.",
+  ) {
     super(message);
     this.name = "DatabaseUnavailableError";
   }
@@ -16,7 +26,26 @@ export class DatabaseUnavailableError extends Error {
 
 let pool: Pool | undefined;
 
-export function getMysqlPool(): Pool {
+export function hasAnyMysqlConfiguration(): boolean {
+  return [
+    process.env.MYSQL_HOST,
+    process.env.MYSQL_PORT,
+    process.env.MYSQL_DATABASE,
+    process.env.MYSQL_USER,
+    process.env.MYSQL_PASSWORD,
+  ].some((value) => value !== undefined && value.trim() !== "");
+}
+
+export function hasMysqlConfiguration(): boolean {
+  return Boolean(
+    process.env.MYSQL_HOST?.trim() &&
+    process.env.MYSQL_DATABASE?.trim() &&
+    process.env.MYSQL_USER?.trim() &&
+    process.env.MYSQL_PASSWORD,
+  );
+}
+
+export function getMysqlConnectionConfig(): MysqlConnectionConfig {
   const host = process.env.MYSQL_HOST?.trim();
   const database = process.env.MYSQL_DATABASE?.trim();
   const user = process.env.MYSQL_USER?.trim();
@@ -34,12 +63,14 @@ export function getMysqlPool(): Pool {
     );
   }
 
+  return { host, port, database, user, password };
+}
+
+export function getMysqlPool(): Pool {
+  const config = getMysqlConnectionConfig();
+
   pool ??= createPool({
-    host,
-    port,
-    database,
-    user,
-    password,
+    ...config,
     charset: "utf8mb4",
     waitForConnections: true,
     connectionLimit: 10,
