@@ -79,63 +79,75 @@ function HomeHero({ images: heroImages, mode, title, description }: { images: st
   }
 
   return (
-    <section
-      className="hero home-hero"
-      data-testid="section-home-hero"
-      role={isSlideshow ? 'group' : undefined}
-      aria-label={isSlideshow ? 'Homepage hero slideshow' : undefined}
-      aria-roledescription={isSlideshow ? 'carousel' : undefined}
-      onMouseEnter={() => setInteractionPaused(true)}
-      onMouseLeave={() => setInteractionPaused(false)}
-      onFocus={() => setInteractionPaused(true)}
-      onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setInteractionPaused(false)
-      }}
-    >
-      {slides.map((image, index) => (
-        <div
+    <div className="home-hero-stage">
+      <section
+        className="hero home-hero"
+        data-testid="section-home-hero"
+        role={isSlideshow ? 'group' : undefined}
+        aria-label={isSlideshow ? 'Homepage hero slideshow' : undefined}
+        aria-roledescription={isSlideshow ? 'carousel' : undefined}
+        onMouseEnter={() => setInteractionPaused(true)}
+        onMouseLeave={() => setInteractionPaused(false)}
+        onFocus={() => setInteractionPaused(true)}
+        onBlur={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setInteractionPaused(false)
+        }}
+      >
+        {slides.map((image, index) => (
+          <div
+            aria-hidden="true"
+            className={`home-hero-background ${index === safeIndex ? 'active' : ''}`}
+            key={`${image}-${index}`}
+          ><SiteImage src={image} alt="" loading={index === safeIndex ? 'eager' : 'lazy'} fetchPriority={index === safeIndex ? 'high' : 'auto'} /></div>
+        ))}
+        <div className="home-hero-shade" aria-hidden="true" />
+        <img
+          className="home-hero-popout"
+          src="/images/linkups-hero-monkey.webp"
+          alt=""
           aria-hidden="true"
-          className={`home-hero-background ${index === safeIndex ? 'active' : ''}`}
-          key={`${image}-${index}`}
-        ><SiteImage src={image} alt="" loading={index === safeIndex ? 'eager' : 'lazy'} fetchPriority={index === safeIndex ? 'high' : 'auto'} /></div>
-      ))}
-      <div className="home-hero-shade" aria-hidden="true" />
-      <div className="hero-copy">
-        <span className="eyebrow orange-text">Explore Kenya</span>
-        <h1 data-testid="text-home-hero-title">{title}</h1>
-        <p data-testid="text-home-hero-subtitle">{description}</p>
-        <div className="hero-buttons">
-          <a className="button orange" data-testid="link-home-explore-adventures" href="/adventures">Explore adventures <ArrowRight /></a>
-          <a className="button outline-light" data-testid="link-home-hero-plan" href="/plan">Plan my adventure</a>
-        </div>
-      </div>
-      {isSlideshow && (
-        <div className="home-hero-controls" aria-label="Homepage hero slideshow controls">
-          <button type="button" aria-label="Previous hero image" onClick={() => moveSlide(-1)}><ChevronLeft /></button>
-          <div className="home-hero-dots" aria-label="Choose a hero image">
-            {slides.map((image, index) => (
-              <button
-                type="button"
-                key={`${image}-dot-${index}`}
-                aria-label={`Show hero image ${index + 1}`}
-                aria-pressed={index === safeIndex}
-                className={index === safeIndex ? 'active' : ''}
-                onClick={() => setActiveIndex(index)}
-              />
-            ))}
+          loading="eager"
+          fetchPriority="high"
+          draggable={false}
+          data-testid="img-home-hero-popout"
+        />
+        <div className="hero-copy">
+          <span className="eyebrow orange-text">Explore Kenya</span>
+          <h1 data-testid="text-home-hero-title">{title}</h1>
+          <p data-testid="text-home-hero-subtitle">{description}</p>
+          <div className="hero-buttons">
+            <a className="button orange" data-testid="link-home-explore-adventures" href="/adventures">Explore adventures <ArrowRight /></a>
+            <a className="button outline-light" data-testid="link-home-hero-plan" href="/plan">Plan my adventure</a>
           </div>
-          <button type="button" aria-label="Next hero image" onClick={() => moveSlide(1)}><ChevronRight /></button>
-          <button
-            type="button"
-            aria-label={manualPaused ? 'Resume slideshow' : 'Pause slideshow'}
-            aria-pressed={manualPaused}
-            onClick={() => setManualPaused((paused) => !paused)}
-          >
-            {manualPaused ? <Play /> : <Pause />}
-          </button>
         </div>
-      )}
-    </section>
+        {isSlideshow && (
+          <div className="home-hero-controls" aria-label="Homepage hero slideshow controls">
+            <button type="button" aria-label="Previous hero image" onClick={() => moveSlide(-1)}><ChevronLeft /></button>
+            <div className="home-hero-dots" aria-label="Choose a hero image">
+              {slides.map((image, index) => (
+                <button
+                  type="button"
+                  key={`${image}-dot-${index}`}
+                  aria-label={`Show hero image ${index + 1}`}
+                  aria-pressed={index === safeIndex}
+                  className={index === safeIndex ? 'active' : ''}
+                  onClick={() => setActiveIndex(index)}
+                />
+              ))}
+            </div>
+            <button type="button" aria-label="Next hero image" onClick={() => moveSlide(1)}><ChevronRight /></button>
+            <button
+              type="button"
+              aria-label={manualPaused ? 'Resume slideshow' : 'Pause slideshow'}
+              aria-pressed={manualPaused}
+              onClick={() => setManualPaused((paused) => !paused)}
+            >
+              {manualPaused ? <Play /> : <Pause />}
+            </button>
+          </div>
+        )}
+      </section>
+    </div>
   )
 }
 
