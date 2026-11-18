@@ -14,6 +14,7 @@ Kenya adventure-travel website for browsing trips, requesting bookings, and mana
 - Admin environment: `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and `ADMIN_NAME`
 - On the hosted server, configure these in DirectAdmin or in an app-root `.env` copied from `artifacts/api-server/.env.example`; never commit `.env` or put it under `public/`.
 - GitHub Actions deploys `main` to the LinkUps DirectAdmin app; configure the repository secrets listed in `Deployment`.
+- Before a manual server deploy, run `pnpm --filter @workspace/api-server run build:hosted` in Replit and push the refreshed `artifacts/api-server/hosted-release/` bundle. The server deploy script checks that the bundled homepage title matches the source and stops rather than deploying a stale website.
 
 ## Deployment
 

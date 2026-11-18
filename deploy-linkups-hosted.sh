@@ -60,6 +60,23 @@ do
   fi
 done
 
+SOURCE_WEB_INDEX="$REPO_DIR/artifacts/linkups-adventures/index.html"
+RELEASE_WEB_INDEX="$BUNDLE/public/index.html"
+source_title="$(sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p' "$SOURCE_WEB_INDEX" | head -n 1)"
+release_title="$(sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p' "$RELEASE_WEB_INDEX" | head -n 1)"
+if [[ -z "$source_title" || -z "$release_title" ]]; then
+  echo "Could not verify the website title in the source or hosted release; stopping."
+  exit 1
+fi
+if [[ "$source_title" != "$release_title" ]]; then
+  echo "The hosted website bundle is stale; refusing to deploy it."
+  echo "Source title:  $source_title"
+  echo "Bundle title:  $release_title"
+  echo "Build the release in Replit with: pnpm --filter @workspace/api-server run build:hosted"
+  echo "Commit and push the refreshed hosted-release files, then deploy again."
+  exit 1
+fi
+
 if [[ ! -d "$APP_DIR" || ! -w "$APP_DIR" ]]; then
   echo "LinkUps app folder is missing or not writable by admin."
   exit 1
