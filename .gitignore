@@ -2,6 +2,9 @@
 
 # compiled output
 dist
+# Keep the standalone LinkUps hosting bundle deployable from GitHub.
+!/artifacts/api-server/hosted-release/dist/
+!/artifacts/api-server/hosted-release/dist/**
 tmp
 out-tsc
 *.tsbuildinfo
