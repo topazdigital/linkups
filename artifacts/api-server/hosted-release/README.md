@@ -8,6 +8,7 @@ This bundle runs the React website and its API in one Node.js process. It is bui
 - Configure the Node app's private root and its public web root according to DirectAdmin's Node.js application settings. Do not expose `dist/`, `database/`, `node_modules/`, `package.json`, or environment files to direct file download.
 - Set `STATIC_DIR=public` and the database/admin values listed in `.env.example` in the hosting environment.
 - Create a MySQL database/user in DirectAdmin, then import `database/schema.mysql` and optionally `database/seed.mysql`.
+- For an existing database, follow `database/README.md` and apply only the migrations whose schema changes are missing.
 - Install production dependencies with `npm install --omit=dev`, then use the control panel's assigned app port and its start command `npm start`.
 
 The app returns a service-unavailable response for database-backed features until MySQL is configured. It does not create or modify production tables at startup.

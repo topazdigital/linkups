@@ -1,0 +1,37 @@
+-- Apply once to an existing LinkUps database if site_content does not yet have
+-- hero_images and hero_mode. Fresh databases include these fields in schema.mysql.
+ALTER TABLE site_content
+  ADD COLUMN hero_images JSON NULL AFTER hero_image_url,
+  ADD COLUMN hero_mode ENUM('static','slideshow') NOT NULL DEFAULT 'static' AFTER hero_images;
+
+UPDATE site_content
+SET hero_images = JSON_ARRAY(hero_image_url)
+WHERE hero_image_url IS NOT NULL AND hero_images IS NULL;
+
+INSERT IGNORE INTO site_content
+  (page_key, page_title, hero_title, hero_subtitle, seo_description, is_published)
+VALUES
+  (
+    'terms',
+    'Terms & Conditions',
+    'Terms & Conditions',
+    'Please read these terms before requesting or confirming a trip.',
+    'Terms for using the LinkUps Adventures website and requesting or booking travel experiences in Kenya.',
+    TRUE
+  ),
+  (
+    'privacy-policy',
+    'Privacy Policy',
+    'Privacy Policy',
+    'How LinkUps Adventures collects, uses, and protects personal information.',
+    'Learn how LinkUps Adventures handles account, enquiry, and booking information and how to contact us about privacy.',
+    TRUE
+  ),
+  (
+    'cancellation-policy',
+    'Cancellation Policy',
+    'Cancellation Policy',
+    'Please check the trip-specific payment and cancellation terms before paying.',
+    'Understand how to request a cancellation or change to a LinkUps Adventures booking.',
+    TRUE
+  );
