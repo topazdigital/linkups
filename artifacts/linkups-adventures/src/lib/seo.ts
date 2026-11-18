@@ -94,6 +94,22 @@ export function getSeoEntry(path: string): SeoEntry {
   };
 }
 
+export function hasConfiguredSeoEntry(path: string) {
+  const pathname = normalizePath(path);
+  if (config.pages[pathname]) return true;
+
+  const adventureMatch = pathname.match(/^\/adventures\/([^/]+)$/);
+  if (adventureMatch && config.adventures[decodeURIComponent(adventureMatch[1])]) {
+    return true;
+  }
+
+  const destinationMatch = pathname.match(/^\/destinations\/([^/]+)$/);
+  return Boolean(
+    destinationMatch &&
+      config.destinations[decodeURIComponent(destinationMatch[1])],
+  );
+}
+
 export function absoluteSiteUrl(path: string) {
   return new URL(path.startsWith("/") ? path : `/${path}`, `${siteUrl}/`).toString();
 }
@@ -114,12 +130,15 @@ function labelFromTitle(title: string) {
   return title.split("|")[0].trim();
 }
 
-export function getPageStructuredData(path: string, entry: SeoEntry) {
+export function getPageStructuredData(
+  path: string,
+  entry: SeoEntry,
+  imageUrl = absoluteSiteUrl(socialImagePath(path)),
+) {
   const pathname = normalizePath(path);
   const canonicalUrl = absoluteSiteUrl(pathname);
   const organizationId = `${siteUrl}/#organization`;
   const websiteId = `${siteUrl}/#website`;
-  const imageUrl = absoluteSiteUrl(socialImagePath(pathname));
   const breadcrumbs = [{ name: "Home", url: absoluteSiteUrl("/") }];
   const segments = pathname.split("/").filter(Boolean);
 
@@ -201,4 +220,74 @@ export function getPageStructuredData(path: string, entry: SeoEntry) {
         : []),
     ],
   };
+}
+
+function setMeta(attribute: "name" | "property", key: string, content: string) {
+  let element = document.head.querySelector<HTMLMetaElement>(
+    `meta[${attribute}="${key}"]`,
+  );
+  if (!element) {
+    element = document.createElement("meta");
+    element.setAttribute(attribute, key);
+    document.head.appendChild(element);
+  }
+  element.content = content;
+}
+
+function setCanonical(href: string) {
+  let element = document.head.querySelector<HTMLLinkElement>(
+    'link[rel="canonical"]',
+  );
+  if (!element) {
+    element = document.createElement("link");
+    element.rel = "canonical";
+    document.head.appendChild(element);
+  }
+  element.href = href;
+}
+
+export function applyPageSeo(
+  path: string,
+  overrides: (Partial<SeoEntry> & { socialImageUrl?: string }) = {},
+) {
+  const pathname = normalizePath(path);
+  const { socialImageUrl, ...entryOverrides } = overrides;
+  const entry = { ...getSeoEntry(pathname), ...entryOverrides };
+  const canonical = absoluteSiteUrl(pathname);
+  const image = socialImageUrl
+    ? new URL(socialImageUrl, `${siteUrl}/`).toString()
+    : absoluteSiteUrl(socialImagePath(pathname));
+
+  document.title = entry.title;
+  document.documentElement.lang = "en";
+  setMeta("name", "description", entry.description);
+  setMeta("name", "keywords", entry.keywords.join(", "));
+  setMeta("name", "robots", entry.index ? "index, follow" : "noindex, follow");
+  setMeta("name", "author", "LinkUps Adventures");
+  setMeta("name", "theme-color", "#123c32");
+  setMeta("property", "og:title", entry.title);
+  setMeta("property", "og:description", entry.description);
+  setMeta("property", "og:url", canonical);
+  setMeta("property", "og:type", "website");
+  setMeta("property", "og:locale", "en_KE");
+  setMeta("property", "og:site_name", "LinkUps Adventures");
+  setMeta("property", "og:image", image);
+  setMeta("property", "og:image:width", "1200");
+  setMeta("property", "og:image:height", "630");
+  setMeta("property", "og:image:alt", entry.imageAlt);
+  setMeta("name", "twitter:card", "summary_large_image");
+  setMeta("name", "twitter:title", entry.title);
+  setMeta("name", "twitter:description", entry.description);
+  setMeta("name", "twitter:image", image);
+  setMeta("name", "twitter:image:alt", entry.imageAlt);
+  setCanonical(canonical);
+
+  document.getElementById("linkups-seo-jsonld")?.remove();
+  const structuredData = document.createElement("script");
+  structuredData.id = "linkups-seo-jsonld";
+  structuredData.type = "application/ld+json";
+  structuredData.textContent = JSON.stringify(
+    getPageStructuredData(pathname, entry, image),
+  ).replace(/</g, "\\u003c");
+  document.head.appendChild(structuredData);
 }

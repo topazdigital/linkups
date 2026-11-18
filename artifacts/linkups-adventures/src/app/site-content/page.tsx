@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { getGetPublicSiteContentQueryKey, useGetPublicSiteContent } from '@workspace/api-client-react'
 import { PageFrame } from '@/components/site-shell'
 import { legalPages } from '@/lib/legal-content'
+import { applyPageSeo, hasConfiguredSeoEntry } from '@/lib/seo'
 import { Fragment } from 'react'
 
 const legalPageKeys = new Set(Object.keys(legalPages))
@@ -33,17 +34,6 @@ function renderBody(body: string) {
   })
 }
 
-function updateMeta(title: string, description: string) {
-  document.title = `${title} | LinkUps Adventures`
-  let meta = document.querySelector<HTMLMetaElement>('meta[name="description"]')
-  if (!meta) {
-    meta = document.createElement('meta')
-    meta.name = 'description'
-    document.head.append(meta)
-  }
-  meta.content = description
-}
-
 export default function PublicContentPage({ pageKey }: { pageKey: string }) {
   const contentQuery = useGetPublicSiteContent(pageKey, {
     query: {
@@ -62,13 +52,53 @@ export default function PublicContentPage({ pageKey }: { pageKey: string }) {
     : fallback
   const isLegalPage = legalPageKeys.has(pageKey)
   const errorStatus = (contentQuery.error as { status?: number } | null)?.status
+  const contentHeroImageUrl = content && 'heroImageUrl' in content ? content.heroImageUrl : null
+  const firstContentHeroImage = content && 'heroImages' in content ? content.heroImages[0] : null
 
   useEffect(() => {
-    updateMeta(
-      content?.pageTitle ?? 'Page not found',
-      content?.seoDescription ?? 'Explore LinkUps Adventures in Kenya.',
-    )
-  }, [content?.pageTitle, content?.seoDescription])
+    const pathname = `/${pageKey}`;
+    if (hasConfiguredSeoEntry(pathname)) return;
+
+    if (!content) {
+      applyPageSeo(pathname, {
+        title: 'Page not found | LinkUps Adventures',
+        description: 'This LinkUps Adventures page is unavailable or has not been published.',
+        keywords: [],
+        imageSource: '/images/linkups-logo.webp',
+        imageAlt: 'LinkUps Adventures logo',
+        index: false,
+        sitemap: false,
+        schemaType: 'WebPage',
+      });
+      return;
+    }
+
+    const title = content.pageTitle.trim();
+    const description = content.seoDescription?.trim()
+      || content.heroSubtitle?.trim()
+      || `Discover ${title} from LinkUps Adventures, with helpful information for planning your next trip in Kenya.`;
+    const socialImage = contentHeroImageUrl || firstContentHeroImage || '/images/linkups-logo.webp';
+
+    applyPageSeo(pathname, {
+      title: `${title} | LinkUps Adventures`,
+      description,
+      keywords: [title, 'LinkUps Adventures'],
+      imageSource: socialImage,
+      imageAlt: content.heroTitle?.trim() || title,
+      index: true,
+      sitemap: false,
+      schemaType: 'WebPage',
+      socialImageUrl: socialImage,
+    });
+  }, [
+    contentHeroImageUrl,
+    firstContentHeroImage,
+    content?.heroSubtitle,
+    content?.heroTitle,
+    content?.pageTitle,
+    content?.seoDescription,
+    pageKey,
+  ]);
 
   if (!content) {
     const message = errorStatus === 404
