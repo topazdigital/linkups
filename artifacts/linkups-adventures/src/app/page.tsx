@@ -107,8 +107,7 @@ function HomeHero({ images: heroImages, mode, title, description }: { images: st
           aria-hidden="true"
           className={`home-hero-background ${index === safeIndex ? 'active' : ''}`}
           key={`${image}-${index}`}
-          style={{ backgroundImage: `url("${image.replaceAll('"', '%22')}")` }}
-        />
+        ><img src={image} alt="" loading={index === 0 ? 'eager' : 'lazy'} /></div>
       ))}
       <div className="home-hero-shade" aria-hidden="true" />
       <div className="hero-copy">

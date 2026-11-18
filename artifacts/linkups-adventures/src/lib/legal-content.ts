@@ -13,13 +13,13 @@ export const legalPages: Record<string, LegalPage> = {
     pageTitle: 'Terms & Conditions',
     heroTitle: 'Terms & Conditions',
     heroSubtitle: 'Please read these terms before requesting or confirming a trip.',
-    seoDescription: 'Terms for using the LinkUps Adventures website and requesting or booking travel experiences in Kenya.',
+    seoDescription: 'Terms for using the Linkups Adventures website and requesting or booking travel experiences in Kenya.',
     bodyContent: `These terms apply from the date they are published on this website.
 
-## 1. About LinkUps Adventures
-LinkUps Adventures operates this website and provides information about travel experiences, scheduled events, trip planning, booking requests, and customer support. In these terms, “LinkUps”, “we”, “us”, and “our” refer to LinkUps Adventures. The legal contact for questions about these terms is legal@linkupsadventures.com.
+## 1. About Linkups Adventures
+Linkups Adventures operates this website and provides information about travel experiences, scheduled events, trip planning, booking requests, and customer support. In these terms, “we”, “us”, and “our” refer to Linkups Adventures. The legal contact for questions about these terms is legal@linkupsadventures.com.
 
-The website is a way to explore experiences and send requests. A listing, enquiry, or automated acknowledgement is not by itself a confirmed reservation. A booking is confirmed only when LinkUps sends written confirmation identifying the experience, dates, price, payment schedule, and any trip-specific terms.
+The website is a way to explore experiences and send requests. A listing, enquiry, or automated acknowledgement is not by itself a confirmed reservation. A booking is confirmed only when we send written confirmation identifying the experience, dates, price, payment schedule, and any trip-specific terms.
 
 ## 2. Using the website and accounts
 You may browse the website without creating an account. If you create an account or send a booking request, provide accurate information and keep your sign-in details private. You are responsible for activity carried out through your account until you tell us that it may have been accessed without permission.
@@ -44,7 +44,7 @@ Payment and cancellation conditions can differ between trips and suppliers. The 
 
 To cancel or change a booking, contact us using the details on the Contact page and include your booking reference. We will confirm the request and explain any charges or refund that apply under the terms disclosed for that booking and applicable law. Please read the separate Cancellation Policy as well.
 
-If LinkUps or a supplier changes or cancels a service, we will contact you and explain the available alternatives and any refund or rescheduling options under your booking terms and applicable law. Nothing in these terms removes rights that cannot legally be limited.
+If Linkups Adventures or a supplier changes or cancels a service, we will contact you and explain the available alternatives and any refund or rescheduling options under your booking terms and applicable law. Nothing in these terms removes rights that cannot legally be limited.
 
 ## 7. Traveller responsibilities and safety
 Travellers are responsible for arriving on time, following reasonable safety instructions, carrying required travel documents, and checking any health, visa, vaccination, insurance, or equipment requirements relevant to their trip. Tell us before confirmation about access needs or other information necessary to arrange the requested experience. Do not participate in an activity when you believe it would be unsafe for you or another traveller.
@@ -52,10 +52,10 @@ Travellers are responsible for arriving on time, following reasonable safety ins
 Travel involves conditions outside our control, including weather, road conditions, wildlife, supplier operations, and public authority decisions. We may adjust an itinerary when reasonably necessary for safety or delivery. We will explain material changes and available options.
 
 ## 8. Third-party travel suppliers
-Some transport, accommodation, activities, parks, and other services are provided by independent suppliers. Their operational rules may apply in addition to your booking confirmation. We will identify material supplier terms that affect your booking before payment where they are known to us. A supplier’s involvement does not remove any responsibility LinkUps has under applicable law.
+Some transport, accommodation, activities, parks, and other services are provided by independent suppliers. Their operational rules may apply in addition to your booking confirmation. We will identify material supplier terms that affect your booking before payment where they are known to us. A supplier’s involvement does not remove any responsibility Linkups Adventures has under applicable law.
 
 ## 9. Website content and intellectual property
-The LinkUps name, original text, photographs, design, and other website materials belong to LinkUps or their respective rights holders. You may use the site for personal trip research and booking requests. You may not republish or commercially exploit protected content without permission.
+The Linkups Adventures name, original text, photographs, design, and other website materials belong to Linkups Adventures or their respective rights holders. You may use the site for personal trip research and booking requests. You may not republish or commercially exploit protected content without permission.
 
 ## 10. Availability and liability
 We work to keep the website available and accurate but do not promise uninterrupted access or that every listing will remain available. To the extent permitted by applicable law, we are not responsible for indirect losses that were not reasonably foreseeable. Nothing in these terms excludes liability for fraud, for death or personal injury where exclusion is unlawful, or for any consumer right that cannot be waived.
@@ -69,12 +69,12 @@ We may update these terms when our services or legal obligations change. The cur
     pageKey: 'privacy-policy',
     pageTitle: 'Privacy Policy',
     heroTitle: 'Privacy Policy',
-    heroSubtitle: 'How LinkUps Adventures collects, uses, and protects personal information.',
-    seoDescription: 'Learn how LinkUps Adventures handles account, enquiry, and booking information and how to contact us about privacy.',
+    heroSubtitle: 'How Linkups Adventures collects, uses, and protects personal information.',
+    seoDescription: 'Learn how Linkups Adventures handles account, enquiry, and booking information and how to contact us about privacy.',
     bodyContent: `This policy applies from the date it is published on this website.
 
 ## 1. Who we are and how to contact us
-LinkUps Adventures is responsible for the personal information described in this policy. For privacy questions or requests, email legal@linkupsadventures.com. This policy describes our current website and booking-request practices; trip-specific notices may explain additional details.
+Linkups Adventures is responsible for the personal information described in this policy. For privacy questions or requests, email legal@linkupsadventures.com. This policy describes our current website and booking-request practices; trip-specific notices may explain additional details.
 
 ## 2. Information we collect
 Depending on how you use the site, we may collect:
@@ -119,18 +119,18 @@ Anyone may browse the website. A parent or legal guardian should provide or supe
 We may update this policy when our services or practices change. The latest version will appear on this page with its publication date. Material changes will be communicated through the website or another reasonable contact method where required.
 
 ## 11. Contact
-For privacy questions or requests, contact LinkUps Adventures at legal@linkupsadventures.com.`,
+For privacy questions or requests, contact Linkups Adventures at legal@linkupsadventures.com.`,
   },
   'cancellation-policy': {
     pageKey: 'cancellation-policy',
     pageTitle: 'Cancellation Policy',
     heroTitle: 'Cancellation Policy',
     heroSubtitle: 'Please check the trip-specific payment and cancellation terms before paying.',
-    seoDescription: 'Understand how to request a cancellation or change to a LinkUps Adventures booking.',
+    seoDescription: 'Understand how to request a cancellation or change to a Linkups Adventures booking.',
     bodyContent: `This policy applies from the date it is published. It explains the general process; the written offer and booking confirmation set the exact terms for each trip.
 
 ## 1. Trip-specific terms apply
-Travel suppliers and experiences have different costs, availability, and cancellation rules. Before you pay, LinkUps will provide the payment schedule, any deposit, cancellation deadlines, charges, refund eligibility, and rescheduling options that apply to your trip. There is no single refund percentage or cancellation deadline for every booking.
+Travel suppliers and experiences have different costs, availability, and cancellation rules. Before you pay, Linkups Adventures will provide the payment schedule, any deposit, cancellation deadlines, charges, refund eligibility, and rescheduling options that apply to your trip. There is no single refund percentage or cancellation deadline for every booking.
 
 If a booking confirmation contains a trip-specific cancellation term, read it together with this policy. If any term is unclear, ask us to explain it in writing before making payment.
 
@@ -145,10 +145,10 @@ Any amount payable or refundable depends on the terms disclosed for your booking
 If a refund is due, we will confirm the amount and payment method in writing. Processing time can depend on the payment method and any supplier involved. We will not promise a fixed processing period that has not been confirmed for the booking. Nothing in this policy removes a right to a refund or remedy that applicable law provides.
 
 ## 4. Changes and rescheduling
-You may ask to change a traveller name, travel date, or other booking detail. Changes depend on availability and supplier approval and may involve a disclosed price difference or change fee. A change takes effect only after LinkUps confirms it in writing. If a requested change cannot be made, the existing booking terms continue to apply unless we agree otherwise.
+You may ask to change a traveller name, travel date, or other booking detail. Changes depend on availability and supplier approval and may involve a disclosed price difference or change fee. A change takes effect only after Linkups Adventures confirms it in writing. If a requested change cannot be made, the existing booking terms continue to apply unless we agree otherwise.
 
-## 5. Cancellation by LinkUps or a supplier
-If LinkUps or a supplier cannot provide a confirmed service, we will contact the lead traveller and explain available alternatives, such as a suitable replacement or a new date. If no acceptable alternative is available, any refund or other remedy will follow the booking terms and applicable law. We will not charge for a service that was not provided where a refund is required by law.
+## 5. Cancellation by Linkups Adventures or a supplier
+If Linkups Adventures or a supplier cannot provide a confirmed service, we will contact the lead traveller and explain available alternatives, such as a suitable replacement or a new date. If no acceptable alternative is available, any refund or other remedy will follow the booking terms and applicable law. We will not charge for a service that was not provided where a refund is required by law.
 
 ## 6. Weather, safety, and events outside our control
 Weather, road closures, safety advice, supplier operations, or public-authority decisions may require a trip to change. We will prioritize traveller safety and communicate material changes as soon as reasonably possible. The options for rescheduling or refunds depend on the confirmed booking terms, supplier rules, and applicable law.
@@ -157,6 +157,6 @@ Weather, road closures, safety advice, supplier operations, or public-authority 
 Tell us as soon as possible if you may arrive late or miss a service. A supplier may be unable to hold a departure or recover costs for a missed portion of a trip. Any fee or refund outcome will be based on the terms disclosed for that booking and applicable law; do not assume a missed service is refundable.
 
 ## 8. Questions and complaints
-For a cancellation request or question, contact LinkUps Adventures through the Contact page or at legal@linkupsadventures.com and include your booking reference. This policy is general information, not legal advice. A qualified Kenyan lawyer should review it before publication.`,
+For a cancellation request or question, contact Linkups Adventures through the Contact page or at legal@linkupsadventures.com and include your booking reference. This policy is general information, not legal advice. A qualified Kenyan lawyer should review it before publication.`,
   },
 }

@@ -2,7 +2,7 @@
 
 1. Create a new MySQL database and database user in DirectAdmin. Grant that user access to the database.
 2. Import `schema.mysql` into the new database, then import `seed.mysql` to add the 13 supplied trip listings and their destinations.
-3. For an existing database, check the schema before applying migrations: apply `migrations/001_adventure_trip_details.mysql` if the adventure detail columns are missing, `migrations/002_scheduled_events.mysql` if the `events` table is missing, and `migrations/003_site_content_pages_and_hero.mysql` if `site_content.hero_images` or `site_content.hero_mode` is missing. Fresh databases include these fields and the initial policy page records in `schema.mysql`.
+3. For an existing database, check the schema before applying migrations: apply `migrations/001_adventure_trip_details.mysql` if the adventure detail columns are missing, `migrations/002_scheduled_events.mysql` if the `events` table is missing, and `migrations/003_site_content_pages_and_hero.mysql` if both `site_content.hero_images` and `site_content.hero_mode` are missing. Fresh databases include these fields and the initial policy page records in `schema.mysql`.
 4. Configure the Node application's environment variables using `.env.example` as the variable-name guide. Set `MYSQL_HOST` to the database host visible to the Node app, commonly `localhost` on the same hosting account.
 5. Set a unique admin email and a strong password in the server environment. The first successful sign-in creates the administrator record; no default password is included in the source.
 6. Do not put real credentials in this repository or in the public web root.

@@ -1,9 +1,21 @@
 import { useEffect } from 'react'
-import { useGetPublicSiteContent } from '@workspace/api-client-react'
+import { getGetPublicSiteContentQueryKey, useGetPublicSiteContent } from '@workspace/api-client-react'
 import { PageFrame } from '@/components/site-shell'
 import { legalPages } from '@/lib/legal-content'
+import { Fragment } from 'react'
 
 const legalPageKeys = new Set(Object.keys(legalPages))
+
+function renderBlockContent(lines: string[], key: string | number) {
+  if (lines.length === 0) return null
+  if (lines.every((line) => line.startsWith('- '))) {
+    return <ul key={key}>{lines.map((line, lineIndex) => <li key={lineIndex}>{line.slice(2)}</li>)}</ul>
+  }
+  if (lines.every((line) => /^\d+[.)]\s/.test(line))) {
+    return <ol key={key}>{lines.map((line, lineIndex) => <li key={lineIndex}>{line.replace(/^\d+[.)]\s/, '')}</li>)}</ol>
+  }
+  return <p key={key}>{lines.join(' ')}</p>
+}
 
 function renderBody(body: string) {
   return body.split(/\n\s*\n/).map((block, index) => {
@@ -12,18 +24,12 @@ function renderBody(body: string) {
     const first = lines[0]
 
     if (first.startsWith('### ')) {
-      return <h3 key={index}>{first.slice(4)}</h3>
+      return <Fragment key={index}><h3>{first.slice(4)}</h3>{renderBlockContent(lines.slice(1), `${index}-content`)}</Fragment>
     }
     if (first.startsWith('## ')) {
-      return <h2 key={index}>{first.slice(3)}</h2>
+      return <Fragment key={index}><h2>{first.slice(3)}</h2>{renderBlockContent(lines.slice(1), `${index}-content`)}</Fragment>
     }
-    if (lines.every((line) => line.startsWith('- '))) {
-      return <ul key={index}>{lines.map((line, lineIndex) => <li key={lineIndex}>{line.slice(2)}</li>)}</ul>
-    }
-    if (lines.every((line) => /^\d+[.)]\s/.test(line))) {
-      return <ol key={index}>{lines.map((line, lineIndex) => <li key={lineIndex}>{line.replace(/^\d+[.)]\s/, '')}</li>)}</ol>
-    }
-    return <p key={index}>{lines.join(' ')}</p>
+    return renderBlockContent(lines, index)
   })
 }
 
@@ -41,6 +47,7 @@ function updateMeta(title: string, description: string) {
 export default function PublicContentPage({ pageKey }: { pageKey: string }) {
   const contentQuery = useGetPublicSiteContent(pageKey, {
     query: {
+      queryKey: getGetPublicSiteContentQueryKey(pageKey),
       retry: false,
       staleTime: 60_000,
     },

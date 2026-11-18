@@ -106,7 +106,6 @@ type ContentForm = {
   heroSubtitle: string
   seoDescription: string
   bodyContent: string
-  heroImageUrl: string
   heroImages: string[]
   heroMode: 'static' | 'slideshow'
   isPublished: boolean
@@ -140,7 +139,7 @@ const blankEvent: EventForm = {
 }
 const blankContent: ContentForm = {
   pageKey: '', pageTitle: '', heroTitle: '', heroSubtitle: '', seoDescription: '',
-  bodyContent: '', heroImageUrl: '', heroImages: [], heroMode: 'static', isPublished: false,
+  bodyContent: '', heroImages: [], heroMode: 'static', isPublished: false,
 }
 
 function formatDate(value: string | null | undefined) {
@@ -514,7 +513,7 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
     setContentForm({
       pageKey: item.pageKey, pageTitle: item.pageTitle, heroTitle: item.heroTitle ?? '',
       heroSubtitle: item.heroSubtitle ?? '', seoDescription: item.seoDescription ?? '',
-      bodyContent: item.bodyContent ?? legalPages[item.pageKey]?.bodyContent ?? '', heroImageUrl: item.heroImageUrl ?? '',
+      bodyContent: item.bodyContent ?? legalPages[item.pageKey]?.bodyContent ?? '',
       heroImages: item.heroImages.length ? item.heroImages : item.heroImageUrl ? [item.heroImageUrl] : [],
       heroMode: item.heroMode, isPublished: item.isPublished,
     })
@@ -553,8 +552,13 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
   async function submitContent(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     clearMessages()
+    const pageKey = contentForm.pageKey.trim().toLowerCase()
+    if (!editingPage && siteContent.some((item) => item.pageKey === pageKey)) {
+      setFormError('A page with this key already exists. Edit it from the page list instead.')
+      return
+    }
     const data: SiteContentInput = {
-      pageKey: contentForm.pageKey.trim().toLowerCase(),
+      pageKey,
       pageTitle: contentForm.pageTitle.trim(),
       heroTitle: contentForm.heroTitle.trim() || null,
       heroSubtitle: contentForm.heroSubtitle.trim() || null,
