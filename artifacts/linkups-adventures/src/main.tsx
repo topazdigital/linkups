@@ -10,6 +10,7 @@ import './brand.css';
 import './content-pages.css';
 import './image-performance.css';
 import './homepage-sections.css';
+import './responsive-pages.css';
 
 const queryClient = new QueryClient();
 
