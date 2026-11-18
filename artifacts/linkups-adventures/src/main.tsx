@@ -9,6 +9,7 @@ import './admin-data.css';
 import './brand.css';
 import './content-pages.css';
 import './image-performance.css';
+import './homepage-sections.css';
 
 const queryClient = new QueryClient();
 
