@@ -1,0 +1,99 @@
+name: Deploy LinkUps
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: linkups-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck workspace
+        run: pnpm run typecheck
+
+      - name: Build hosted release
+        run: pnpm --filter @workspace/api-server run build:hosted
+
+      - name: Check hosted release files
+        run: |
+          test -s artifacts/api-server/hosted-release/dist/index.mjs
+          test -s artifacts/api-server/hosted-release/public/index.html
+          test -s artifacts/api-server/hosted-release/database/schema.mysql
+          test -s artifacts/api-server/hosted-release/database/seed.mysql
+
+      - name: Configure SSH
+        env:
+          LINKUPS_DEPLOY_HOST: ${{ secrets.LINKUPS_DEPLOY_HOST }}
+          LINKUPS_DEPLOY_KEY: ${{ secrets.LINKUPS_DEPLOY_KEY }}
+          LINKUPS_KNOWN_HOSTS: ${{ secrets.LINKUPS_KNOWN_HOSTS }}
+        run: |
+          : "${LINKUPS_DEPLOY_HOST:?Add the LINKUPS_DEPLOY_HOST repository secret}"
+          : "${LINKUPS_DEPLOY_KEY:?Add the LINKUPS_DEPLOY_KEY repository secret}"
+          : "${LINKUPS_KNOWN_HOSTS:?Add the LINKUPS_KNOWN_HOSTS repository secret}"
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$LINKUPS_DEPLOY_KEY" > "$HOME/.ssh/linkups_deploy"
+          printf '%s\n' "$LINKUPS_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/linkups_deploy" "$HOME/.ssh/known_hosts"
+          ssh-keygen -y -f "$HOME/.ssh/linkups_deploy" >/dev/null
+          ssh-keygen -F "$LINKUPS_DEPLOY_HOST" -f "$HOME/.ssh/known_hosts" >/dev/null
+
+      - name: Upload hosted release
+        env:
+          LINKUPS_DEPLOY_HOST: ${{ secrets.LINKUPS_DEPLOY_HOST }}
+        run: |
+          rsync -az \
+            -e "ssh -i $HOME/.ssh/linkups_deploy -o IdentitiesOnly=yes -o BatchMode=yes" \
+            artifacts/api-server/hosted-release/ \
+            "admin@${LINKUPS_DEPLOY_HOST}:/home/admin/domains/linkupsadventures.co.ke/linkups-app/"
+
+      - name: Restart LinkUps and verify health
+        env:
+          LINKUPS_DEPLOY_HOST: ${{ secrets.LINKUPS_DEPLOY_HOST }}
+        run: |
+          ssh -i "$HOME/.ssh/linkups_deploy" \
+            -o IdentitiesOnly=yes \
+            -o BatchMode=yes \
+            "admin@${LINKUPS_DEPLOY_HOST}" \
+            'bash -l -s' <<'REMOTE'
+          set -euo pipefail
+          cd /home/admin/domains/linkupsadventures.co.ke/linkups-app
+          npm install --omit=dev
+          pm2 restart linkups
+
+          for attempt in {1..20}; do
+            if curl -fsS --max-time 3 http://127.0.0.1:5002/api/healthz >/dev/null; then
+              echo "LinkUps health check passed."
+              exit 0
+            fi
+            sleep 2
+          done
+
+          echo "LinkUps health check failed." >&2
+          exit 1
+          REMOTE

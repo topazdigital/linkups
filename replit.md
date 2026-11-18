@@ -7,10 +7,19 @@ Kenya adventure-travel website for browsing trips, requesting bookings, and mana
 - `pnpm install` — install workspace dependencies
 - `pnpm --filter @workspace/linkups-adventures run dev` — run the Vite website
 - `pnpm --filter @workspace/api-server run dev` — run the Express API
+- `pnpm --filter @workspace/api-server run build:hosted` — build the DirectAdmin release bundle
 - `pnpm run typecheck` — typecheck workspace packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API client and validation types
 - API environment: `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD`, and `SESSION_SECRET`
 - Admin environment: `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and `ADMIN_NAME`
+- GitHub Actions deploys `main` to the LinkUps DirectAdmin app; configure the repository secrets listed in `Deployment`.
+
+## Deployment
+
+- `.github/workflows/deploy-linkups.yml` builds and uploads the hosted release on pushes to `main`, then restarts only the `linkups` PM2 app and checks its health.
+- The workflow uploads the bundled MySQL schema, seed, and migrations without deleting server files. On restart, MySQL setup runs only when the LinkUps app has complete `MYSQL_*` settings; incomplete settings stop startup, while no settings skip database setup.
+- Add these GitHub repository secrets: `LINKUPS_DEPLOY_HOST`, `LINKUPS_DEPLOY_KEY` (private SSH key for the `admin` account), and `LINKUPS_KNOWN_HOSTS` (verified SSH host-key line).
+- To manually deploy the latest `main` from the server as root, run `su - admin -c 'bash /home/admin/apps/linkups-source/deploy-linkups-hosted.sh'` and enter `DEPLOY LINKUPS` when prompted.
 
 ## Stack
 
