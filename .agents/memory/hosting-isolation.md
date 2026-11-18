@@ -7,6 +7,8 @@ The LinkUps deployment target is `linkupsadventures.co.ke`, with its public docu
 
 The physical Node app root is `/home/admin/domains/linkupsadventures.co.ke/linkups-app`. DirectAdmin assigns port `5002`; PM2 runs it as user `admin` under the app name `linkups`. The app root is a built release bundle, not a Git checkout.
 
+The user prefers to push LinkUps changes manually from Replit Shell and declined connecting GitHub as a Replit integration. Use the project secret securely for manual pushes; never put its value in chat or a Git URL.
+
 **Why:** the user confirmed that `.co.ke` is the intended LinkUps domain and explicitly wants the other hosted sites left untouched.
 
-**How to apply:** only configure or restart the Node application named `linkups`; use its assigned port and preserve its existing environment. Keep source checkouts outside the public document root and do not touch other app configurations.
+**How to apply:** only configure or restart the Node application named `linkups`; use its assigned port and preserve its existing environment. Keep source checkouts outside the public document root, push manually from Replit Shell, and do not touch other app configurations.
