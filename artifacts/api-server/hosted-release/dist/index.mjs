@@ -34647,6 +34647,71 @@ async function executeSql(sql, values = []) {
   return result;
 }
 
+// src/lib/booking-notifications.ts
+import nodemailer from "nodemailer";
+function getSmtpSettings() {
+  const host = process.env.BOOKING_SMTP_HOST?.trim();
+  const port2 = Number(process.env.BOOKING_SMTP_PORT || 587);
+  const user = process.env.BOOKING_SMTP_USER?.trim();
+  const password = process.env.BOOKING_SMTP_PASSWORD;
+  const recipient = process.env.BOOKING_NOTIFICATION_TO?.trim();
+  const missing = [];
+  if (!host) missing.push("BOOKING_SMTP_HOST");
+  if (!user) missing.push("BOOKING_SMTP_USER");
+  if (!password) missing.push("BOOKING_SMTP_PASSWORD");
+  if (!recipient) missing.push("BOOKING_NOTIFICATION_TO");
+  if (missing.length) {
+    throw new Error(`Booking email is not configured: ${missing.join(", ")}`);
+  }
+  if (!Number.isInteger(port2) || port2 < 1 || port2 > 65535) {
+    throw new Error("BOOKING_SMTP_PORT must be a valid port number.");
+  }
+  return { host, port: port2, user, password, recipient };
+}
+async function sendBookingNotification(booking) {
+  const settings = getSmtpSettings();
+  const transporter = nodemailer.createTransport({
+    host: settings.host,
+    port: settings.port,
+    secure: settings.port === 465,
+    requireTLS: settings.port === 587,
+    auth: {
+      user: settings.user,
+      pass: settings.password
+    },
+    connectionTimeout: 1e4,
+    greetingTimeout: 1e4,
+    socketTimeout: 2e4
+  });
+  const lines = [
+    `A new booking request was received.`,
+    ``,
+    `Reference: ${booking.reference}`,
+    `Customer: ${booking.fullName}`,
+    `Email: ${booking.email}`,
+    `Phone: ${booking.phone}`,
+    `Adventure: ${booking.adventure}`,
+    `Preferred date: ${booking.travelDate || "Not specified"}`,
+    `Travellers: ${booking.travellers}`,
+    `Estimated total: KES ${booking.totalAmount.toLocaleString("en-KE")}`,
+    ``,
+    `Special requests:`,
+    booking.specialRequests?.trim() || "None",
+    ``,
+    `Review this request in the LinkUps Adventures admin workspace.`
+  ];
+  try {
+    await transporter.sendMail({
+      from: `LinkUps Adventures <${settings.user}>`,
+      to: settings.recipient,
+      subject: `New booking request ${booking.reference}`,
+      text: lines.join("\n")
+    });
+  } finally {
+    transporter.close();
+  }
+}
+
 // src/middleware/user-auth.ts
 import {
   createHash,
@@ -34816,10 +34881,11 @@ router2.post("/bookings", async (req, res) => {
   const customer = await findCustomerIdentity(req);
   const adventureSlug = input.adventureSlug?.trim() || null;
   let adventureId = null;
+  let adventureTitle = "Custom trip / not specified";
   let unitPrice = 0;
   if (adventureSlug) {
     const adventures = await selectRows(
-      `SELECT id, price
+      `SELECT id, price, title
        FROM adventures
        WHERE slug = ? AND is_published = TRUE
        LIMIT 1`,
@@ -34831,6 +34897,7 @@ router2.post("/bookings", async (req, res) => {
     }
     adventureId = adventures[0].id;
     unitPrice = Number(adventures[0].price);
+    adventureTitle = adventures[0].title;
   }
   const reference = `LA-${randomBytes2(5).toString("hex").toUpperCase()}`;
   const totalAmount = Math.round(unitPrice * input.travellers * 100) / 100;
@@ -34853,6 +34920,22 @@ router2.post("/bookings", async (req, res) => {
       totalAmount
     ]
   );
+  try {
+    await sendBookingNotification({
+      reference,
+      fullName: input.fullName.trim(),
+      email: input.email.trim().toLowerCase(),
+      phone: input.phone.trim(),
+      adventure: adventureTitle,
+      travelDate,
+      travellers: input.travellers,
+      totalAmount,
+      specialRequests: input.specialRequests?.trim() || null
+    });
+    req.log.info({ reference }, "Booking notification email sent");
+  } catch (error) {
+    req.log.error({ err: error, reference }, "Booking notification email failed");
+  }
   res.status(201).json(
     CreateBookingResponse.parse({
       reference,
