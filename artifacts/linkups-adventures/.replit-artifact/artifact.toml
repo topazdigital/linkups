@@ -1,14 +1,14 @@
 kind = "web"
-previewPath = "/"
-title = "LinkUps Adventures"
-description = "A travel and adventure site for discovering and planning Kenya safaris, beach escapes, camping trips, road trips, and group travel."
+previewPath = "/legacy-linkups"
+title = "LinkUps Adventures Archive"
+description = "Saved copy of the previous LinkUps Adventures site."
 version = "1.0.0"
 id = "artifacts/linkups-adventures"
 router = "path"
 
 [[services]]
 name = "web"
-paths = [ "/" ]
+paths = [ "/legacy-linkups" ]
 localPort = 19104
 
 [services.development]
@@ -25,4 +25,4 @@ to = "/index.html"
 
 [services.env]
 PORT = "19104"
-BASE_PATH = "/"
+BASE_PATH = "/legacy-linkups"

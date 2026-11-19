@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "LinkUps Adventures"
+description = "A travel and adventure website for discovering Kenya safaris, beach escapes, camping trips, road trips, group travel, and planning custom journeys."
+version = "1.0.0"
+id = "artifacts/linkups-adventures-web"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 24142
+
+[services.development]
+run = "pnpm --filter @workspace/linkups-adventures-web run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/linkups-adventures-web", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/linkups-adventures-web/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "24142"
+BASE_PATH = "/"

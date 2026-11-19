@@ -1,0 +1,188 @@
+.tour-tagline {
+  color: #ff9a58;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.tour-accommodation {
+  margin-top: 18px;
+}
+
+.tour-highlights {
+  margin-top: 28px;
+}
+
+.tour-highlights h3 {
+  color: var(--green);
+  font-size: 16px;
+  margin: 0 0 12px;
+}
+
+.tour-highlights ul,
+.trip-info-card ul,
+.day-card ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tour-highlights li,
+.trip-info-card li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #465f58;
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 10px 0;
+}
+
+.tour-highlights li svg,
+.trip-info-card li svg {
+  flex: 0 0 17px;
+  width: 17px;
+  color: var(--orange);
+  margin-top: 2px;
+}
+
+.trip-gallery {
+  border-top: 1px solid #dbe8e2;
+  margin-top: 76px;
+  padding-top: 56px;
+}
+
+.trip-gallery h2,
+.trip-info-card h2 {
+  font-family: 'Gochi Hand', cursive;
+  color: var(--green);
+  font-size: clamp(34px, 4vw, 48px);
+  font-weight: 400;
+  line-height: 1;
+  margin: 10px 0 22px;
+}
+
+.trip-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.trip-gallery-grid img {
+  width: 100%;
+  height: 230px;
+  border-radius: 12px;
+  object-fit: cover;
+  background: #e8f1ed;
+}
+
+.day-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.day-card h4 {
+  color: var(--green);
+  font-size: 17px;
+}
+
+.day-card li {
+  color: #62736f;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-top: 9px;
+}
+
+.trip-inclusions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 72px;
+}
+
+.trip-info-card {
+  border: 1px solid #dbe8e2;
+  border-radius: 14px;
+  background: #fff;
+  padding: 24px;
+}
+
+.trip-info-card h2 {
+  font-size: 34px;
+  margin-top: 0;
+}
+
+.trip-info-card p {
+  color: #62736f;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.included-card {
+  background: #eff8f1;
+}
+
+.excluded-card {
+  background: #fff5ef;
+}
+
+.optional-card {
+  grid-column: 1 / -1;
+}
+
+.trip-ideal-for {
+  color: #62736f;
+  margin: 24px 0 0;
+  line-height: 1.7;
+}
+
+.trip-ideal-for strong {
+  color: var(--green);
+}
+
+.booking-card small {
+  display: block;
+  max-width: 720px;
+  margin-top: 10px;
+  color: #cfe3dc;
+  line-height: 1.55;
+}
+
+@media (max-width: 800px) {
+  .trip-gallery,
+  .itinerary,
+  .trip-inclusions {
+    margin-top: 52px;
+  }
+
+  .trip-gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .trip-gallery-grid img {
+    height: 160px;
+  }
+
+  .day-list,
+  .trip-inclusions {
+    grid-template-columns: 1fr;
+  }
+
+  .optional-card {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 520px) {
+  .trip-gallery-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .trip-gallery-grid img {
+    height: 210px;
+  }
+
+  .booking-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
