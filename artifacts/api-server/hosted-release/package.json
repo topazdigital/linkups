@@ -9,6 +9,7 @@
     "start": "node dist/index.mjs"
   },
   "dependencies": {
+    "multer": "^2.5.0",
     "mysql2": "^3.24.5",
     "nodemailer": "^10.6.0"
   }

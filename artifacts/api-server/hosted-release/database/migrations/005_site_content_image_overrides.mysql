@@ -1,0 +1,16 @@
+ALTER TABLE site_content
+  ADD COLUMN image_overrides JSON NULL AFTER hero_images;
+
+UPDATE site_content
+SET image_overrides = JSON_OBJECT()
+WHERE image_overrides IS NULL;
+
+INSERT IGNORE INTO site_content
+  (page_key, page_title, hero_title, is_published)
+VALUES
+  ('about', 'About Us', 'We create memories.', TRUE),
+  ('adventures', 'Adventures', 'Find your kind of adventure.', TRUE),
+  ('destinations', 'Destinations', 'Explore Kenya.', TRUE),
+  ('group-travel', 'Group Travel', 'Adventure is better together.', TRUE),
+  ('contact', 'Contact', 'Let’s plan your next adventure.', TRUE),
+  ('blog', 'Blog', 'Travel stories and guides.', TRUE);

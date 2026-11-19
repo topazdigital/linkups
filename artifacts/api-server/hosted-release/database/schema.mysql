@@ -95,6 +95,7 @@ CREATE TABLE IF NOT EXISTS site_content (
   body_content LONGTEXT NULL,
   hero_image_url VARCHAR(500) NULL,
   hero_images JSON NULL,
+  image_overrides JSON NULL,
   hero_mode ENUM('static','slideshow') NOT NULL DEFAULT 'static',
   is_published BOOLEAN NOT NULL DEFAULT FALSE,
   updated_by BIGINT UNSIGNED NULL,
