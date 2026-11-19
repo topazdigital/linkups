@@ -1,7 +1,7 @@
 kind = "web"
 previewPath = "/"
 title = "LinkUps Adventures"
-description = "A travel and adventure website for LinkUps Adventures, with public trip discovery, account flows, and a private admin workspace for managing adventures, events, bookings, and site content."
+description = "A travel website for discovering Kenya adventures, comparing flexible-date trips, sending booking requests, and managing public content through a role-protected admin workspace."
 version = "1.0.0"
 id = "artifacts/linkups-adventures-port"
 router = "path"

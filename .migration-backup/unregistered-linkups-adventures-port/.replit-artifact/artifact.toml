@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "LinkUps Adventures"
+description = "A travel and adventure website for LinkUps Adventures, with public trip discovery, account flows, and a private admin workspace for managing adventures, events, bookings, and site content."
+version = "1.0.0"
+id = "artifacts/linkups-adventures-port"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22931
+
+[services.development]
+run = "pnpm --filter @workspace/linkups-adventures-port run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/linkups-adventures-port", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/linkups-adventures-port/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22931"
+BASE_PATH = "/"

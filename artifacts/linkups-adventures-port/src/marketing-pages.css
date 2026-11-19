@@ -678,19 +678,12 @@
   line-height: 1.5;
 }
 
-/* Keep the desktop sign-in action visible while compacting a crowded header. */
+/* Keep the desktop primary header action visible while compacting navigation. */
 @media (min-width: 801px) {
   .site-header .header-actions {
     display: flex;
     flex: none;
     align-items: center;
-  }
-
-  .site-header .header-account {
-    display: inline-flex;
-    flex: none;
-    visibility: visible;
-    opacity: 1;
   }
 }
 
