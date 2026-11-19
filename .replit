@@ -27,3 +27,7 @@ channel = "stable-25_05"
 [userenv.shared]
 ADMIN_EMAIL = "info@linkupsadventures.co.ke"
 ADMIN_EMAIL_ALIASES = "info@linkpusdaventures.co.ke"
+BOOKING_NOTIFICATION_TO = "info@linkupsadventures.co.ke"
+BOOKING_SMTP_HOST = "mail.linkupsadventures.co.ke"
+BOOKING_SMTP_PORT = "587"
+BOOKING_SMTP_USER = "info@linkupsadventures.co.ke"

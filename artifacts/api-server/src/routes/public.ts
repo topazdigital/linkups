@@ -10,6 +10,7 @@ import {
 } from "@workspace/api-zod";
 import { adventureColumns, adventureResponse, type AdventureRow } from "../lib/adventure";
 import { executeSql, selectRows } from "../lib/mysql";
+import { sendBookingNotification } from "../lib/booking-notifications";
 import { findCustomerIdentity } from "../middleware/user-auth";
 
 const router: IRouter = Router();
@@ -17,6 +18,7 @@ const router: IRouter = Router();
 interface PriceRow extends RowDataPacket {
   id: number | string;
   price: number | string;
+  title: string;
 }
 
 router.get("/adventures", async (_req, res): Promise<void> => {
@@ -76,11 +78,12 @@ router.post("/bookings", async (req, res): Promise<void> => {
   const customer = await findCustomerIdentity(req);
   const adventureSlug = input.adventureSlug?.trim() || null;
   let adventureId: number | string | null = null;
+  let adventureTitle = "Custom trip / not specified";
   let unitPrice = 0;
 
   if (adventureSlug) {
     const adventures = await selectRows<PriceRow>(
-      `SELECT id, price
+      `SELECT id, price, title
        FROM adventures
        WHERE slug = ? AND is_published = TRUE
        LIMIT 1`,
@@ -92,6 +95,7 @@ router.post("/bookings", async (req, res): Promise<void> => {
     }
     adventureId = adventures[0].id;
     unitPrice = Number(adventures[0].price);
+    adventureTitle = adventures[0].title;
   }
 
   const reference = `LA-${randomBytes(5).toString("hex").toUpperCase()}`;
@@ -119,6 +123,23 @@ router.post("/bookings", async (req, res): Promise<void> => {
       totalAmount,
     ],
   );
+
+  try {
+    await sendBookingNotification({
+      reference,
+      fullName: input.fullName.trim(),
+      email: input.email.trim().toLowerCase(),
+      phone: input.phone.trim(),
+      adventure: adventureTitle,
+      travelDate,
+      travellers: input.travellers,
+      totalAmount,
+      specialRequests: input.specialRequests?.trim() || null,
+    });
+    req.log.info({ reference }, "Booking notification email sent");
+  } catch (error) {
+    req.log.error({ err: error, reference }, "Booking notification email failed");
+  }
 
   res.status(201).json(
     CreateBookingResponse.parse({
