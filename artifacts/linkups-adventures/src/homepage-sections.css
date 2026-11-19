@@ -278,3 +278,28 @@
     height: 105px;
   }
 }
+
+@media (max-width: 600px) {
+  footer {
+    padding-inline: 20px;
+  }
+
+  footer .footer-main {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px 16px;
+    padding: 36px 0 0;
+  }
+
+  footer .footer-main > div {
+    min-width: 0;
+  }
+
+  footer .footer-main > div:first-child {
+    grid-column: 1 / -1;
+    padding-bottom: 2px;
+  }
+
+  footer .footer-main a {
+    overflow-wrap: anywhere;
+  }
+}
