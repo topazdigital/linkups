@@ -8,6 +8,7 @@ import AdminPage from '@/app/admin/page';
 import AdventuresPage from '@/app/adventures/page';
 import AdventureDetailPage from '@/app/adventures/[slug]/page';
 import BlogPage from '@/app/blog/page';
+import BlogPostPage from '@/app/blog/[slug]/page';
 import ContactPage from '@/app/contact/page';
 import DestinationsPage from '@/app/destinations/page';
 import DestinationDetailPage from '@/app/destinations/[slug]/page';
@@ -63,6 +64,9 @@ function AppRoutes() {
             {(params) => <AdventureDetailPage slug={params.slug} />}
           </Route>
           <Route path="/blog" component={BlogPage} />
+          <Route path="/blog/:slug">
+            {(params) => <BlogPostPage slug={params.slug} />}
+          </Route>
           <Route path="/compare" component={LegacyCompareRedirect} />
           <Route path="/contact" component={ContactPage} />
           <Route path="/destinations" component={DestinationsPage} />

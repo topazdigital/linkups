@@ -1,0 +1,34 @@
+.workspace-blog-post-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 240px;
+}
+
+.workspace-blog-post-cell > img {
+  width: 64px;
+  height: 48px;
+  flex: 0 0 64px;
+  border-radius: 7px;
+  object-fit: cover;
+  background: #e8eee8;
+}
+
+.workspace-blog-post-cell > span {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.workspace-blog-post-cell b {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.workspace-blog-post-cell small {
+  overflow-wrap: anywhere;
+  color: var(--muted);
+}

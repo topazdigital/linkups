@@ -20,7 +20,7 @@ export default function DestinationPage({ slug }: { slug: string }) {
   const destinationImage = getImage(`destination-${destination.slug}`, destination.image)
   const gallery = [destinationImage, destinationImage, destinationImage, destinationImage, destinationImage]
   return <PageFrame><main className="destination-package">
-    <section className="package-hero" style={{ backgroundImage: `linear-gradient(90deg,rgba(0,40,34,.88),rgba(0,40,34,.1)),url(${optimizedImageUrl(destination.image)})` }}>
+    <section className="package-hero" style={{ backgroundImage: `linear-gradient(90deg,rgba(0,40,34,.88),rgba(0,40,34,.1)),url("${optimizedImageUrl(destinationImage)}")` }}>
       <div className="package-hero-copy"><span className="package-pill">Featured destination</span><span className="eyebrow">LinkUps Adventures</span><h1>{destination.name}<br /><em>Villa Escape</em></h1><p>{destination.description} Unforgettable moments with your favourite people.</p><div className="package-meta"><span><CalendarDays /> 3 Days / 2 Nights</span><span><MapPin /> {destination.name}</span><span><Users /> 8–16 Pax (sharing)</span></div></div><div className="package-price"><small>From</small><strong>KES 24,800</strong><span>per person</span></div>
     </section>
     <nav className="package-tabs" aria-label="Package sections"><a href="#overview">Overview</a><a href="#itinerary">Itinerary</a><a href="#included">Inclusions</a><a href="#gallery">Gallery</a><a href="#booking">Book now</a><a className="whatsapp-tab" href="https://wa.me/254726843677"><MessageCircle /> Chat on WhatsApp</a></nav>

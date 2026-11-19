@@ -5,8 +5,10 @@ import { Link, useLocation } from 'wouter'
 import { useQueryClient } from '@tanstack/react-query'
 import {
   getGetAuthSessionQueryKey,
+  getGetPublicBlogPostQueryKey,
   getGetPublicSiteContentQueryKey,
   getListAdminAdventuresQueryKey,
+  getListAdminBlogPostsQueryKey,
   getListAdminBookingsQueryKey,
   getListAdminDestinationsQueryKey,
   getListAdminEventsQueryKey,
@@ -14,14 +16,17 @@ import {
   getListAdminSiteContentQueryKey,
   getListAdminUsersQueryKey,
   getListPublicAdventuresQueryKey,
+  getListPublicBlogPostsQueryKey,
   getListPublicDestinationsQueryKey,
   getListPublicEventsQueryKey,
   useAdminLogout,
   useCreateAdventure,
+  useCreateBlogPost,
   useCreateDestination,
   useCreateEvent,
   useGetAuthSession,
   useListAdminAdventures,
+  useListAdminBlogPosts,
   useListAdminBookings,
   useListAdminDestinations,
   useListAdminEvents,
@@ -31,12 +36,13 @@ import {
   useSaveAdminSiteContent,
   useUpdateAdminUser,
   useUpdateAdventure,
+  useUpdateBlogPost,
   useUpdateBooking,
   useUpdateDestination,
   useUpdateEvent,
   useUpdateEnquiry,
 } from '@workspace/api-client-react'
-import type { AdminUser, Adventure, Booking, Destination, Enquiry, Event as ScheduledEvent, EventInput, SiteContent, SiteContentInput } from '@workspace/api-client-react'
+import type { AdminUser, Adventure, BlogPost, BlogPostInput, Booking, Destination, Enquiry, Event as ScheduledEvent, EventInput, SiteContent, SiteContentInput } from '@workspace/api-client-react'
 import { Logo } from '@/components/site-shell'
 import { legalPages } from '@/lib/legal-content'
 import { formatAdventurePrice } from '@/lib/api'
@@ -52,13 +58,14 @@ import {
   Mail,
   Map,
   Menu,
+  Newspaper,
   Plus,
   RefreshCw,
   Users,
   X,
 } from 'lucide-react'
 
-type Section = 'Overview' | 'Bookings' | 'Enquiries' | 'Adventures' | 'Events' | 'Users' | 'Destinations' | 'Website content'
+type Section = 'Overview' | 'Bookings' | 'Enquiries' | 'Adventures' | 'Events' | 'Users' | 'Destinations' | 'Blog' | 'Website content'
 type AdventureForm = {
   slug: string
   title: string
@@ -102,6 +109,15 @@ type EventForm = {
   heroImageUrl: string
   isPublished: boolean
 }
+type BlogForm = {
+  slug: string
+  title: string
+  category: string
+  excerpt: string
+  content: string
+  coverImageUrl: string
+  isPublished: boolean
+}
 type ContentForm = {
   pageKey: string
   pageTitle: string
@@ -114,7 +130,7 @@ type ContentForm = {
   heroMode: 'static' | 'slideshow'
   isPublished: boolean
 }
-type OpenForm = 'adventure' | 'destination' | 'event' | 'content' | null
+type OpenForm = 'adventure' | 'destination' | 'event' | 'blog' | 'content' | null
 
 const sections: { name: Section; icon: typeof LayoutDashboard }[] = [
   { name: 'Overview', icon: LayoutDashboard },
@@ -124,6 +140,7 @@ const sections: { name: Section; icon: typeof LayoutDashboard }[] = [
   { name: 'Events', icon: CalendarDays },
   { name: 'Users', icon: Users },
   { name: 'Destinations', icon: Map },
+  { name: 'Blog', icon: Newspaper },
   { name: 'Website content', icon: FileText },
 ]
 const bookingStatuses: Booking['status'][] = ['new', 'confirmed', 'in_progress', 'completed', 'cancelled']
@@ -141,6 +158,9 @@ const blankDestination: DestinationForm = {
 const blankEvent: EventForm = {
   slug: '', title: '', description: '', eventDate: '', location: '',
   priceLabel: '', heroImageUrl: '', isPublished: false,
+}
+const blankBlog: BlogForm = {
+  slug: '', title: '', category: '', excerpt: '', content: '', coverImageUrl: '', isPublished: false,
 }
 const blankContent: ContentForm = {
   pageKey: '', pageTitle: '', heroTitle: '', heroSubtitle: '', seoDescription: '',
@@ -165,6 +185,9 @@ function makeEventSlug(title: string, eventDate: string) {
   const dateSuffix = eventDate.replaceAll('-', '')
   const safeTitle = (titleSlug || 'linkups-event').slice(0, 179 - dateSuffix.length)
   return `${safeTitle}-${dateSuffix}`
+}
+function makeBlogSlug(title: string) {
+  return title.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 200)
 }
 function readable(value: string) {
   return value.replaceAll('_', ' ').replace(/\b\w/g, (character) => character.toUpperCase())
@@ -257,6 +280,8 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
   const [destinationForm, setDestinationForm] = useState<DestinationForm>(blankDestination)
   const [editingEvent, setEditingEvent] = useState<number | null>(null)
   const [eventForm, setEventForm] = useState<EventForm>(blankEvent)
+  const [editingBlogPost, setEditingBlogPost] = useState<number | null>(null)
+  const [blogForm, setBlogForm] = useState<BlogForm>(blankBlog)
   const [contentForm, setContentForm] = useState<ContentForm>(blankContent)
   const [editingPage, setEditingPage] = useState('')
 
@@ -272,6 +297,8 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
     setDestinationForm(blankDestination)
     setEditingEvent(null)
     setEventForm(blankEvent)
+    setEditingBlogPost(null)
+    setBlogForm(blankBlog)
     setEditingPage('')
     setContentForm(blankContent)
     clearMessages()
@@ -324,6 +351,7 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
   const bookingsQuery = useListAdminBookings()
   const enquiriesQuery = useListAdminEnquiries()
   const adventuresQuery = useListAdminAdventures()
+  const blogPostsQuery = useListAdminBlogPosts()
   const eventsQuery = useListAdminEvents()
   const usersQuery = useListAdminUsers()
   const destinationsQuery = useListAdminDestinations()
@@ -332,6 +360,7 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
   const bookings = bookingsQuery.data ?? []
   const enquiries = enquiriesQuery.data ?? []
   const adventures = adventuresQuery.data ?? []
+  const blogPosts = blogPostsQuery.data ?? []
   const events = eventsQuery.data ?? []
   const users = usersQuery.data ?? []
   const destinations = destinationsQuery.data ?? []
@@ -340,7 +369,9 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
   const updateBooking = useUpdateBooking()
   const updateEnquiry = useUpdateEnquiry()
   const createAdventure = useCreateAdventure()
+  const createBlogPost = useCreateBlogPost()
   const updateAdventure = useUpdateAdventure()
+  const updateBlogPost = useUpdateBlogPost()
   const createEvent = useCreateEvent()
   const updateEvent = useUpdateEvent()
   const updateUser = useUpdateAdminUser()
@@ -353,16 +384,18 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
   const visibleBookings = useMemo(() => bookings.filter((item) => `${item.reference} ${item.fullName} ${item.email} ${item.adventureTitle ?? ''}`.toLowerCase().includes(queryText)), [bookings, queryText])
   const visibleEnquiries = useMemo(() => enquiries.filter((item) => `${item.name} ${item.email} ${item.service ?? ''} ${item.message}`.toLowerCase().includes(queryText)), [enquiries, queryText])
   const visibleAdventures = useMemo(() => adventures.filter((item) => `${item.title} ${item.slug} ${item.category} ${item.destinationName ?? ''}`.toLowerCase().includes(queryText)), [adventures, queryText])
+  const visibleBlogPosts = useMemo(() => blogPosts.filter((item) => `${item.title} ${item.slug} ${item.category} ${item.excerpt}`.toLowerCase().includes(queryText)), [blogPosts, queryText])
   const visibleEvents = useMemo(() => events.filter((item) => `${item.title} ${item.slug} ${item.location} ${item.eventDate}`.toLowerCase().includes(queryText)), [events, queryText])
   const visibleUsers = useMemo(() => users.filter((item) => `${item.name} ${item.email} ${item.phone ?? ''} ${item.role}`.toLowerCase().includes(queryText)), [users, queryText])
   const visibleDestinations = useMemo(() => destinations.filter((item) => `${item.name} ${item.slug} ${item.summary ?? ''}`.toLowerCase().includes(queryText)), [destinations, queryText])
   const visibleContent = useMemo(() => siteContent.filter((item) => `${item.pageTitle} ${item.pageKey}`.toLowerCase().includes(queryText)), [siteContent, queryText])
-  const allQueries = [bookingsQuery, enquiriesQuery, adventuresQuery, eventsQuery, usersQuery, destinationsQuery, contentQuery]
+  const allQueries = [bookingsQuery, enquiriesQuery, adventuresQuery, blogPostsQuery, eventsQuery, usersQuery, destinationsQuery, contentQuery]
   const loading = allQueries.some((item) => item.isLoading)
   const activeQueryError = active === 'Overview' ? allQueries.find((item) => item.error)?.error ?? null
     : active === 'Bookings' ? bookingsQuery.error
     : active === 'Enquiries' ? enquiriesQuery.error
       : active === 'Adventures' ? adventuresQuery.error
+        : active === 'Blog' ? blogPostsQuery.error
           : active === 'Events' ? eventsQuery.error
             : active === 'Users' ? usersQuery.error
               : active === 'Destinations' ? destinationsQuery.error
@@ -576,6 +609,60 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
       setOpenForm(null)
     } catch (reason) { showError(reason) }
   }
+  function beginBlogEdit(post: BlogPost) {
+    clearMessages()
+    setOpenForm('blog')
+    setEditingBlogPost(post.id)
+    setBlogForm({
+      slug: post.slug,
+      title: post.title,
+      category: post.category,
+      excerpt: post.excerpt,
+      content: post.content,
+      coverImageUrl: post.coverImageUrl,
+      isPublished: post.isPublished,
+    })
+  }
+  function resetBlogForm() {
+    setEditingBlogPost(null)
+    setBlogForm(blankBlog)
+    clearMessages()
+    setOpenForm('blog')
+  }
+  async function submitBlogPost(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    clearMessages()
+    const title = blogForm.title.trim()
+    const slug = blogForm.slug.trim().toLowerCase() || makeBlogSlug(title)
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+      setFormError('Enter a URL slug using lowercase letters, numbers, and hyphens.')
+      return
+    }
+    const data: BlogPostInput = {
+      slug,
+      title,
+      category: blogForm.category.trim(),
+      excerpt: blogForm.excerpt.trim(),
+      content: blogForm.content.trim(),
+      coverImageUrl: blogForm.coverImageUrl.trim(),
+      isPublished: blogForm.isPublished,
+    }
+    const oldSlug = blogPosts.find((post) => post.id === editingBlogPost)?.slug
+    try {
+      if (editingBlogPost === null) await createBlogPost.mutateAsync({ data })
+      else await updateBlogPost.mutateAsync({ id: editingBlogPost, data })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: getListAdminBlogPostsQueryKey() }),
+        queryClient.invalidateQueries({ queryKey: getListPublicBlogPostsQueryKey() }),
+        ...(oldSlug ? [queryClient.invalidateQueries({ queryKey: getGetPublicBlogPostQueryKey(oldSlug) })] : []),
+        queryClient.invalidateQueries({ queryKey: getGetPublicBlogPostQueryKey(slug) }),
+      ])
+      setNotice(editingBlogPost === null ? 'Blog post created.' : 'Blog post updated.')
+      setEditingBlogPost(null)
+      setBlogForm(blankBlog)
+      setOpenForm(null)
+    } catch (reason) { showError(reason) }
+  }
   async function toggleUser(user: AdminUser) {
     clearMessages()
     try {
@@ -674,6 +761,7 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
   }
 
   const isSavingAdventure = createAdventure.isPending || updateAdventure.isPending
+  const isSavingBlogPost = createBlogPost.isPending || updateBlogPost.isPending
   const isSavingEvent = createEvent.isPending || updateEvent.isPending
   const isSavingDestination = createDestination.isPending || updateDestination.isPending
   const isSavingContent = saveSiteContent.isPending
@@ -859,6 +947,32 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
             <label className="workspace-check"><input data-testid="check-destination-featured" type="checkbox" checked={destinationForm.isFeatured} onChange={(event) => setDestinationForm({ ...destinationForm, isFeatured: event.target.checked })} /> Feature this destination</label>
             <label className="workspace-check"><input data-testid="check-destination-published" type="checkbox" checked={destinationForm.isPublished} onChange={(event) => setDestinationForm({ ...destinationForm, isPublished: event.target.checked })} /> Publish on website</label>
                 <div className="workspace-form-actions wide"><button className="admin-primary" data-testid="button-destination-save" type="submit" disabled={isSavingDestination || pendingImageUploads > 0}>{isSavingDestination ? 'Saving…' : editingDestination === null ? 'Create destination' : 'Save destination'}</button><button className="admin-secondary" data-testid="button-destination-cancel" type="button" onClick={closeForm}>Cancel</button></div>
+              </form>
+            </section>
+          </div>}
+        </section>}
+
+        {active === 'Blog' && <section className="admin-section">
+          <div className="admin-toolbar"><div><h3>Blog posts</h3><p>Write stories with their own article copy and cover image. Drafts stay hidden from visitors.</p></div><button className="admin-primary" data-testid="button-blog-post-new" onClick={resetBlogForm}><Plus size={16} /> New blog post</button></div>
+          {blogPostsQuery.isLoading ? <div className="workspace-skeletons" role="status"><div className="skeleton" /></div> : <div className="admin-table-card workspace-table-card"><table className="admin-table workspace-table workspace-table--blog"><thead><tr><th>Article</th><th>Category</th><th>Visibility</th><th>Updated</th><th>Action</th></tr></thead><tbody>
+            {visibleBlogPosts.map((post) => <tr key={post.id} data-testid={`row-admin-blog-post-${post.id}`}><td><div className="workspace-blog-post-cell"><SiteImage src={post.coverImageUrl} alt="" /><span><b>{post.title}</b><small>/{post.slug}</small></span></div></td><td>{post.category}</td><td><span className={`status ${post.isPublished ? 'confirmed' : 'new'}`}>{post.isPublished ? 'Published' : 'Draft'}</span></td><td>{formatDate(post.updatedAt)}</td><td><button className="admin-secondary" data-testid={`button-blog-post-edit-${post.id}`} onClick={() => beginBlogEdit(post)}>Edit</button></td></tr>)}
+          </tbody></table>{visibleBlogPosts.length === 0 && <p className="empty-state" data-testid="empty-admin-blog-posts">{queryText ? 'No blog posts match this search.' : 'No blog posts yet. Create the first article to get started.'}</p>}</div>}
+          {openForm === 'blog' && <div className="workspace-modal-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) closeForm() }}>
+            <section className="workspace-modal workspace-modal--content" role="dialog" aria-modal="true" aria-labelledby="dialog-blog-title" data-testid="dialog-admin-blog-post">
+              <header className="workspace-modal-head"><div><span className="workspace-eyebrow">Blog editor</span><h3 id="dialog-blog-title">{editingBlogPost === null ? 'New blog post' : 'Edit blog post'}</h3></div><button className="workspace-modal-close" type="button" data-admin-dialog-close aria-label="Close blog post form" onClick={closeForm}><X /></button></header>
+              {formError && <div className="error-box workspace-dialog-error" role="alert" data-testid="error-admin-action">{formError}</div>}
+              <form className="workspace-form workspace-dialog-form" onSubmit={submitBlogPost} data-testid="form-admin-blog-post">
+                <label className="workspace-field">Article title<input className="workspace-input" data-testid="input-blog-title" required minLength={2} maxLength={180} value={blogForm.title} onChange={(event) => {
+                  const title = event.target.value
+                  setBlogForm((current) => ({ ...current, title, slug: !current.slug || current.slug === makeBlogSlug(current.title) ? makeBlogSlug(title) : current.slug }))
+                }} /></label>
+                <label className="workspace-field">URL slug<input className="workspace-input" data-testid="input-blog-slug" required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" maxLength={200} value={blogForm.slug} onChange={(event) => setBlogForm({ ...blogForm, slug: event.target.value.toLowerCase() })} /><small>Used in the article address. Generated from the title; you can edit it.</small></label>
+                <label className="workspace-field">Category<input className="workspace-input" data-testid="input-blog-category" required minLength={2} maxLength={80} value={blogForm.category} onChange={(event) => setBlogForm({ ...blogForm, category: event.target.value })} placeholder="Travel Tips" /></label>
+                <label className="workspace-field wide">Short excerpt<textarea className="workspace-textarea" data-testid="input-blog-excerpt" required minLength={2} maxLength={600} rows={3} value={blogForm.excerpt} onChange={(event) => setBlogForm({ ...blogForm, excerpt: event.target.value })} placeholder="A short introduction shown on the blog cards." /></label>
+                <label className="workspace-field wide">Article text<textarea className="workspace-textarea" data-testid="input-blog-content" required minLength={2} maxLength={20000} rows={12} value={blogForm.content} onChange={(event) => setBlogForm({ ...blogForm, content: event.target.value })} placeholder={'Write the full article here.\n\nUse a blank line between paragraphs. Start a section heading with ##.'} /><small>Plain text is safe to publish. Separate paragraphs with blank lines; use ## before a section heading.</small></label>
+                <AdminImageField label="Cover image path or URL" value={blogForm.coverImageUrl} onChange={(value) => setBlogForm({ ...blogForm, coverImageUrl: value })} testId="input-blog-cover-image" placeholder="/images/trips/example.jpg or https://…" hint="This image belongs to this article. Upload a file or enter its public URL." onUploadingChange={trackImageUpload} />
+                <label className="workspace-check"><input data-testid="check-blog-published" type="checkbox" checked={blogForm.isPublished} onChange={(event) => setBlogForm({ ...blogForm, isPublished: event.target.checked })} /> Publish on the public blog</label>
+                <div className="workspace-form-actions wide"><button className="admin-primary" data-testid="button-blog-post-save" type="submit" disabled={isSavingBlogPost || pendingImageUploads > 0}>{isSavingBlogPost ? 'Saving…' : editingBlogPost === null ? 'Create blog post' : 'Save blog post'}</button><button className="admin-secondary" data-testid="button-blog-post-cancel" type="button" onClick={closeForm}>Cancel</button></div>
               </form>
             </section>
           </div>}
