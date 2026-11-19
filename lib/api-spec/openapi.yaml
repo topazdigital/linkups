@@ -287,6 +287,50 @@ paths:
       responses:
         "204":
           description: Admin session ended
+  /admin/uploads:
+    post:
+      operationId: uploadAdminImages
+      tags: [admin]
+      summary: Upload images for LinkUps content
+      security:
+        - AdminSession: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/AdminImageUploadInput"
+      responses:
+        "200":
+          description: Uploaded image paths
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminImageUploadResponse"
+        "400":
+          description: Invalid upload request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Admin sign-in required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "413":
+          description: Image exceeds the upload size limit
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "415":
+          description: Unsupported image format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /admin/bookings:
     get:
       operationId: listAdminBookings
@@ -652,6 +696,26 @@ components:
       required: [error]
       properties:
         error: { type: string }
+    AdminImageUploadInput:
+      type: object
+      required: [images]
+      properties:
+        images:
+          type: array
+          minItems: 1
+          maxItems: 8
+          items:
+            type: string
+            format: binary
+    AdminImageUploadResponse:
+      type: object
+      required: [urls]
+      properties:
+        urls:
+          type: array
+          maxItems: 8
+          items:
+            type: string
     EnquiryInput:
       type: object
       required: [name, email, message]

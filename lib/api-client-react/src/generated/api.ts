@@ -20,6 +20,8 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  AdminImageUploadInput,
+  AdminImageUploadResponse,
   AdminLoginInput,
   AdminSession,
   AdminUser,
@@ -40,6 +42,7 @@ import type {
   EnquiryCreated,
   EnquiryInput,
   EnquiryStatusUpdate,
+  Error,
   Event,
   EventInput,
   EventUpdate,
@@ -1460,6 +1463,82 @@ export const useAdminLogout = <TError = ErrorType<unknown>,
         TContext
       > => {
       return useMutation(getAdminLogoutMutationOptions(options));
+    }
+
+export const getUploadAdminImagesUrl = () => {
+
+
+
+
+  return `/api/admin/uploads`
+}
+
+/**
+ * @summary Upload images for LinkUps content
+ */
+export const uploadAdminImages = async (adminImageUploadInput: AdminImageUploadInput, options?: Parameters<typeof customFetch>[1]): Promise<AdminImageUploadResponse> => {
+    const formData = new FormData();
+adminImageUploadInput.images.forEach(value => formData.append(`images`, value));
+
+  return customFetch<AdminImageUploadResponse>(getUploadAdminImagesUrl(),
+  {
+    ...options,
+    method: 'POST'
+    ,
+    body: formData
+  }
+);}
+
+
+
+
+
+export const getUploadAdminImagesMutationKey = () => ['uploadAdminImages'] as const;
+
+export const getUploadAdminImagesMutationOptions = <TError = ErrorType<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadAdminImages>>, TError,UploadAdminImagesMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof uploadAdminImages>>, TError,UploadAdminImagesMutationVariables, TContext> => {
+
+const mutationKey = getUploadAdminImagesMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof uploadAdminImages>>, UploadAdminImagesMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  uploadAdminImages(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UploadAdminImagesMutationResult = NonNullable<Awaited<ReturnType<typeof uploadAdminImages>>>
+    export type UploadAdminImagesMutationBody = BodyType<AdminImageUploadInput>
+    export type UploadAdminImagesMutationError = ErrorType<Error>
+    export type UploadAdminImagesMutationVariables = {data: BodyType<AdminImageUploadInput>}
+
+    /**
+ * @summary Upload images for LinkUps content
+ */
+export const useUploadAdminImages = <TError = ErrorType<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadAdminImages>>, TError,UploadAdminImagesMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof uploadAdminImages>>,
+        TError,
+        UploadAdminImagesMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUploadAdminImagesMutationOptions(options));
     }
 
 export const getListAdminBookingsUrl = () => {

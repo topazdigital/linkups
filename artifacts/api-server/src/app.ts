@@ -6,6 +6,7 @@ import path from "node:path";
 import router from "./routes";
 import { logger } from "./lib/logger";
 import { DatabaseUnavailableError } from "./lib/mysql";
+import { linkupsUploadDirectory } from "./lib/linkups-uploads";
 
 const app: Express = express();
 app.set("trust proxy", 1);
@@ -33,6 +34,19 @@ app.use(
 app.use(express.json({ limit: "32kb" }));
 app.use(express.urlencoded({ extended: true, limit: "32kb" }));
 app.use(cookieParser());
+
+app.use(
+  "/api/uploads",
+  express.static(linkupsUploadDirectory, {
+    dotfiles: "deny",
+    index: false,
+    immutable: true,
+    maxAge: "1y",
+    setHeaders(res) {
+      res.setHeader("X-Content-Type-Options", "nosniff");
+    },
+  }),
+);
 
 app.use("/api", router);
 

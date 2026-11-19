@@ -368,6 +368,26 @@ export const AdminLogoutResponse = zod.void()
 
 
 /**
+ * @summary Upload images for LinkUps content
+ */
+export const uploadAdminImagesBodyImagesMax = 8;
+
+
+
+export const UploadAdminImagesBody = zod.object({
+  "images": zod.array(zod.instanceof(Blob)).min(1).max(uploadAdminImagesBodyImagesMax)
+})
+
+export const uploadAdminImagesResponseUrlsMax = 8;
+
+
+
+export const UploadAdminImagesResponse = zod.object({
+  "urls": zod.array(zod.string()).max(uploadAdminImagesResponseUrlsMax)
+})
+
+
+/**
  * @summary List booking requests
  */
 export const ListAdminBookingsResponseItem = zod.object({

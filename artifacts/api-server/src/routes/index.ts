@@ -7,6 +7,7 @@ import newsletterRouter from "./newsletter";
 import authRouter from "./auth";
 import accountRouter from "./account";
 import adminAuthRouter from "../middleware/admin-auth";
+import adminUploadsRouter from "./admin-uploads";
 import adminRouter from "./admin";
 import adminManagementRouter from "./admin-management";
 
@@ -20,6 +21,7 @@ router.use(newsletterRouter);
 router.use(authRouter);
 router.use(accountRouter);
 router.use(adminAuthRouter);
+router.use(adminUploadsRouter);
 router.use(adminRouter);
 router.use(adminManagementRouter);
 

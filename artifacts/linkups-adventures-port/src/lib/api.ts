@@ -1,4 +1,5 @@
 import type {
+  AdminImageUploadResponse,
   Adventure,
   AdminSession,
   BookingCreated,
@@ -24,7 +25,9 @@ export async function apiRequest<T>(
   options: RequestInit = {},
 ): Promise<T> {
   const headers = new Headers(options.headers);
-  if (options.body && !headers.has("Content-Type")) {
+  const isFormData =
+    typeof FormData !== "undefined" && options.body instanceof FormData;
+  if (options.body && !isFormData && !headers.has("Content-Type")) {
     headers.set("Content-Type", "application/json");
   }
 
@@ -48,6 +51,17 @@ export async function apiRequest<T>(
     throw new ApiRequestError(message, response.status);
   }
   return payload as T;
+}
+
+export function uploadAdminImages(
+  files: File[],
+): Promise<AdminImageUploadResponse> {
+  const formData = new FormData();
+  files.forEach((file) => formData.append("images", file, file.name));
+  return apiRequest<AdminImageUploadResponse>("/admin/uploads", {
+    method: "POST",
+    body: formData,
+  });
 }
 
 export function getPublicAdventures(): Promise<Adventure[]> {

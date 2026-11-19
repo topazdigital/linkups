@@ -36,6 +36,7 @@ node_modules
 /coverage
 /generated-artifacts/
 .env
+/artifacts/api-server/.linkups-uploads/
 /libpeerconnection.log
 npm-debug.log
 yarn-error.log

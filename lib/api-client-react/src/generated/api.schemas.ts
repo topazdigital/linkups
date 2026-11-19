@@ -13,6 +13,19 @@ export interface Error {
   error: string;
 }
 
+export interface AdminImageUploadInput {
+  /**
+     * @minItems 1
+     * @maxItems 8
+     */
+  images: Blob[];
+}
+
+export interface AdminImageUploadResponse {
+  /** @maxItems 8 */
+  urls: string[];
+}
+
 export interface EnquiryInput {
   /**
      * @minLength 2

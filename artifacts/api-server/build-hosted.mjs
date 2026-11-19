@@ -73,6 +73,7 @@ await writeFile(
       engines: { node: ">=20" },
       scripts: { start: "node dist/index.mjs" },
       dependencies: {
+        multer: "^2.5.0",
         mysql2: "^3.24.5",
         nodemailer: "^10.6.0",
       },
@@ -109,6 +110,7 @@ await writeFile(
     "- Configure the Node app's private root and its public web root according to DirectAdmin's Node.js application settings. Do not expose `dist/`, `database/`, `node_modules/`, `package.json`, or environment files to direct file download.",
     "- Set `STATIC_DIR=public`. For database and admin settings, use the DirectAdmin app's private environment or copy `.env.example` to `.env` in the private app root and replace every placeholder.",
     "- The app loads its private-root `.env` at startup, without overriding values already supplied by DirectAdmin or PM2. Never commit `.env` or place it under `public/`.",
+    "- Uploaded JPEG, PNG, and WebP files are stored in the writable `LINKUPS_UPLOAD_DIR` directory (default `uploads/`) and served from `/api/uploads/`. Keep this directory persistent and back it up; release updates do not replace it.",
     "- Create a MySQL database/user in DirectAdmin and set `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_DATABASE`, `MYSQL_USER`, and `MYSQL_PASSWORD`; verify `MYSQL_DATABASE` is the intended database.",
     "- To receive booking alerts by email, set `BOOKING_SMTP_HOST`, `BOOKING_SMTP_PORT`, `BOOKING_SMTP_USER`, `BOOKING_SMTP_PASSWORD`, and `BOOKING_NOTIFICATION_TO` in the private app environment. Never commit the mailbox password.",
     "- On server startup, the app initializes the baseline schema when needed, seeds an empty adventure catalogue once, and applies pending numbered migrations from `database/migrations/`.",

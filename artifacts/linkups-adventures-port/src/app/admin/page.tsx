@@ -41,6 +41,7 @@ import { Logo } from '@/components/site-shell'
 import { legalPages } from '@/lib/legal-content'
 import { formatAdventurePrice } from '@/lib/api'
 import { SiteImage } from '@/components/site-image'
+import { AdminImageField, AdminImageUploadButton } from '@/components/admin-image-upload'
 import {
   CalendarCheck,
   CalendarDays,
@@ -748,10 +749,23 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
             <label className="workspace-field">What’s excluded (one per line)<textarea className="workspace-textarea" data-testid="input-adventure-excluded" rows={5} value={adventureForm.excludedText} onChange={(event) => setAdventureForm({ ...adventureForm, excludedText: event.target.value })} /></label>
             <label className="workspace-field">Optional activities (one per line)<textarea className="workspace-textarea" data-testid="input-adventure-optional" rows={4} value={adventureForm.optionalActivitiesText} onChange={(event) => setAdventureForm({ ...adventureForm, optionalActivitiesText: event.target.value })} /></label>
             <label className="workspace-field">Ideal for (one per line)<textarea className="workspace-textarea" data-testid="input-adventure-ideal-for" rows={4} value={adventureForm.idealForText} onChange={(event) => setAdventureForm({ ...adventureForm, idealForText: event.target.value })} /></label>
-            <label className="workspace-field wide">Main image path or URL<input className="workspace-input" data-testid="input-adventure-image" maxLength={500} value={adventureForm.heroImageUrl} onChange={(event) => setAdventureForm({ ...adventureForm, heroImageUrl: event.target.value })} placeholder="/images/trips/example.jpg or https://…" /><small>Use a public image URL or a path to an image in the website’s public folder.</small></label>
-            {adventureForm.heroImageUrl && <div className="trip-image-preview-wrap wide"><span>Main image preview</span><SiteImage className="trip-image-preview" src={adventureForm.heroImageUrl} alt="Main trip preview" /></div>}
-            <label className="workspace-field wide">Gallery image paths or URLs (one per line)<textarea className="workspace-textarea" data-testid="input-adventure-gallery" rows={4} value={adventureForm.galleryImageUrlsText} onChange={(event) => setAdventureForm({ ...adventureForm, galleryImageUrlsText: event.target.value })} placeholder={'/images/trips/gallery-1.jpg\nhttps://…'} /><small>Choose multiple supporting photos. The main image is shown separately.</small></label>
-            {linesToList(adventureForm.galleryImageUrlsText).length > 0 && <div className="trip-gallery-preview wide">{linesToList(adventureForm.galleryImageUrlsText).map((image, index) => <SiteImage src={image} alt={`Trip gallery preview ${index + 1}`} key={`${image}-${index}`} />)}</div>}
+            <AdminImageField
+              label="Main image path or URL"
+              value={adventureForm.heroImageUrl}
+              onChange={(value) => setAdventureForm({ ...adventureForm, heroImageUrl: value })}
+              testId="input-adventure-image"
+              placeholder="/images/trips/example.jpg or https://…"
+              hint="The main image appears on adventure cards and detail pages."
+            />
+            <AdminImageField
+              label="Gallery image paths or URLs (one per line)"
+              value={adventureForm.galleryImageUrlsText}
+              onChange={(value) => setAdventureForm({ ...adventureForm, galleryImageUrlsText: value })}
+              testId="input-adventure-gallery"
+              placeholder={'/images/trips/gallery-1.jpg\nhttps://…'}
+              hint="Upload several supporting photos or paste one URL/path per line."
+              multiple
+            />
             <label className="workspace-check"><input data-testid="check-adventure-featured" type="checkbox" checked={adventureForm.isFeatured} onChange={(event) => setAdventureForm({ ...adventureForm, isFeatured: event.target.checked })} /> Featured adventure</label>
             <label className="workspace-check"><input data-testid="check-adventure-published" type="checkbox" checked={adventureForm.isPublished} onChange={(event) => setAdventureForm({ ...adventureForm, isPublished: event.target.checked })} /> Published on website</label>
                 <div className="workspace-form-actions wide"><button className="admin-primary" data-testid="button-adventure-save" type="submit" disabled={isSavingAdventure}>{isSavingAdventure ? 'Saving…' : editingAdventure === null ? 'Create adventure' : 'Save adventure'}</button><button className="admin-secondary" data-testid="button-adventure-cancel" type="button" onClick={closeForm}>Cancel</button></div>
@@ -776,8 +790,14 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
             <label className="workspace-field">Price or booking note<input className="workspace-input" data-testid="input-event-price" maxLength={160} value={eventForm.priceLabel} onChange={(event) => setEventForm({ ...eventForm, priceLabel: event.target.value })} placeholder="For example, From KES 8,500 per person" /></label>
             <label className="workspace-field wide">Description<textarea className="workspace-textarea" data-testid="input-event-description" required minLength={2} maxLength={2000} rows={4} value={eventForm.description} onChange={(event) => setEventForm({ ...eventForm, description: event.target.value })} placeholder="What makes this dated event special?" /></label>
             <label className="workspace-field wide">URL slug<input className="workspace-input" data-testid="input-event-slug" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" maxLength={180} value={eventForm.slug} onChange={(event) => setEventForm({ ...eventForm, slug: event.target.value })} placeholder="Leave blank to generate from title and date" /><small>A unique slug is generated if this is left blank.</small></label>
-            <label className="workspace-field wide">Event image path or URL<input className="workspace-input" data-testid="input-event-image" maxLength={500} value={eventForm.heroImageUrl} onChange={(event) => setEventForm({ ...eventForm, heroImageUrl: event.target.value })} placeholder="/images/trips/example.jpg or https://…" /><small>Optional. The carousel uses a branded background if no image is provided.</small></label>
-            {eventForm.heroImageUrl && <div className="trip-image-preview-wrap wide"><span>Event image preview</span><SiteImage className="trip-image-preview" src={eventForm.heroImageUrl} alt="Event preview" /></div>}
+            <AdminImageField
+              label="Event image path or URL"
+              value={eventForm.heroImageUrl}
+              onChange={(value) => setEventForm({ ...eventForm, heroImageUrl: value })}
+              testId="input-event-image"
+              placeholder="/images/trips/example.jpg or https://…"
+              hint="Optional. The carousel uses a branded background if no image is provided."
+            />
             <label className="workspace-check"><input data-testid="check-event-published" type="checkbox" checked={eventForm.isPublished} onChange={(event) => setEventForm({ ...eventForm, isPublished: event.target.checked })} /> Publish on the homepage carousel</label>
                 <div className="workspace-form-actions wide"><button className="admin-primary" data-testid="button-event-save" type="submit" disabled={isSavingEvent}>{isSavingEvent ? 'Saving…' : editingEvent === null ? 'Create event' : 'Save event'}</button><button className="admin-secondary" data-testid="button-event-cancel" type="button" onClick={closeForm}>Cancel</button></div>
               </form>
@@ -806,7 +826,13 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
             <label className="workspace-field">URL slug<input className="workspace-input" data-testid="input-destination-slug" required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" maxLength={140} value={destinationForm.slug} onChange={(event) => setDestinationForm({ ...destinationForm, slug: event.target.value })} /></label>
             <label className="workspace-field wide">Short summary<input className="workspace-input" data-testid="input-destination-summary" maxLength={1000} value={destinationForm.summary} onChange={(event) => setDestinationForm({ ...destinationForm, summary: event.target.value })} /></label>
             <label className="workspace-field wide">Description<textarea className="workspace-textarea" data-testid="input-destination-description" maxLength={8000} rows={4} value={destinationForm.description} onChange={(event) => setDestinationForm({ ...destinationForm, description: event.target.value })} /></label>
-            <label className="workspace-field wide">Image URL<input className="workspace-input" data-testid="input-destination-image" type="url" maxLength={500} value={destinationForm.imageUrl} onChange={(event) => setDestinationForm({ ...destinationForm, imageUrl: event.target.value })} /></label>
+            <AdminImageField
+              label="Destination image URL or path"
+              value={destinationForm.imageUrl}
+              onChange={(value) => setDestinationForm({ ...destinationForm, imageUrl: value })}
+              testId="input-destination-image"
+              placeholder="/images/destinations/example.jpg or https://…"
+            />
             <label className="workspace-check"><input data-testid="check-destination-featured" type="checkbox" checked={destinationForm.isFeatured} onChange={(event) => setDestinationForm({ ...destinationForm, isFeatured: event.target.checked })} /> Feature this destination</label>
             <label className="workspace-check"><input data-testid="check-destination-published" type="checkbox" checked={destinationForm.isPublished} onChange={(event) => setDestinationForm({ ...destinationForm, isPublished: event.target.checked })} /> Publish on website</label>
                 <div className="workspace-form-actions wide"><button className="admin-primary" data-testid="button-destination-save" type="submit" disabled={isSavingDestination}>{isSavingDestination ? 'Saving…' : editingDestination === null ? 'Create destination' : 'Save destination'}</button><button className="admin-secondary" data-testid="button-destination-cancel" type="button" onClick={closeForm}>Cancel</button></div>
@@ -834,18 +860,44 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
             <label className="workspace-field wide">Page body content<textarea className="workspace-textarea" data-testid="input-content-body" maxLength={20000} rows={12} value={contentForm.bodyContent} onChange={(event) => setContentForm({ ...contentForm, bodyContent: event.target.value })} /><small>Use ## for section headings, blank lines between paragraphs, and - for bullet points. HTML is not rendered.</small></label>
             {contentForm.pageKey.trim().toLowerCase() === 'home' && <>
               <label className="workspace-field">Hero display mode<select className="workspace-input" data-testid="select-home-hero-mode" value={contentForm.heroMode} onChange={(event) => setContentForm({ ...contentForm, heroMode: event.target.value as ContentForm['heroMode'] })}><option value="static">One static image</option><option value="slideshow">Smooth slideshow</option></select><small>Slides advance automatically and include pause and manual controls.</small></label>
-              <div className="workspace-field wide hero-image-editor"><span>Homepage hero images</span><small>Add up to eight public image URLs or paths. The first image is used if the slideshow is off.</small>
+              <div className="workspace-field wide hero-image-editor"><span>Homepage hero images</span><small>Add up to eight images by uploading files or entering public image URLs and paths. The first image is used if the slideshow is off.</small>
                 {contentForm.heroImages.map((image, index) => <div className="hero-image-row" key={index}>
                   <label className="workspace-field">Image {index + 1}<input className="workspace-input" data-testid={`input-home-hero-image-${index}`} maxLength={500} value={image} onChange={(event) => updateHeroImage(index, event.target.value)} placeholder="/images/adventure-hero.png or https://…" /></label>
                   {image && <SiteImage className="hero-image-preview" src={image} alt={`Homepage hero image ${index + 1} preview`} />}
                   <div className="hero-image-actions">
+                    <AdminImageUploadButton
+                      label="Replace image"
+                      maxFiles={1}
+                      testId={`button-home-hero-upload-${index}`}
+                      className="admin-image-upload-control--inline"
+                      onUploaded={(urls) => setContentForm((current) => {
+                        const currentIndex = current.heroImages.indexOf(image)
+                        if (currentIndex < 0 || !urls[0]) return current
+                        const heroImages = [...current.heroImages]
+                        heroImages[currentIndex] = urls[0]
+                        return { ...current, heroImages }
+                      })}
+                    />
                     <button className="admin-secondary" type="button" aria-label={`Move image ${index + 1} up`} onClick={() => moveHeroImage(index, -1)} disabled={index === 0}>Move up</button>
                     <button className="admin-secondary" type="button" aria-label={`Move image ${index + 1} down`} onClick={() => moveHeroImage(index, 1)} disabled={index === contentForm.heroImages.length - 1}>Move down</button>
                     <button className="admin-secondary" type="button" aria-label={`Remove image ${index + 1}`} onClick={() => removeHeroImage(index)}>Remove</button>
                   </div>
                 </div>)}
                 {contentForm.heroImages.length === 0 && <p className="hero-image-empty">No homepage images added. The built-in LinkUps image will be used.</p>}
-                <button className="admin-secondary" data-testid="button-home-hero-add-image" type="button" onClick={addHeroImage} disabled={contentForm.heroImages.length >= 8}>Add another image</button>
+                <div className="hero-image-upload-actions">
+                  <AdminImageUploadButton
+                    label="Upload hero images"
+                    multiple
+                    maxFiles={8 - contentForm.heroImages.length}
+                    disabled={contentForm.heroImages.length >= 8}
+                    testId="button-home-hero-upload-multiple"
+                    onUploaded={(urls) => setContentForm((current) => ({
+                      ...current,
+                      heroImages: [...current.heroImages, ...urls].slice(0, 8),
+                    }))}
+                  />
+                  <button className="admin-secondary" data-testid="button-home-hero-add-image" type="button" onClick={addHeroImage} disabled={contentForm.heroImages.length >= 8}>Add another image</button>
+                </div>
               </div>
             </>}
             <label className="workspace-check"><input data-testid="check-content-published" type="checkbox" checked={contentForm.isPublished} onChange={(event) => setContentForm({ ...contentForm, isPublished: event.target.checked })} /> Publish this page content</label>
