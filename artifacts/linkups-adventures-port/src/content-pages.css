@@ -72,7 +72,7 @@
 .home-hero-popout {
   position: absolute;
   right: clamp(10px, 5.8vw, 86px);
-  bottom: -18px;
+  bottom: 0;
   z-index: 2;
   width: auto;
   height: clamp(470px, 43vw, 620px);
@@ -398,7 +398,7 @@
 
   .home-hero-popout {
     right: -7px;
-    bottom: -16px;
+    bottom: 0;
     width: min(78vw, 320px);
     height: auto;
     max-width: 84%;
