@@ -694,7 +694,7 @@
   }
 }
 
-@media (min-width: 801px) and (max-width: 1180px) {
+@media (min-width: 801px) and (max-width: 950px) {
   .site-header {
     gap: 12px;
     padding-inline: clamp(16px, 2.4vw, 28px);

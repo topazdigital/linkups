@@ -12,6 +12,7 @@ import './image-performance.css';
 import './homepage-sections.css';
 import './responsive-pages.css';
 import './marketing-pages.css';
+import './homepage-visual-tuning.css';
 
 const queryClient = new QueryClient();
 
