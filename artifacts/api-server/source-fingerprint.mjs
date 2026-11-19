@@ -4,6 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ignoredDirectories = new Set([".git", "dist", "node_modules"]);
+const ignoredFileSuffixes = [".tsbuildinfo"];
 
 export async function getSourceFingerprint(sourceRoot) {
   const root = path.resolve(sourceRoot);
@@ -19,7 +20,10 @@ export async function getSourceFingerprint(sourceRoot) {
       const filePath = path.join(directory, entry.name);
       if (entry.isDirectory()) {
         await collect(filePath);
-      } else if (entry.isFile()) {
+      } else if (
+        entry.isFile() &&
+        !ignoredFileSuffixes.some((suffix) => entry.name.endsWith(suffix))
+      ) {
         files.push(filePath);
       }
     }
