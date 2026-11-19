@@ -31,6 +31,61 @@
   margin-bottom: 7px;
 }
 
+.type-carousel-track {
+  display: flex;
+  gap: 14px;
+  width: 100%;
+  overflow-x: auto;
+  padding: 2px 1px 12px;
+  border-radius: 10px;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  scroll-behavior: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y;
+  cursor: grab;
+  user-select: none;
+}
+
+.adventure-types {
+  scroll-margin-top: 82px;
+}
+
+.type-carousel-track::-webkit-scrollbar {
+  display: none;
+}
+
+.type-carousel-track:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 3px;
+}
+
+.type-carousel-track.is-interacting {
+  cursor: grabbing;
+}
+
+.adventure-types .type-grid {
+  display: flex;
+  flex: none;
+  width: max-content;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  grid-template-columns: none;
+}
+
+.adventure-types .type-card {
+  display: block;
+  flex: 0 0 clamp(174px, 16vw, 198px);
+  min-height: 190px;
+}
+
+.adventure-types .type-card img {
+  height: 126px;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
 .review-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -210,5 +265,16 @@
 @media (prefers-reduced-motion: reduce) {
   .media-strip img {
     transition: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .adventure-types .type-card {
+    flex-basis: 172px;
+    min-height: 175px;
+  }
+
+  .adventure-types .type-card img {
+    height: 105px;
   }
 }

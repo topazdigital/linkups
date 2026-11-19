@@ -4,6 +4,7 @@ import { Link } from 'wouter'
 import { useEffect, useState, type ReactNode } from 'react'
 import { ArrowRight, CalendarDays, Check, ChevronDown, ChevronLeft, ChevronRight, Compass, Globe2, MapPin, Pause, Play, Star, Users } from 'lucide-react'
 import { AdventureCards } from '@/components/adventure-cards'
+import { AdventureTypeCarousel } from '@/components/adventure-type-carousel'
 import { Logo } from '@/components/site-shell'
 import { EventCarousel } from '@/components/event-carousel'
 import { AdventureQuiz } from '@/components/conversion-tools'
@@ -23,6 +24,14 @@ const images = {
 }
 
 const vibes = [['Thrill Seeker', 'Rafting · Hiking · Action', 'https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&w=500&q=85'], ['Beach Baby', 'Sun · Sand · Slow days', images.beach], ['Wild at Heart', 'Camping · Wildlife · Exploring', images.mara], ['Good Times Only', 'Friends · Laughs · Memories', images.group], ['Wildlife', 'Safari · Conservation · Nature', destinationHero], ['Family Time', 'Easy pace · Shared moments', images.group]]
+const adventureTypes = [
+  { name: 'Safari', image: images.mara },
+  { name: 'Beach Escapes', image: images.beach },
+  { name: 'Camping & Outdoors', image: images.package },
+  { name: 'Road Trips', image: images.contact },
+  { name: 'Group Escapes', image: images.group },
+  { name: 'Couples & Family', image: images.beach },
+]
 
 const destinations = [
   ['Maasai Mara', 'Wildlife · Game Drives · Luxury Stays', images.mara],
@@ -164,7 +173,11 @@ export default function Page() {
       title={publishedHome?.heroTitle || <>Your next adventure <em>starts here.</em></>}
       description={publishedHome?.heroSubtitle || 'Safaris, beach escapes, camping, road trips and group adventures made for real people.'}
     />
-    <section className="adventure-types"><SectionTitle eyebrow="What kind of adventure are you looking for?" title="Find your kind of wild" /><div className="type-grid">{[['Safari', images.mara], ['Beach Escapes', images.beach], ['Camping & Outdoors', images.package], ['Road Trips', images.contact], ['Group Escapes', images.group], ['Couples & Family', images.beach]].map(([name, image]) => <a className="type-card" href="/adventures" key={name}><SiteImage src={image} alt="" /><div><strong>{name}</strong><small>Explore experiences</small></div></a>)}</div><a className="button dark center" href="/adventures">Explore all adventures <ArrowRight /></a></section>
+    <section id="adventure-types" className="adventure-types">
+      <SectionTitle eyebrow="What kind of adventure are you looking for?" title="Find your kind of wild" />
+      <AdventureTypeCarousel items={adventureTypes} />
+      <a className="button dark center" href="/adventures">Explore all adventures <ArrowRight /></a>
+    </section>
     <section id="destinations" className="destinations"><div className="section-row"><SectionTitle eyebrow="Our destinations" title="Discover Kenya's best places" /><Link href="/destinations" className="text-link">View all destinations <ArrowRight /></Link></div><div className="destination-grid">{destinations.map(([name, detail, image]) => <Link className="destination-card" href={`/destinations/${name.toLowerCase().replaceAll(' ', '-')}`} key={name} style={{ backgroundImage: `linear-gradient(0deg, rgba(0,33,28,.82), transparent 65%), url(${optimizedImageUrl(image)})` }}><div><h3>{name}</h3><p>{detail}</p><span>Explore <ArrowRight /></span></div></Link>)}</div></section>
     <section id="adventures" className="experience"><div className="experience-copy"><SectionTitle eyebrow="More than a trip" title="It's a Linkups experience." /><p>We believe the best adventures are not just about where you go. They're about who you're with, what you experience and the stories you bring home.</p><a className="button dark" href="/plan">Why Linkups? <ArrowRight /></a></div><div className="experience-photo" style={{ backgroundImage: `url(${optimizedImageUrl(images.group)})` }}><strong>Real people.<br />Real adventures.</strong></div></section>
     <section className="packages"><div className="section-row"><SectionTitle eyebrow="Featured adventures" title="Handpicked experiences" /><a href="/adventures" className="text-link">View all packages <ArrowRight /></a></div><AdventureCards variant="package" limit={6}/></section>
