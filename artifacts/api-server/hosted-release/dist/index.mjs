@@ -20736,27 +20736,27 @@ var require_router = __commonJS({
     var slice = Array.prototype.slice;
     var flatten = Array.prototype.flat;
     var methods = METHODS.map((method) => method.toLowerCase());
-    module.exports = Router13;
+    module.exports = Router14;
     module.exports.Route = Route;
-    function Router13(options) {
-      if (!(this instanceof Router13)) {
-        return new Router13(options);
+    function Router14(options) {
+      if (!(this instanceof Router14)) {
+        return new Router14(options);
       }
       const opts = options || {};
-      function router13(req, res, next) {
-        router13.handle(req, res, next);
+      function router14(req, res, next) {
+        router14.handle(req, res, next);
       }
-      Object.setPrototypeOf(router13, this);
-      router13.caseSensitive = opts.caseSensitive;
-      router13.mergeParams = opts.mergeParams;
-      router13.params = {};
-      router13.strict = opts.strict;
-      router13.stack = [];
-      return router13;
+      Object.setPrototypeOf(router14, this);
+      router14.caseSensitive = opts.caseSensitive;
+      router14.mergeParams = opts.mergeParams;
+      router14.params = {};
+      router14.strict = opts.strict;
+      router14.stack = [];
+      return router14;
     }
-    Router13.prototype = function() {
+    Router14.prototype = function() {
     };
-    Router13.prototype.param = function param(name, fn) {
+    Router14.prototype.param = function param(name, fn) {
       if (!name) {
         throw new TypeError("argument name is required");
       }
@@ -20776,7 +20776,7 @@ var require_router = __commonJS({
       params.push(fn);
       return this;
     };
-    Router13.prototype.handle = function handle(req, res, callback) {
+    Router14.prototype.handle = function handle(req, res, callback) {
       if (!callback) {
         throw new TypeError("argument callback is required");
       }
@@ -20903,7 +20903,7 @@ var require_router = __commonJS({
         }
       }
     };
-    Router13.prototype.use = function use(handler) {
+    Router14.prototype.use = function use(handler) {
       let offset = 0;
       let path4 = "/";
       if (typeof handler !== "function") {
@@ -20936,7 +20936,7 @@ var require_router = __commonJS({
       }
       return this;
     };
-    Router13.prototype.route = function route(path4) {
+    Router14.prototype.route = function route(path4) {
       const route2 = new Route(path4);
       const layer = new Layer(path4, {
         sensitive: this.caseSensitive,
@@ -20951,7 +20951,7 @@ var require_router = __commonJS({
       return route2;
     };
     methods.concat("all").forEach(function(method) {
-      Router13.prototype[method] = function(path4) {
+      Router14.prototype[method] = function(path4) {
         const route = this.route(path4);
         route[method].apply(route, slice.call(arguments, 1));
         return this;
@@ -21134,13 +21134,13 @@ var require_application = __commonJS({
     var compileTrust = require_utils3().compileTrust;
     var resolve2 = __require("node:path").resolve;
     var once = require_once();
-    var Router13 = require_router();
+    var Router14 = require_router();
     var slice = Array.prototype.slice;
     var flatten = Array.prototype.flat;
     var app2 = exports = module.exports = {};
     var trustProxyDefaultSymbol = "@@symbol:trust_proxy_default";
     app2.init = function init() {
-      var router13 = null;
+      var router14 = null;
       this.cache = /* @__PURE__ */ Object.create(null);
       this.engines = /* @__PURE__ */ Object.create(null);
       this.settings = /* @__PURE__ */ Object.create(null);
@@ -21149,13 +21149,13 @@ var require_application = __commonJS({
         configurable: true,
         enumerable: true,
         get: function getrouter() {
-          if (router13 === null) {
-            router13 = new Router13({
+          if (router14 === null) {
+            router14 = new Router14({
               caseSensitive: this.enabled("case sensitive routing"),
               strict: this.enabled("strict routing")
             });
           }
-          return router13;
+          return router14;
         }
       });
     };
@@ -21226,15 +21226,15 @@ var require_application = __commonJS({
       if (fns.length === 0) {
         throw new TypeError("app.use() requires a middleware function");
       }
-      var router13 = this.router;
+      var router14 = this.router;
       fns.forEach(function(fn2) {
         if (!fn2 || !fn2.handle || !fn2.set) {
-          return router13.use(path4, fn2);
+          return router14.use(path4, fn2);
         }
         debug(".use app under %s", path4);
         fn2.mountpath = path4;
         fn2.parent = this;
-        router13.use(path4, function mounted_app(req, res, next) {
+        router14.use(path4, function mounted_app(req, res, next) {
           var orig = req.app;
           fn2.handle(req, res, function(err) {
             Object.setPrototypeOf(req, orig.request);
@@ -23743,7 +23743,7 @@ var require_express = __commonJS({
     var EventEmitter = __require("node:events").EventEmitter;
     var mixin = require_merge_descriptors();
     var proto = require_application();
-    var Router13 = require_router();
+    var Router14 = require_router();
     var req = require_request();
     var res = require_response();
     exports = module.exports = createApplication;
@@ -23765,8 +23765,8 @@ var require_express = __commonJS({
     exports.application = proto;
     exports.request = req;
     exports.response = res;
-    exports.Route = Router13.Route;
-    exports.Router = Router13;
+    exports.Route = Router14.Route;
+    exports.Router = Router14;
     exports.json = bodyParser.json;
     exports.raw = bodyParser.raw;
     exports.static = require_serve_static();
@@ -43331,14 +43331,14 @@ if (existsSync(envFilePath)) {
 }
 
 // src/app.ts
-var import_express13 = __toESM(require_express2(), 1);
+var import_express14 = __toESM(require_express2(), 1);
 var import_cookie_parser = __toESM(require_cookie_parser(), 1);
 var import_compression = __toESM(require_compression(), 1);
 var import_pino_http = __toESM(require_logger(), 1);
 import path2 from "node:path";
 
 // src/routes/index.ts
-var import_express12 = __toESM(require_express2(), 1);
+var import_express13 = __toESM(require_express2(), 1);
 
 // src/routes/health.ts
 var import_express = __toESM(require_express2(), 1);
@@ -47360,6 +47360,39 @@ var ListPublicEventsResponseItem = objectType({
   "updatedAt": coerce.date()
 });
 var ListPublicEventsResponse = arrayType(ListPublicEventsResponseItem);
+var ListPublicBlogPostsResponseItem = objectType({
+  "id": numberType().int(),
+  "slug": stringType(),
+  "title": stringType(),
+  "category": stringType(),
+  "excerpt": stringType(),
+  "content": stringType(),
+  "coverImageUrl": stringType(),
+  "isPublished": booleanType(),
+  "publishedAt": coerce.date().nullable(),
+  "createdAt": coerce.date(),
+  "updatedAt": coerce.date()
+});
+var ListPublicBlogPostsResponse = arrayType(ListPublicBlogPostsResponseItem);
+var getPublicBlogPostPathSlugMin = 2;
+var getPublicBlogPostPathSlugMax = 200;
+var getPublicBlogPostPathSlugRegExp = new RegExp("^[a-z0-9]+(?:-[a-z0-9]+)*$");
+var GetPublicBlogPostParams = objectType({
+  "slug": coerce.string().min(getPublicBlogPostPathSlugMin).max(getPublicBlogPostPathSlugMax).regex(getPublicBlogPostPathSlugRegExp)
+});
+var GetPublicBlogPostResponse = objectType({
+  "id": numberType().int(),
+  "slug": stringType(),
+  "title": stringType(),
+  "category": stringType(),
+  "excerpt": stringType(),
+  "content": stringType(),
+  "coverImageUrl": stringType(),
+  "isPublished": booleanType(),
+  "publishedAt": coerce.date().nullable(),
+  "createdAt": coerce.date(),
+  "updatedAt": coerce.date()
+});
 var ListPublicDestinationsResponseItem = objectType({
   "id": numberType().int(),
   "name": stringType(),
@@ -47863,6 +47896,91 @@ var UpdateEventResponse = objectType({
   "priceLabel": stringType().nullable(),
   "heroImageUrl": stringType().nullable(),
   "isPublished": booleanType(),
+  "createdAt": coerce.date(),
+  "updatedAt": coerce.date()
+});
+var ListAdminBlogPostsResponseItem = objectType({
+  "id": numberType().int(),
+  "slug": stringType(),
+  "title": stringType(),
+  "category": stringType(),
+  "excerpt": stringType(),
+  "content": stringType(),
+  "coverImageUrl": stringType(),
+  "isPublished": booleanType(),
+  "publishedAt": coerce.date().nullable(),
+  "createdAt": coerce.date(),
+  "updatedAt": coerce.date()
+});
+var ListAdminBlogPostsResponse = arrayType(ListAdminBlogPostsResponseItem);
+var createBlogPostBodySlugMin = 2;
+var createBlogPostBodySlugMax = 200;
+var createBlogPostBodySlugRegExp = new RegExp("^[a-z0-9]+(?:-[a-z0-9]+)*$");
+var createBlogPostBodyTitleMin = 2;
+var createBlogPostBodyTitleMax = 180;
+var createBlogPostBodyCategoryMin = 2;
+var createBlogPostBodyCategoryMax = 80;
+var createBlogPostBodyExcerptMin = 2;
+var createBlogPostBodyExcerptMax = 600;
+var createBlogPostBodyContentMin = 2;
+var createBlogPostBodyContentMax = 2e4;
+var createBlogPostBodyCoverImageUrlMax = 500;
+var CreateBlogPostBody = objectType({
+  "slug": stringType().min(createBlogPostBodySlugMin).max(createBlogPostBodySlugMax).regex(createBlogPostBodySlugRegExp),
+  "title": stringType().min(createBlogPostBodyTitleMin).max(createBlogPostBodyTitleMax),
+  "category": stringType().min(createBlogPostBodyCategoryMin).max(createBlogPostBodyCategoryMax),
+  "excerpt": stringType().min(createBlogPostBodyExcerptMin).max(createBlogPostBodyExcerptMax),
+  "content": stringType().min(createBlogPostBodyContentMin).max(createBlogPostBodyContentMax),
+  "coverImageUrl": stringType().min(1).max(createBlogPostBodyCoverImageUrlMax),
+  "isPublished": booleanType()
+});
+var CreateBlogPostResponse = objectType({
+  "id": numberType().int(),
+  "slug": stringType(),
+  "title": stringType(),
+  "category": stringType(),
+  "excerpt": stringType(),
+  "content": stringType(),
+  "coverImageUrl": stringType(),
+  "isPublished": booleanType(),
+  "publishedAt": coerce.date().nullable(),
+  "createdAt": coerce.date(),
+  "updatedAt": coerce.date()
+});
+var UpdateBlogPostParams = objectType({
+  "id": coerce.number().int()
+});
+var updateBlogPostBodySlugMin = 2;
+var updateBlogPostBodySlugMax = 200;
+var updateBlogPostBodySlugRegExp = new RegExp("^[a-z0-9]+(?:-[a-z0-9]+)*$");
+var updateBlogPostBodyTitleMin = 2;
+var updateBlogPostBodyTitleMax = 180;
+var updateBlogPostBodyCategoryMin = 2;
+var updateBlogPostBodyCategoryMax = 80;
+var updateBlogPostBodyExcerptMin = 2;
+var updateBlogPostBodyExcerptMax = 600;
+var updateBlogPostBodyContentMin = 2;
+var updateBlogPostBodyContentMax = 2e4;
+var updateBlogPostBodyCoverImageUrlMax = 500;
+var UpdateBlogPostBody = objectType({
+  "slug": stringType().min(updateBlogPostBodySlugMin).max(updateBlogPostBodySlugMax).regex(updateBlogPostBodySlugRegExp),
+  "title": stringType().min(updateBlogPostBodyTitleMin).max(updateBlogPostBodyTitleMax),
+  "category": stringType().min(updateBlogPostBodyCategoryMin).max(updateBlogPostBodyCategoryMax),
+  "excerpt": stringType().min(updateBlogPostBodyExcerptMin).max(updateBlogPostBodyExcerptMax),
+  "content": stringType().min(updateBlogPostBodyContentMin).max(updateBlogPostBodyContentMax),
+  "coverImageUrl": stringType().min(1).max(updateBlogPostBodyCoverImageUrlMax),
+  "isPublished": booleanType()
+});
+var UpdateBlogPostResponse = objectType({
+  "id": numberType().int(),
+  "slug": stringType(),
+  "title": stringType(),
+  "category": stringType(),
+  "excerpt": stringType(),
+  "content": stringType(),
+  "coverImageUrl": stringType(),
+  "isPublished": booleanType(),
+  "publishedAt": coerce.date().nullable(),
   "createdAt": coerce.date(),
   "updatedAt": coerce.date()
 });
@@ -48864,10 +48982,175 @@ router4.patch(
 );
 var events_default = router4;
 
-// src/routes/public-content.ts
+// src/routes/blog-posts.ts
 var import_express5 = __toESM(require_express2(), 1);
 var router5 = (0, import_express5.Router)();
-router5.get("/destinations", async (_req, res) => {
+var blogPostSelect = `
+  SELECT
+    id,
+    slug,
+    title,
+    category,
+    excerpt,
+    body_content AS content,
+    cover_image_url AS coverImageUrl,
+    is_published AS isPublished,
+    DATE_FORMAT(published_at, '%Y-%m-%dT%H:%i:%s.000Z') AS publishedAt,
+    DATE_FORMAT(created_at, '%Y-%m-%dT%H:%i:%s.000Z') AS createdAt,
+    DATE_FORMAT(updated_at, '%Y-%m-%dT%H:%i:%s.000Z') AS updatedAt
+  FROM blog_posts
+`;
+function blogPostResponse(row) {
+  return {
+    id: Number(row.id),
+    slug: row.slug,
+    title: row.title,
+    category: row.category,
+    excerpt: row.excerpt,
+    content: row.content,
+    coverImageUrl: row.coverImageUrl,
+    isPublished: Boolean(row.isPublished),
+    publishedAt: row.publishedAt,
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt
+  };
+}
+async function findBlogPost(id) {
+  const rows = await selectRows(
+    `${blogPostSelect} WHERE id = ? LIMIT 1`,
+    [id]
+  );
+  return rows[0];
+}
+router5.get("/blog-posts", async (_req, res) => {
+  const rows = await selectRows(
+    `${blogPostSelect}
+     WHERE is_published = TRUE
+     ORDER BY published_at DESC, id DESC`
+  );
+  res.json(ListPublicBlogPostsResponse.parse(rows.map(blogPostResponse)));
+});
+router5.get(
+  "/blog-posts/:slug",
+  async (req, res) => {
+    const params = GetPublicBlogPostParams.safeParse(req.params);
+    if (!params.success) {
+      res.status(400).json({ error: params.error.message });
+      return;
+    }
+    const rows = await selectRows(
+      `${blogPostSelect}
+       WHERE slug = ? AND is_published = TRUE
+       LIMIT 1`,
+      [params.data.slug]
+    );
+    if (!rows[0]) {
+      res.status(404).json({ error: "Published blog post not found." });
+      return;
+    }
+    res.json(GetPublicBlogPostResponse.parse(blogPostResponse(rows[0])));
+  }
+);
+router5.get(
+  "/admin/blog-posts",
+  requireAdmin,
+  async (_req, res) => {
+    const rows = await selectRows(
+      `${blogPostSelect}
+       ORDER BY is_published DESC, updated_at DESC, id DESC`
+    );
+    res.json(ListAdminBlogPostsResponse.parse(rows.map(blogPostResponse)));
+  }
+);
+router5.post(
+  "/admin/blog-posts",
+  requireAdmin,
+  async (req, res) => {
+    const body = CreateBlogPostBody.safeParse(req.body);
+    if (!body.success) {
+      res.status(400).json({ error: body.error.message });
+      return;
+    }
+    const input = body.data;
+    const result = await executeSql(
+      `INSERT INTO blog_posts
+         (slug, title, category, excerpt, body_content, cover_image_url,
+          is_published, published_at, updated_by)
+       VALUES (?, ?, ?, ?, ?, ?, ?, IF(?, CURRENT_TIMESTAMP, NULL), ?)`,
+      [
+        input.slug.trim().toLowerCase(),
+        input.title.trim(),
+        input.category.trim(),
+        input.excerpt.trim(),
+        input.content.trim(),
+        input.coverImageUrl.trim(),
+        input.isPublished,
+        input.isPublished,
+        req.adminIdentity?.userId ?? null
+      ]
+    );
+    const post = await findBlogPost(Number(result.insertId));
+    if (!post) {
+      res.status(500).json({ error: "The blog post could not be loaded after saving." });
+      return;
+    }
+    res.status(201).json(CreateBlogPostResponse.parse(blogPostResponse(post)));
+  }
+);
+router5.patch(
+  "/admin/blog-posts/:id",
+  requireAdmin,
+  async (req, res) => {
+    const params = UpdateBlogPostParams.safeParse(req.params);
+    const body = UpdateBlogPostBody.safeParse(req.body);
+    if (!params.success) {
+      res.status(400).json({ error: params.error.message });
+      return;
+    }
+    if (!body.success) {
+      res.status(400).json({ error: body.error.message });
+      return;
+    }
+    const input = body.data;
+    await executeSql(
+      `UPDATE blog_posts
+       SET slug = ?,
+           title = ?,
+           category = ?,
+           excerpt = ?,
+           body_content = ?,
+           cover_image_url = ?,
+           is_published = ?,
+           published_at = IF(?, COALESCE(published_at, CURRENT_TIMESTAMP), NULL),
+           updated_by = ?
+       WHERE id = ?`,
+      [
+        input.slug.trim().toLowerCase(),
+        input.title.trim(),
+        input.category.trim(),
+        input.excerpt.trim(),
+        input.content.trim(),
+        input.coverImageUrl.trim(),
+        input.isPublished,
+        input.isPublished,
+        req.adminIdentity?.userId ?? null,
+        params.data.id
+      ]
+    );
+    const post = await findBlogPost(params.data.id);
+    if (!post) {
+      res.status(404).json({ error: "Blog post not found." });
+      return;
+    }
+    res.json(UpdateBlogPostResponse.parse(blogPostResponse(post)));
+  }
+);
+var blog_posts_default = router5;
+
+// src/routes/public-content.ts
+var import_express6 = __toESM(require_express2(), 1);
+var router6 = (0, import_express6.Router)();
+router6.get("/destinations", async (_req, res) => {
   const rows = await selectRows(
     `SELECT id, name, slug, summary, description,
             image_url AS imageUrl,
@@ -48892,7 +49175,7 @@ router5.get("/destinations", async (_req, res) => {
     )
   );
 });
-router5.get(
+router6.get(
   "/site-content/:pageKey",
   async (req, res) => {
     const params = GetPublicSiteContentParams.safeParse(req.params);
@@ -48962,13 +49245,13 @@ function parseHeroImages(value) {
     return [];
   }
 }
-var public_content_default = router5;
+var public_content_default = router6;
 
 // src/routes/newsletter.ts
-var import_express6 = __toESM(require_express2(), 1);
-var router6 = (0, import_express6.Router)();
+var import_express7 = __toESM(require_express2(), 1);
+var router7 = (0, import_express7.Router)();
 var consentTextVersion = "newsletter-opt-in-v1";
-router6.post(
+router7.post(
   "/newsletter-subscriptions",
   async (req, res) => {
     const parsed = CreateNewsletterSubscriptionBody.safeParse(req.body);
@@ -48997,11 +49280,11 @@ router6.post(
     );
   }
 );
-var newsletter_default = router6;
+var newsletter_default = router7;
 
 // src/routes/auth.ts
-var import_express7 = __toESM(require_express2(), 1);
-var router7 = (0, import_express7.Router)();
+var import_express8 = __toESM(require_express2(), 1);
+var router8 = (0, import_express8.Router)();
 var failedLogins2 = /* @__PURE__ */ new Map();
 var MAX_FAILED_LOGINS2 = 8;
 var LOGIN_WINDOW_MS2 = 15 * 60 * 1e3;
@@ -49028,7 +49311,7 @@ function recordFailedLogin2(key) {
   }
   current.count += 1;
 }
-router7.get("/auth/session", async (req, res) => {
+router8.get("/auth/session", async (req, res) => {
   const admin = await findAdminIdentity(req);
   if (admin) {
     res.json(
@@ -49053,7 +49336,7 @@ router7.get("/auth/session", async (req, res) => {
     )
   );
 });
-router7.post("/auth/register", async (req, res) => {
+router8.post("/auth/register", async (req, res) => {
   const parsed = RegisterBody.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.message });
@@ -49108,7 +49391,7 @@ router7.post("/auth/register", async (req, res) => {
     })
   );
 });
-router7.post("/auth/login", async (req, res) => {
+router8.post("/auth/login", async (req, res) => {
   const key = loginKey2(req);
   if (isRateLimited2(key)) {
     res.status(429).json({
@@ -49179,7 +49462,7 @@ router7.post("/auth/login", async (req, res) => {
     })
   );
 });
-router7.post("/auth/logout", async (req, res) => {
+router8.post("/auth/logout", async (req, res) => {
   clearAdminSessionCookie(req, res);
   clearCustomerSessionCookie(req, res);
   await Promise.all([
@@ -49188,11 +49471,11 @@ router7.post("/auth/logout", async (req, res) => {
   ]);
   res.status(204).end();
 });
-var auth_default = router7;
+var auth_default = router8;
 
 // src/routes/account.ts
-var import_express8 = __toESM(require_express2(), 1);
-var router8 = (0, import_express8.Router)();
+var import_express9 = __toESM(require_express2(), 1);
+var router9 = (0, import_express9.Router)();
 var customerBookingSelect = `
   SELECT
     b.id,
@@ -49211,7 +49494,7 @@ var customerBookingSelect = `
   FROM bookings b
   LEFT JOIN adventures a ON a.id = b.adventure_id
 `;
-router8.get(
+router9.get(
   "/account/dashboard",
   requireCustomer,
   async (req, res) => {
@@ -49261,7 +49544,7 @@ router8.get(
     );
   }
 );
-router8.patch(
+router9.patch(
   "/account/profile",
   requireCustomer,
   async (req, res) => {
@@ -49302,10 +49585,10 @@ router8.patch(
     res.json(UpdateCustomerProfileResponse.parse(profile));
   }
 );
-var account_default = router8;
+var account_default = router9;
 
 // src/routes/admin-uploads.ts
-var import_express9 = __toESM(require_express2(), 1);
+var import_express10 = __toESM(require_express2(), 1);
 
 // src/lib/linkups-uploads.ts
 var import_multer = __toESM(require_multer(), 1);
@@ -49413,8 +49696,8 @@ function isMulterError(error) {
 }
 
 // src/routes/admin-uploads.ts
-var router9 = (0, import_express9.Router)();
-router9.post("/admin/uploads", requireAdmin, (req, res, next) => {
+var router10 = (0, import_express10.Router)();
+router10.post("/admin/uploads", requireAdmin, (req, res, next) => {
   parseAdminImageUpload(req, res, (error) => {
     if (error) {
       if (isMulterError(error)) {
@@ -49450,11 +49733,11 @@ router9.post("/admin/uploads", requireAdmin, (req, res, next) => {
     });
   });
 });
-var admin_uploads_default = router9;
+var admin_uploads_default = router10;
 
 // src/routes/admin.ts
-var import_express10 = __toESM(require_express2(), 1);
-var router10 = (0, import_express10.Router)();
+var import_express11 = __toESM(require_express2(), 1);
+var router11 = (0, import_express11.Router)();
 var bookingSelect = `
   SELECT
     b.id,
@@ -49517,7 +49800,7 @@ async function findEnquiry(id) {
   );
   return rows[0];
 }
-router10.get(
+router11.get(
   "/admin/bookings",
   requireAdmin,
   async (_req, res) => {
@@ -49529,7 +49812,7 @@ router10.get(
     res.json(ListAdminBookingsResponse.parse(rows.map(bookingResponse)));
   }
 );
-router10.patch(
+router11.patch(
   "/admin/bookings/:id",
   requireAdmin,
   async (req, res) => {
@@ -49555,7 +49838,7 @@ router10.patch(
     res.json(UpdateBookingResponse.parse(bookingResponse(booking)));
   }
 );
-router10.get(
+router11.get(
   "/admin/enquiries",
   requireAdmin,
   async (_req, res) => {
@@ -49576,7 +49859,7 @@ router10.get(
     res.json(ListAdminEnquiriesResponse.parse(rows));
   }
 );
-router10.patch(
+router11.patch(
   "/admin/enquiries/:id",
   requireAdmin,
   async (req, res) => {
@@ -49602,7 +49885,7 @@ router10.patch(
     res.json(UpdateEnquiryResponse.parse(enquiry));
   }
 );
-router10.get(
+router11.get(
   "/admin/adventures",
   requireAdmin,
   async (_req, res) => {
@@ -49617,7 +49900,7 @@ router10.get(
     );
   }
 );
-router10.post(
+router11.post(
   "/admin/adventures",
   requireAdmin,
   async (req, res) => {
@@ -49672,7 +49955,7 @@ router10.post(
     );
   }
 );
-router10.patch(
+router11.patch(
   "/admin/adventures/:id",
   requireAdmin,
   async (req, res) => {
@@ -49767,11 +50050,11 @@ router10.patch(
     );
   }
 );
-var admin_default = router10;
+var admin_default = router11;
 
 // src/routes/admin-management.ts
-var import_express11 = __toESM(require_express2(), 1);
-var router11 = (0, import_express11.Router)();
+var import_express12 = __toESM(require_express2(), 1);
+var router12 = (0, import_express12.Router)();
 var adminUserSelect = `
   SELECT id, name, email, phone, role,
          is_active AS isActive,
@@ -49869,7 +50152,7 @@ function siteContentResponse(row) {
     updatedAt: row.updatedAt
   };
 }
-router11.get(
+router12.get(
   "/admin/users",
   requireAdmin,
   async (_req, res) => {
@@ -49882,7 +50165,7 @@ router11.get(
     res.json(ListAdminUsersResponse.parse(rows.map(userResponse)));
   }
 );
-router11.patch(
+router12.patch(
   "/admin/users/:id",
   requireAdmin,
   async (req, res) => {
@@ -49916,7 +50199,7 @@ router11.patch(
     res.json(UpdateAdminUserResponse.parse(userResponse(user)));
   }
 );
-router11.get(
+router12.get(
   "/admin/destinations",
   requireAdmin,
   async (_req, res) => {
@@ -49929,7 +50212,7 @@ router11.get(
     );
   }
 );
-router11.post(
+router12.post(
   "/admin/destinations",
   requireAdmin,
   async (req, res) => {
@@ -49962,7 +50245,7 @@ router11.post(
     );
   }
 );
-router11.patch(
+router12.patch(
   "/admin/destinations/:id",
   requireAdmin,
   async (req, res) => {
@@ -50015,7 +50298,7 @@ router11.patch(
     );
   }
 );
-router11.get(
+router12.get(
   "/admin/site-content",
   requireAdmin,
   async (_req, res) => {
@@ -50027,7 +50310,7 @@ router11.get(
     );
   }
 );
-router11.put(
+router12.put(
   "/admin/site-content",
   requireAdmin,
   async (req, res) => {
@@ -50078,22 +50361,23 @@ router11.put(
     );
   }
 );
-var admin_management_default = router11;
+var admin_management_default = router12;
 
 // src/routes/index.ts
-var router12 = (0, import_express12.Router)();
-router12.use(health_default);
-router12.use(public_default);
-router12.use(events_default);
-router12.use(public_content_default);
-router12.use(newsletter_default);
-router12.use(auth_default);
-router12.use(account_default);
-router12.use(admin_auth_default);
-router12.use(admin_uploads_default);
-router12.use(admin_default);
-router12.use(admin_management_default);
-var routes_default = router12;
+var router13 = (0, import_express13.Router)();
+router13.use(health_default);
+router13.use(public_default);
+router13.use(events_default);
+router13.use(blog_posts_default);
+router13.use(public_content_default);
+router13.use(newsletter_default);
+router13.use(auth_default);
+router13.use(account_default);
+router13.use(admin_auth_default);
+router13.use(admin_uploads_default);
+router13.use(admin_default);
+router13.use(admin_management_default);
+var routes_default = router13;
 
 // src/lib/logger.ts
 var import_pino = __toESM(require_pino(), 1);
@@ -50114,7 +50398,7 @@ var logger = (0, import_pino.default)({
 });
 
 // src/app.ts
-var app = (0, import_express13.default)();
+var app = (0, import_express14.default)();
 app.set("trust proxy", 1);
 app.use((0, import_compression.default)({ threshold: 1024 }));
 app.use(
@@ -50136,12 +50420,12 @@ app.use(
     }
   })
 );
-app.use(import_express13.default.json({ limit: "32kb" }));
-app.use(import_express13.default.urlencoded({ extended: true, limit: "32kb" }));
+app.use(import_express14.default.json({ limit: "32kb" }));
+app.use(import_express14.default.urlencoded({ extended: true, limit: "32kb" }));
 app.use((0, import_cookie_parser.default)());
 app.use(
   "/api/uploads",
-  import_express13.default.static(linkupsUploadDirectory, {
+  import_express14.default.static(linkupsUploadDirectory, {
     dotfiles: "deny",
     index: false,
     immutable: true,
@@ -50156,7 +50440,7 @@ var staticDirectory = process.env["STATIC_DIR"];
 if (staticDirectory) {
   const staticRoot = path2.resolve(process.cwd(), staticDirectory);
   app.use(
-    import_express13.default.static(staticRoot, {
+    import_express14.default.static(staticRoot, {
       index: "index.html",
       setHeaders(res, filePath) {
         const relativePath = path2.relative(staticRoot, filePath).split(path2.sep).join("/");
