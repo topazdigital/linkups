@@ -2,7 +2,7 @@
 
 import { Link } from 'wouter'
 import { useEffect, useState, type ReactNode } from 'react'
-import { ArrowRight, CalendarDays, Check, ChevronDown, ChevronLeft, ChevronRight, Compass, Globe2, MapPin, Menu, Pause, Play, Star, Users, X } from 'lucide-react'
+import { ArrowRight, CalendarDays, Check, ChevronDown, ChevronLeft, ChevronRight, Compass, Globe2, MapPin, Menu, Pause, Plane, Play, Star, Users, X } from 'lucide-react'
 import { AdventureCards } from '@/components/adventure-cards'
 import { AdventureTypeCarousel } from '@/components/adventure-type-carousel'
 import { Logo } from '@/components/site-shell'
@@ -13,7 +13,7 @@ import { getGetPublicSiteContentQueryKey, useGetPublicSiteContent } from '@works
 import { optimizedImageUrl, SiteImage } from '@/components/site-image'
 import { resolveSiteImage } from '@/lib/site-image-catalog'
 
-const hero = '/images/group-travel-hero.png'
+const hero = '/images/adventure-coast.webp'
 const destinationHero = '/images/adventure-mountain.png'
 const images = {
   mara: '/images/adventure-hero.png',
@@ -115,6 +115,12 @@ function HomeHero({ images: heroImages, mode, title, description, accentImage }:
           ><SiteImage src={image} alt="" loading={index === safeIndex ? 'eager' : 'lazy'} fetchPriority={index === safeIndex ? 'high' : 'auto'} /></div>
         ))}
         <div className="home-hero-shade" aria-hidden="true" />
+        <div className="home-hero-flight-path" aria-hidden="true">
+          <svg viewBox="0 0 240 100" preserveAspectRatio="none">
+            <path d="M4 91C43 31 93 12 139 25c39 11 46 48 79 15" />
+          </svg>
+          <Plane className="home-hero-flight-plane" strokeWidth={1.8} />
+        </div>
         <img
           className="home-hero-popout"
           src={optimizedImageUrl(accentImage)}

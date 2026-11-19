@@ -1,16 +1,16 @@
 .home-hero-stage {
   position: relative;
   isolation: isolate;
-  max-width: 1510px;
+  max-width: 1640px;
   margin: 0 auto;
-  padding: 58px clamp(18px, 4.5vw, 66px) 46px;
+  padding: 42px clamp(18px, 3.2vw, 48px) 42px;
 }
 
 .home-hero-stage::before {
   position: absolute;
-  top: 14px;
+  top: 4px;
   right: clamp(45px, 12vw, 185px);
-  width: clamp(150px, 20vw, 250px);
+  width: clamp(170px, 21vw, 280px);
   aspect-ratio: 1;
   border: 1px solid rgba(255, 107, 18, 0.48);
   border-radius: 50%;
@@ -23,14 +23,14 @@
   position: relative;
   isolation: isolate;
   overflow: visible;
-  min-height: 520px;
+  min-height: clamp(570px, 46vw, 700px);
   margin: 0;
   padding: 62px clamp(30px, 5vw, 78px);
-  border: 2px solid rgba(255, 107, 18, 0.72);
-  border-radius: 28px;
+  border: 2px solid rgba(255, 107, 18, 0.8);
+  border-radius: 32px;
   background-color: #003d32;
   background-image: none !important;
-  box-shadow: 0 24px 68px rgba(0, 45, 37, 0.2);
+  box-shadow: 0 32px 84px rgba(0, 45, 37, 0.26);
 }
 
 .home-hero-background,
@@ -52,7 +52,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 46%;
+  object-position: center 48%;
 }
 
 .home-hero-background.active {
@@ -64,40 +64,89 @@
   background: linear-gradient(
     90deg,
     rgba(0, 39, 32, 0.94) 0%,
-    rgba(0, 61, 50, 0.8) 42%,
-    rgba(0, 61, 50, 0.16) 100%
+    rgba(0, 61, 50, 0.8) 39%,
+    rgba(0, 61, 50, 0.25) 67%,
+    rgba(0, 61, 50, 0.08) 100%
   );
+}
+
+.home-hero-flight-path {
+  position: absolute;
+  top: clamp(18px, 3.2vw, 44px);
+  left: clamp(200px, 23vw, 330px);
+  right: auto;
+  z-index: 2;
+  width: clamp(130px, 17vw, 230px);
+  height: clamp(56px, 7vw, 94px);
+  color: #ff6b12;
+  filter: drop-shadow(0 3px 5px rgba(0, 25, 21, 0.24));
+  pointer-events: none;
+}
+
+.home-hero-flight-path svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.home-hero-flight-path path {
+  fill: none;
+  stroke: currentColor;
+  stroke-dasharray: 4 8;
+  stroke-linecap: round;
+  stroke-width: 2.5;
+}
+
+.home-hero-flight-plane {
+  position: absolute;
+  top: 2%;
+  right: 3%;
+  width: clamp(19px, 2.4vw, 29px);
+  height: clamp(19px, 2.4vw, 29px);
+  transform: rotate(28deg);
 }
 
 .home-hero-popout {
   position: absolute;
-  right: clamp(10px, 5.8vw, 86px);
+  right: clamp(0px, 2vw, 30px);
   bottom: 0;
-  z-index: 2;
+  z-index: 3;
   width: auto;
-  height: clamp(470px, 43vw, 620px);
-  max-width: 56%;
+  height: clamp(590px, 53vw, 760px);
+  max-width: 64%;
   object-fit: contain;
   object-position: center bottom;
-  filter: drop-shadow(0 18px 24px rgba(0, 24, 20, 0.28));
+  filter: drop-shadow(0 22px 30px rgba(0, 24, 20, 0.36));
   animation: home-hero-character-float 6s ease-in-out infinite;
   pointer-events: none;
 }
 
 .home-hero .hero-copy {
   position: relative;
-  z-index: 3;
-  width: min(57%, 640px);
-  max-width: 640px;
+  z-index: 4;
+  width: min(50%, 620px);
+  max-width: 620px;
 }
 
 .home-hero .hero-copy h1 {
-  max-width: 590px;
+  max-width: 560px;
+  font-size: clamp(56px, 6.2vw, 96px);
+  line-height: 0.9;
   text-wrap: balance;
 }
 
+.home-hero .hero-copy h1::after {
+  display: block;
+  width: clamp(132px, 17vw, 218px);
+  height: 10px;
+  margin-top: 4px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 14'%3E%3Cpath d='M3 10C42 3 72 12 108 7s69-4 109 1' fill='none' stroke='%23ff6b12' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  content: '';
+  transform: rotate(-1deg);
+}
+
 .home-hero .hero-copy > p {
-  max-width: 470px;
+  max-width: 450px;
 }
 
 .home-hero-controls {
@@ -105,7 +154,7 @@
   right: auto;
   left: 49%;
   bottom: 22px;
-  z-index: 4;
+  z-index: 5;
   display: flex;
   align-items: center;
   gap: 9px;
@@ -167,7 +216,7 @@
     transform: translateY(0) rotate(-1deg);
   }
   50% {
-    transform: translateY(-8px) rotate(0deg);
+    transform: translateY(-6px) rotate(0deg);
   }
 }
 
@@ -357,6 +406,53 @@
   }
 }
 
+@media (min-width: 601px) and (max-width: 900px) {
+  .home-hero-stage {
+    padding: 34px 18px 32px;
+  }
+
+  .home-hero {
+    min-height: clamp(540px, 62vw, 580px);
+    padding: 48px 28px;
+  }
+
+  .home-hero .hero-copy {
+    width: 44%;
+    max-width: 300px;
+  }
+
+  .home-hero .hero-copy h1 {
+    font-size: clamp(44px, 6.4vw, 58px);
+    line-height: 0.92;
+  }
+
+  .home-hero .hero-copy > p {
+    max-width: 300px;
+    font-size: 14px;
+  }
+
+  .home-hero .hero-buttons {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .home-hero-popout {
+    right: -18px;
+    height: clamp(400px, 52vw, 470px);
+    max-width: 58%;
+  }
+
+  .home-hero-flight-path {
+    top: 16px;
+    left: clamp(170px, 22vw, 205px);
+    right: auto;
+    width: clamp(130px, 18vw, 160px);
+    height: 62px;
+  }
+}
+
 @media (max-width: 600px) {
   .home-hero-stage {
     padding: 36px 14px 28px;
@@ -385,6 +481,12 @@
     line-height: 0.94;
   }
 
+  .home-hero .hero-copy h1::after {
+    width: clamp(108px, 34vw, 146px);
+    height: 7px;
+    margin-top: 3px;
+  }
+
   .home-hero .hero-copy > p {
     font-size: 14px;
   }
@@ -402,6 +504,19 @@
     width: min(78vw, 320px);
     height: auto;
     max-width: 84%;
+  }
+
+  .home-hero-flight-path {
+    top: 14px;
+    left: auto;
+    right: 20px;
+    width: 124px;
+    height: 54px;
+  }
+
+  .home-hero-flight-plane {
+    width: 19px;
+    height: 19px;
   }
 
   .home-hero-controls {
