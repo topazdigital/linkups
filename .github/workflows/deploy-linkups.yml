@@ -44,8 +44,11 @@ jobs:
         run: |
           test -s artifacts/api-server/hosted-release/dist/index.mjs
           test -s artifacts/api-server/hosted-release/public/index.html
+          test -s artifacts/api-server/hosted-release/build-info.json
           test -s artifacts/api-server/hosted-release/database/schema.mysql
           test -s artifacts/api-server/hosted-release/database/seed.mysql
+          test "$(node -e 'const x=JSON.parse(require("node:fs").readFileSync(process.argv[1],"utf8"));process.stdout.write(x.sourceArtifact||"")' artifacts/api-server/hosted-release/build-info.json)" = "artifacts/linkups-adventures-port"
+          test "$(node artifacts/api-server/source-fingerprint.mjs artifacts/linkups-adventures-port)" = "$(node -e 'const x=JSON.parse(require("node:fs").readFileSync(process.argv[1],"utf8"));process.stdout.write(x.sourceFingerprint||"")' artifacts/api-server/hosted-release/build-info.json)"
 
       - name: Configure SSH
         env:

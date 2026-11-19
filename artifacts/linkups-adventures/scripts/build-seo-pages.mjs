@@ -3,7 +3,9 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
-const appDir = path.resolve(scriptDir, "..");
+const appDir = path.resolve(
+  process.env.LINKUPS_SEO_APP_DIR || path.resolve(scriptDir, ".."),
+);
 const distDir = path.join(appDir, "dist/public");
 const config = JSON.parse(
   await readFile(path.join(appDir, "src/lib/seo-data.json"), "utf8"),

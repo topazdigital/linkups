@@ -2,6 +2,8 @@
 
 This bundle runs the React website and its API in one Node.js process. It is built to use the `PORT` assigned by the hosting control panel; do not choose or reuse a port manually.
 
+The website was built from the `artifacts/linkups-adventures-port` artifact. The adjacent `build-info.json` fingerprint must match the source checkout before deployment.
+
 ## Before starting
 
 - Use this bundle only for the LinkUps domain.

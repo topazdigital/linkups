@@ -4,6 +4,7 @@ set -euo pipefail
 REPO_DIR="/home/admin/apps/linkups-source"
 APP_DIR="/home/admin/domains/linkupsadventures.co.ke/linkups-app"
 BUNDLE="$REPO_DIR/artifacts/api-server/hosted-release"
+WEB_ARTIFACT="artifacts/linkups-adventures-port"
 APP_PORT="5002"
 AFTER_PULL=0
 ASSUME_YES=0
@@ -46,6 +47,7 @@ fi
 for file in \
   dist/index.mjs \
   public/index.html \
+  build-info.json \
   package.json \
   database/schema.mysql \
   database/seed.mysql \
@@ -60,7 +62,19 @@ do
   fi
 done
 
-SOURCE_WEB_INDEX="$REPO_DIR/artifacts/linkups-adventures/index.html"
+BUILD_INFO="$BUNDLE/build-info.json"
+BUNDLE_WEB_ARTIFACT="$(node -e 'const info = JSON.parse(require("node:fs").readFileSync(process.argv[1], "utf8")); process.stdout.write(info.sourceArtifact || "");' "$BUILD_INFO")"
+BUNDLE_FINGERPRINT="$(node -e 'const info = JSON.parse(require("node:fs").readFileSync(process.argv[1], "utf8")); process.stdout.write(info.sourceFingerprint || "");' "$BUILD_INFO")"
+SOURCE_FINGERPRINT="$(node "$REPO_DIR/artifacts/api-server/source-fingerprint.mjs" "$REPO_DIR/$WEB_ARTIFACT")"
+if [[ "$BUNDLE_WEB_ARTIFACT" != "$WEB_ARTIFACT" || -z "$BUNDLE_FINGERPRINT" || "$BUNDLE_FINGERPRINT" != "$SOURCE_FINGERPRINT" ]]; then
+  echo "The hosted bundle is stale or was built from a different website artifact; stopping."
+  echo "Expected artifact: $WEB_ARTIFACT"
+  echo "Build the release in Replit with: pnpm --filter @workspace/api-server run build:hosted"
+  echo "Commit and push the refreshed artifacts/api-server/hosted-release files, then deploy again."
+  exit 1
+fi
+
+SOURCE_WEB_INDEX="$REPO_DIR/$WEB_ARTIFACT/index.html"
 RELEASE_WEB_INDEX="$BUNDLE/public/index.html"
 source_title="$(sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p' "$SOURCE_WEB_INDEX" | head -n 1)"
 release_title="$(sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p' "$RELEASE_WEB_INDEX" | head -n 1)"

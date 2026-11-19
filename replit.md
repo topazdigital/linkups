@@ -5,7 +5,7 @@ Kenya adventure-travel website for browsing trips, requesting bookings, and mana
 ## Run & Operate
 
 - `pnpm install` — install workspace dependencies
-- `pnpm --filter @workspace/linkups-adventures run dev` — run the Vite website
+- `pnpm --filter @workspace/linkups-adventures-port run dev` — run the main Vite website
 - `pnpm --filter @workspace/api-server run dev` — run the Express API
 - `pnpm --filter @workspace/api-server run build:hosted` — build the DirectAdmin release bundle
 - `pnpm run typecheck` — typecheck workspace packages
@@ -14,7 +14,7 @@ Kenya adventure-travel website for browsing trips, requesting bookings, and mana
 - Admin environment: `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and `ADMIN_NAME`
 - On the hosted server, configure these in DirectAdmin or in an app-root `.env` copied from `artifacts/api-server/.env.example`; never commit `.env` or put it under `public/`.
 - GitHub Actions deploys `main` to the LinkUps DirectAdmin app; configure the repository secrets listed in `Deployment`.
-- Before a manual server deploy, run `pnpm --filter @workspace/api-server run build:hosted` in Replit and push the refreshed `artifacts/api-server/hosted-release/` bundle. The server deploy script checks that the bundled homepage title matches the source and stops rather than deploying a stale website.
+- Before a manual server deploy, run `pnpm --filter @workspace/api-server run build:hosted` in Replit and push the refreshed `artifacts/api-server/hosted-release/` bundle. The server deploy script checks that the bundle fingerprint matches the main website source and stops rather than deploying an old or different artifact.
 
 ## Deployment
 
@@ -32,7 +32,9 @@ Kenya adventure-travel website for browsing trips, requesting bookings, and mana
 
 ## Where things live
 
-- `artifacts/linkups-adventures/` — React/Vite website and public assets
+- `artifacts/linkups-adventures-port/` — main React/Vite website, public assets, and responsive admin workspace
+- `artifacts/linkups-adventures/` — archived previous website
+- `artifacts/linkups-adventures-web/` — separately retained previous version
 - `artifacts/api-server/` — API routes, MySQL connection, production bundle, and SQL files
 - `artifacts/api-server/database/schema.mysql` — baseline MySQL schema for new databases
 - `artifacts/api-server/database/migrations/` — versioned MySQL changes applied on server startup

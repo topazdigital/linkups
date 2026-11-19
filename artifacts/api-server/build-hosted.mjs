@@ -10,10 +10,12 @@ import {
 } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { getSourceFingerprint } from "./source-fingerprint.mjs";
 
 const apiDir = path.dirname(fileURLToPath(import.meta.url));
 const workspaceRoot = path.resolve(apiDir, "../..");
-const webDir = path.join(workspaceRoot, "artifacts/linkups-adventures");
+const webArtifact = "artifacts/linkups-adventures-port";
+const webDir = path.join(workspaceRoot, webArtifact);
 const releaseDir = path.join(apiDir, "hosted-release");
 
 function runPnpm(args, env = {}) {
@@ -31,7 +33,7 @@ function runPnpm(args, env = {}) {
   }
 }
 
-runPnpm(["--filter", "@workspace/linkups-adventures", "run", "build"], {
+runPnpm(["--filter", "@workspace/linkups-adventures-port", "run", "build"], {
   BASE_PATH: "/",
   PORT: "3000",
   NODE_ENV: "production",
@@ -81,11 +83,25 @@ await writeFile(
 );
 
 await writeFile(
+  path.join(releaseDir, "build-info.json"),
+  `${JSON.stringify(
+    {
+      sourceArtifact: webArtifact,
+      sourceFingerprint: await getSourceFingerprint(webDir),
+    },
+    null,
+    2,
+  )}\n`,
+);
+
+await writeFile(
   path.join(releaseDir, "README.md"),
   [
     "# LinkUps Adventures hosting bundle",
     "",
     "This bundle runs the React website and its API in one Node.js process. It is built to use the `PORT` assigned by the hosting control panel; do not choose or reuse a port manually.",
+    "",
+    `The website was built from the \`${webArtifact}\` artifact. The adjacent \`build-info.json\` fingerprint must match the source checkout before deployment.`,
     "",
     "## Before starting",
     "",
