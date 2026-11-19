@@ -1,0 +1,453 @@
+{
+  "site": {
+    "name": "LinkUps Adventures",
+    "url": "https://linkupsadventures.co.ke",
+    "locale": "en_KE",
+    "defaultTitle": "Kenya Safari Adventures & Trips | LinkUps Adventures",
+    "defaultDescription": "Plan Kenya safari packages, beach escapes, camping trips and group adventures with LinkUps. Discover Maasai Mara tours, Naivasha day trips and coastal holidays.",
+    "defaultKeywords": [
+      "Kenya safari packages",
+      "Kenya adventure tours",
+      "Maasai Mara tours from Nairobi",
+      "Kenya group tours"
+    ]
+  },
+  "pages": {
+    "/": {
+      "title": "Kenya Safari Adventures & Trips | LinkUps Adventures",
+      "description": "Plan Kenya safari packages, beach escapes, camping trips and group adventures with LinkUps. Discover Maasai Mara tours, Naivasha day trips and coastal holidays.",
+      "keywords": [
+        "Kenya safari packages",
+        "Kenya adventure tours",
+        "Maasai Mara tours from Nairobi",
+        "Kenya group tours",
+        "Kenya beach holidays"
+      ],
+      "imageSource": "/images/linkups-logo.png",
+      "imageAlt": "LinkUps Adventures logo",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "WebPage"
+    },
+    "/about": {
+      "title": "About LinkUps Adventures | Kenya Safari & Travel Team",
+      "description": "Meet LinkUps Adventures, a Kenya travel team creating thoughtful safaris, beach holidays and group trips with local planning, clear details and support.",
+      "keywords": ["LinkUps Adventures", "Kenya travel company", "Kenya safari planners"],
+      "imageSource": "/images/about-founder.webp",
+      "imageAlt": "LinkUps Adventures founder and travel team",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "AboutPage"
+    },
+    "/adventures": {
+      "title": "Kenya Safari Packages & Adventure Trips | LinkUps Adventures",
+      "description": "Explore Kenya safari packages, beach escapes, camping trips and day adventures. Compare experiences, find your travel style and plan with LinkUps Adventures.",
+      "keywords": [
+        "Kenya safari packages",
+        "Kenya tours and travel",
+        "Kenya camping trips",
+        "Nairobi day trips"
+      ],
+      "imageSource": "/images/adventure-hero.webp",
+      "imageAlt": "Kenya safari and adventure travel with LinkUps",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "CollectionPage"
+    },
+    "/blog": {
+      "title": "Kenya Travel Blog: Safari Guides & Getaways | LinkUps",
+      "description": "Read Kenya travel tips, safari guides and weekend getaway ideas from LinkUps Adventures. Find inspiration for Maasai Mara, Naivasha, Mombasa and beyond.",
+      "keywords": [
+        "Kenya travel tips",
+        "Kenya safari guide",
+        "weekend getaways from Nairobi",
+        "Kenya destination guides"
+      ],
+      "imageSource": "/images/adventure-mountain.webp",
+      "imageAlt": "Kenya travel inspiration from LinkUps Adventures",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "CollectionPage"
+    },
+    "/compare": {
+      "title": "Compare Kenya Safari & Adventure Trips | LinkUps Adventures",
+      "description": "Compare Kenya safari, coast and day-trip experiences by pace, duration and inclusions. Find a trip that suits your group and budget with LinkUps Adventures.",
+      "keywords": [
+        "compare Kenya safari packages",
+        "Kenya tour prices",
+        "Kenya day trips",
+        "Kenya holiday packages"
+      ],
+      "imageSource": "/images/adventure-camp.webp",
+      "imageAlt": "Compare Kenya adventure trips with LinkUps",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "WebPage"
+    },
+    "/contact": {
+      "title": "Contact LinkUps Adventures in Kenya | Tour Planning",
+      "description": "Contact LinkUps Adventures to plan a Kenya safari, group holiday or custom trip. Ask about destinations, bookings and Nairobi travel support. Talk to our team.",
+      "keywords": [
+        "contact LinkUps Adventures",
+        "Kenya tour operator contact",
+        "Nairobi travel company",
+        "Kenya safari enquiry"
+      ],
+      "imageSource": "/images/contact-hero.webp",
+      "imageAlt": "Contact the LinkUps Adventures travel team",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "ContactPage"
+    },
+    "/destinations": {
+      "title": "Kenya Destinations & Tour Packages | LinkUps Adventures",
+      "description": "Explore Kenya travel destinations, from Maasai Mara and Amboseli to Naivasha, Samburu, Mombasa and Watamu. Find safari and beach trips with LinkUps today.",
+      "keywords": [
+        "Kenya destinations",
+        "Kenya tour packages",
+        "Maasai Mara",
+        "Amboseli",
+        "Mombasa holiday packages"
+      ],
+      "imageSource": "/images/adventure-hero.webp",
+      "imageAlt": "Kenya safari and coast destinations",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "CollectionPage"
+    },
+    "/group-travel": {
+      "title": "Kenya Group Tours & Adventure Trips | LinkUps Adventures",
+      "description": "Plan Kenya group tours, girls trips, family holidays and corporate retreats with LinkUps Adventures. We coordinate transport, stays and activities for groups.",
+      "keywords": [
+        "Kenya group tours",
+        "Kenya girls trips",
+        "Kenya family holidays",
+        "corporate team building Kenya"
+      ],
+      "imageSource": "/images/group-travel-hero.webp",
+      "imageAlt": "Friends travelling together on a LinkUps Kenya group adventure",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "WebPage"
+    },
+    "/plan": {
+      "title": "Plan a Kenya Safari or Adventure | LinkUps Adventures",
+      "description": "Plan a Kenya safari, beach holiday or custom adventure with LinkUps. Share your dates, destination and budget to get personal trip options from our team.",
+      "keywords": [
+        "plan Kenya safari",
+        "custom Kenya tours",
+        "Kenya holiday planning",
+        "Kenya adventure itinerary"
+      ],
+      "imageSource": "/images/adventure-camp.webp",
+      "imageAlt": "Plan a custom Kenya adventure with LinkUps",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "WebPage"
+    },
+    "/travel-guide": {
+      "title": "Kenya Travel Guide & Safari Tips | LinkUps Adventures",
+      "description": "Prepare for travel in Kenya with practical advice on packing, insurance, payments and trip planning. Get clear answers before your LinkUps adventure today.",
+      "keywords": [
+        "Kenya travel guide",
+        "Kenya safari tips",
+        "Kenya travel insurance",
+        "what to pack for Kenya"
+      ],
+      "imageSource": "/images/adventure-mountain.webp",
+      "imageAlt": "Kenya travel guide and adventure planning",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "WebPage"
+    },
+    "/upcoming-trips": {
+      "title": "Upcoming Kenya Group Trips & Safaris | LinkUps Adventures",
+      "description": "Find upcoming LinkUps group trips and Kenya safari departures. Review trip details, dates and prices, then enquire to plan your place with our team today.",
+      "keywords": [
+        "upcoming Kenya trips",
+        "Kenya group departures",
+        "Kenya safari trips",
+        "Kenya holiday dates"
+      ],
+      "imageSource": "/images/adventure-hero.webp",
+      "imageAlt": "Upcoming group trips and safaris in Kenya",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "CollectionPage"
+    },
+    "/terms": {
+      "title": "Kenya Travel Terms & Conditions | LinkUps Adventures",
+      "description": "Read LinkUps Adventures terms covering travel enquiries, bookings, trip changes and customer responsibilities before planning or booking a Kenya adventure.",
+      "keywords": ["LinkUps Adventures terms", "Kenya travel booking terms"],
+      "imageSource": "/images/linkups-logo.png",
+      "imageAlt": "LinkUps Adventures logo",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "WebPage"
+    },
+    "/privacy-policy": {
+      "title": "Privacy & Data Policy in Kenya | LinkUps Adventures",
+      "description": "Learn how LinkUps Adventures handles contact and booking information, what choices you have and how to reach us with a privacy question about your data.",
+      "keywords": ["LinkUps Adventures privacy policy", "Kenya travel data privacy"],
+      "imageSource": "/images/linkups-logo.png",
+      "imageAlt": "LinkUps Adventures logo",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "WebPage"
+    },
+    "/cancellation-policy": {
+      "title": "Trip Cancellation Policy | LinkUps Adventures Kenya",
+      "description": "Review LinkUps Adventures cancellation guidance and contact our team before changing a Kenya trip or booking. Package terms are confirmed individually.",
+      "keywords": ["LinkUps Adventures cancellation policy", "Kenya tour cancellation terms"],
+      "imageSource": "/images/linkups-logo.png",
+      "imageAlt": "LinkUps Adventures logo",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "WebPage"
+    },
+    "/login": {
+      "title": "Sign In | LinkUps Adventures",
+      "description": "Sign in to your LinkUps Adventures account to view trip plans and manage your travel enquiries.",
+      "keywords": [],
+      "imageSource": "/images/linkups-logo.png",
+      "imageAlt": "LinkUps Adventures logo",
+      "index": false,
+      "sitemap": false,
+      "schemaType": "WebPage"
+    },
+    "/register": {
+      "title": "Create an Account | LinkUps Adventures",
+      "description": "Create a LinkUps Adventures account to keep your travel plans and trip enquiries together.",
+      "keywords": [],
+      "imageSource": "/images/linkups-logo.png",
+      "imageAlt": "LinkUps Adventures logo",
+      "index": false,
+      "sitemap": false,
+      "schemaType": "WebPage"
+    },
+    "/dashboard": {
+      "title": "My Trips | LinkUps Adventures",
+      "description": "View your LinkUps Adventures travel plans and enquiries.",
+      "keywords": [],
+      "imageSource": "/images/linkups-logo.png",
+      "imageAlt": "LinkUps Adventures logo",
+      "index": false,
+      "sitemap": false,
+      "schemaType": "WebPage"
+    },
+    "/admin": {
+      "title": "Website Administration | LinkUps Adventures",
+      "description": "LinkUps Adventures website administration.",
+      "keywords": [],
+      "imageSource": "/images/linkups-logo.png",
+      "imageAlt": "LinkUps Adventures logo",
+      "index": false,
+      "sitemap": false,
+      "schemaType": "WebPage"
+    },
+    "/site-content": {
+      "title": "Site Content | LinkUps Adventures",
+      "description": "LinkUps Adventures website content.",
+      "keywords": [],
+      "imageSource": "/images/linkups-logo.png",
+      "imageAlt": "LinkUps Adventures logo",
+      "index": false,
+      "sitemap": false,
+      "schemaType": "WebPage"
+    }
+  },
+  "destinations": {
+    "maasai-mara": {
+      "title": "Maasai Mara Safari Tours in Kenya | LinkUps Adventures",
+      "description": "Plan a Maasai Mara safari in Kenya with local trip support. Explore wildlife drives, Big Five viewing and flexible group or private experiences with LinkUps.",
+      "keywords": ["Maasai Mara safari packages", "Maasai Mara tours from Nairobi", "Kenya Big Five safari"],
+      "imageSource": "/images/adventure-hero.webp",
+      "imageAlt": "Maasai Mara safari landscape in Kenya",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "TouristDestination"
+    },
+    "amboseli": {
+      "title": "Amboseli Safari Tours & Kilimanjaro Views | LinkUps",
+      "description": "Explore Amboseli National Park, elephant herds and views of Mount Kilimanjaro. Plan an Amboseli safari or day trip with local support from LinkUps Adventures.",
+      "keywords": ["Amboseli safari packages", "Amboseli tours", "Mount Kilimanjaro views", "Kenya elephant safari"],
+      "imageSource": "/images/adventure-mountain.webp",
+      "imageAlt": "Amboseli safari and Mount Kilimanjaro scenery",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "TouristDestination"
+    },
+    "mombasa": {
+      "title": "Mombasa Beach Holidays & Tours | LinkUps Adventures",
+      "description": "Plan a Mombasa beach holiday with coastal experiences, resort stays and Swahili culture. Explore flexible Mombasa packages with LinkUps Adventures in Kenya.",
+      "keywords": ["Mombasa holiday packages", "Mombasa beach holidays", "Kenya coast tours"],
+      "imageSource": "/images/adventure-coast.webp",
+      "imageAlt": "Kenya coast and Mombasa beach escape",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "TouristDestination"
+    },
+    "naivasha": {
+      "title": "Naivasha Day Trips & Weekend Getaways | LinkUps Adventures",
+      "description": "Find Naivasha day trips and weekend getaways from Nairobi. Explore Lake Naivasha, boat rides, Hell’s Gate and Rift Valley adventures in Kenya year-round.",
+      "keywords": ["Naivasha day trips", "weekend getaways from Nairobi", "Lake Naivasha tours", "Hell's Gate trips"],
+      "imageSource": "/images/adventure-camp.webp",
+      "imageAlt": "Outdoor adventure in Kenya's Great Rift Valley",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "TouristDestination"
+    },
+    "samburu": {
+      "title": "Samburu Safari Tours & Northern Kenya Trips | LinkUps",
+      "description": "Discover Samburu in northern Kenya with wildlife drives, river landscapes and cultural experiences. Plan a Samburu safari road trip with LinkUps in Kenya.",
+      "keywords": ["Samburu safari tours", "Samburu road trip", "northern Kenya tours", "Kenya wildlife safari"],
+      "imageSource": "/images/adventure-hero.webp",
+      "imageAlt": "Samburu wilderness and safari landscapes",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "TouristDestination"
+    },
+    "watamu": {
+      "title": "Watamu Beach Holidays & Snorkelling Trips | LinkUps",
+      "description": "Plan a Watamu beach escape with snorkelling, marine experiences and relaxing coast days. Ask LinkUps Adventures about local trip options in Kenya today.",
+      "keywords": ["Watamu beach holidays", "Watamu snorkelling", "Kenya coast holidays", "Watamu marine trips"],
+      "imageSource": "/images/adventure-coast.webp",
+      "imageAlt": "Watamu coast and Indian Ocean beach escape",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "TouristDestination"
+    }
+  },
+  "adventures": {
+    "coast-unleashed": {
+      "title": "Mombasa Beach Escape & Coastal Tour | LinkUps Adventures",
+      "description": "Enjoy a three-day Mombasa beach escape with resort leisure, coastal exploration and group activities. Ask LinkUps Adventures about current trip details.",
+      "keywords": ["Mombasa beach escape", "Mombasa holiday packages", "Kenya coast group trips"],
+      "imageSource": "/images/trips/coast-unleashed.jpg",
+      "imageAlt": "Coast Unleashed Mombasa adventure trip",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "TouristTrip"
+    },
+    "watamu-blue-bliss": {
+      "title": "Watamu Dhow Cruise & Snorkelling Tour | LinkUps Adventures",
+      "description": "Explore Watamu by boat with a dhow cruise, snorkelling and a sandbank stop when conditions allow. Ask LinkUps about this Kenya coast trip with support.",
+      "keywords": ["Watamu dhow cruise", "Watamu snorkelling trip", "Kenya coast day trip"],
+      "imageSource": "/images/trips/watamu-blue-bliss.jpg",
+      "imageAlt": "Watamu Blue Bliss coastal excursion",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "TouristTrip"
+    },
+    "kilimanjaro-sky-escape": {
+      "title": "Amboseli Balloon Safari in Kenya | LinkUps Adventures",
+      "description": "See the Amboseli landscape from a sunrise hot-air balloon with views toward Mount Kilimanjaro. Enquire about operators, weather and current rates in Kenya.",
+      "keywords": ["Amboseli balloon safari", "Mount Kilimanjaro balloon flight", "Kenya hot-air balloon safari"],
+      "imageSource": "/images/trips/kilimanjaro-sky-escape.jpg",
+      "imageAlt": "Kilimanjaro Sky Escape balloon safari",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "TouristTrip"
+    },
+    "amboseli-wild-dash": {
+      "title": "Amboseli Day Safari from Nairobi | LinkUps Adventures",
+      "description": "Plan a full-day Amboseli safari with wildlife viewing and scenery beneath Mount Kilimanjaro. Contact LinkUps to confirm transport and current trip rates.",
+      "keywords": ["Amboseli day safari", "Amboseli day trip from Nairobi", "Kenya wildlife tours"],
+      "imageSource": "/images/trips/amboseli-wild-dash.jpg",
+      "imageAlt": "Amboseli Wild Dash day safari",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "TouristTrip"
+    },
+    "mara-sky-escape": {
+      "title": "Maasai Mara Balloon Safari in Kenya | LinkUps Adventures",
+      "description": "Discover a sunrise balloon flight over the Maasai Mara. Ask LinkUps Adventures about current operators, weather-dependent departures and trip arrangements.",
+      "keywords": ["Maasai Mara balloon safari", "Mara hot-air balloon", "Kenya safari experiences"],
+      "imageSource": "/images/trips/mara-sky-escape.jpg",
+      "imageAlt": "Mara Sky Escape balloon safari",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "TouristTrip"
+    },
+    "samburu-overland": {
+      "title": "Samburu Safari Road Trip in Kenya | LinkUps Adventures",
+      "description": "Take a Samburu road trip from Nairobi for northern Kenya landscapes, wildlife viewing and local experiences. Enquire with LinkUps for local trip planning.",
+      "keywords": ["Samburu safari road trip", "Samburu tours from Nairobi", "northern Kenya safari"],
+      "imageSource": "/images/trips/samburu-overland.jpg",
+      "imageAlt": "Samburu Overland safari road trip",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "TouristTrip"
+    },
+    "rapids-and-rush": {
+      "title": "Sagana White-Water Rafting Trip | LinkUps Adventures",
+      "description": "Plan a Sagana rafting adventure with river time and outdoor activities. Ask LinkUps Adventures about current conditions, safety details and trip options.",
+      "keywords": ["Sagana white-water rafting", "Kenya rafting trips", "Sagana adventure activities"],
+      "imageSource": "/images/trips/rapids-and-rush.jpg",
+      "imageAlt": "Rapids and Rush white-water rafting adventure",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "TouristTrip"
+    },
+    "sky-safari-balloon-experience": {
+      "title": "Kenya Balloon Safari Experiences | LinkUps Adventures",
+      "description": "Compare hot-air balloon safari experiences in the Maasai Mara and Amboseli. LinkUps can help you enquire about flights, conditions and arrangements in Kenya.",
+      "keywords": ["Kenya balloon safari", "Maasai Mara balloon flight", "Amboseli balloon experience"],
+      "imageSource": "/images/trips/sky-safari-collection.jpg",
+      "imageAlt": "Sky Safari collection of Kenya balloon experiences",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "TouristTrip"
+    },
+    "skyhigh-paragliding-escape": {
+      "title": "Kijabe Tandem Paragliding in Kenya | LinkUps Adventures",
+      "description": "Experience tandem paragliding near Kijabe in Kenya’s Great Rift Valley. Enquire with LinkUps about operator details, weather and current arrangements.",
+      "keywords": ["Kijabe paragliding", "Kenya tandem paragliding", "Great Rift Valley adventure"],
+      "imageSource": "/images/trips/skyhigh-paragliding.jpg",
+      "imageAlt": "SkyHigh tandem paragliding experience in Kijabe",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "TouristTrip"
+    },
+    "amboseli-wild-horizons-immersion": {
+      "title": "Amboseli 3-Day Safari & Wildlife Tour | LinkUps Adventures",
+      "description": "Explore Amboseli on a multi-day safari with wildlife viewing and time to experience the landscape. Contact LinkUps to confirm itinerary and rates in Kenya.",
+      "keywords": ["3-day Amboseli safari", "Amboseli wildlife tour", "Kenya safari packages"],
+      "imageSource": "/images/trips/amboseli-wild-horizons-3day.jpg",
+      "imageAlt": "Amboseli Wild Horizons multi-day safari",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "TouristTrip"
+    },
+    "girls-naivasha-roadtrip": {
+      "title": "Girls’ Naivasha Road Trip in Kenya | LinkUps Adventures",
+      "description": "Plan a girls’ getaway to Naivasha with a road trip, outdoor experiences and time to unwind. Enquire with LinkUps about a weekend escape near Nairobi today.",
+      "keywords": ["girls trip Kenya", "Naivasha girls trip", "weekend getaways from Nairobi"],
+      "imageSource": "/images/trips/girls-naivasha-roadtrip.jpg",
+      "imageAlt": "Girls' Naivasha road trip experience",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "TouristTrip"
+    },
+    "amboseli-wild-horizons-escape": {
+      "title": "Amboseli 2-Day Safari Package | LinkUps Adventures",
+      "description": "Plan a two-day Amboseli safari with wildlife viewing and a chance to see Mount Kilimanjaro. Ask LinkUps about dates, travel arrangements and rates in Kenya.",
+      "keywords": ["2-day Amboseli safari", "Amboseli safari package", "Kenya short safari"],
+      "imageSource": "/images/trips/amboseli-wild-horizons-2day.jpg",
+      "imageAlt": "Amboseli Wild Horizons two-day safari",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "TouristTrip"
+    },
+    "maasai-mara-villa-escape": {
+      "title": "Maasai Mara Villa Safari Package | LinkUps Adventures",
+      "description": "Combine a Maasai Mara safari with a private villa stay, game drives and time to relax. Enquire with LinkUps about your preferred travel dates and trip support.",
+      "keywords": ["Maasai Mara villa safari", "Maasai Mara safari packages", "Kenya group safari"],
+      "imageSource": "/images/trips/maasai-mara-villa-escape.jpg",
+      "imageAlt": "Maasai Mara Villa Escape safari package",
+      "index": true,
+      "sitemap": true,
+      "schemaType": "TouristTrip"
+    }
+  }
+}

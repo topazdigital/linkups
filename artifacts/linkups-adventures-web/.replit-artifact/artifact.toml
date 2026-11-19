@@ -1,6 +1,6 @@
 kind = "web"
-previewPath = "/"
-title = "LinkUps Adventures"
+previewPath = "/previous-linkups"
+title = "LinkUps Adventures — Previous Version"
 description = "A travel and adventure website for discovering Kenya safaris, beach escapes, camping trips, road trips, group travel, and planning custom journeys."
 version = "1.0.0"
 id = "artifacts/linkups-adventures-web"
@@ -8,7 +8,7 @@ router = "path"
 
 [[services]]
 name = "web"
-paths = [ "/" ]
+paths = [ "/previous-linkups" ]
 localPort = 24142
 
 [services.development]
@@ -25,4 +25,4 @@ to = "/index.html"
 
 [services.env]
 PORT = "24142"
-BASE_PATH = "/"
+BASE_PATH = "/previous-linkups"
