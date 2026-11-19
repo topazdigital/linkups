@@ -1,0 +1,81 @@
+CREATE TABLE IF NOT EXISTS blog_posts (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  slug VARCHAR(200) NOT NULL UNIQUE,
+  title VARCHAR(180) NOT NULL,
+  category VARCHAR(80) NOT NULL,
+  excerpt VARCHAR(600) NOT NULL,
+  body_content LONGTEXT NOT NULL,
+  cover_image_url VARCHAR(500) NOT NULL,
+  is_published BOOLEAN NOT NULL DEFAULT FALSE,
+  published_at DATETIME NULL,
+  updated_by BIGINT UNSIGNED NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE SET NULL,
+  INDEX idx_blog_posts_publication (is_published, published_at),
+  INDEX idx_blog_posts_category (category, is_published)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT IGNORE INTO blog_posts
+  (slug, title, category, excerpt, body_content, cover_image_url, is_published, published_at)
+VALUES
+  (
+    '10-reasons-why-maasai-mara-should-be-on-your-bucket-list',
+    '10 Reasons Why Maasai Mara Should Be On Your Bucket List',
+    'Destinations',
+    'From incredible wildlife to breathtaking sunsets, here is why Maasai Mara is a must-visit destination.',
+    'From incredible wildlife to breathtaking sunsets, here is why Maasai Mara is a must-visit destination.',
+    '/images/adventure-hero.png',
+    TRUE,
+    '2025-08-12 00:00:00'
+  ),
+  (
+    'packing-smart-for-your-beach-getaway',
+    'Packing Smart For Your Beach Getaway',
+    'Travel Tips',
+    'Essential items, travel hacks and pro tips to make your beach trip stress-free and fun.',
+    'Essential items, travel hacks and pro tips to make your beach trip stress-free and fun.',
+    '/images/adventure-coast.png',
+    TRUE,
+    '2025-08-08 00:00:00'
+  ),
+  (
+    'rafting-in-kenya-what-to-expect-and-how-to-prepare',
+    'Rafting In Kenya: What To Expect & How To Prepare',
+    'Adventure Guides',
+    'Get ready for an adrenaline rush with everything you need before you hit the rapids.',
+    'Get ready for an adrenaline rush with everything you need before you hit the rapids.',
+    '/images/adventure-mountain.png',
+    TRUE,
+    '2025-08-03 00:00:00'
+  ),
+  (
+    'girls-trip-to-mombasa-sun-sand-and-sisterhood',
+    'Girls Trip To Mombasa: Sun, Sand & Sisterhood',
+    'Travel Stories',
+    'Real stories, laughs, and unforgettable moments from our recent girls’ getaway.',
+    'Real stories, laughs, and unforgettable moments from our recent girls’ getaway.',
+    '/images/group-travel-hero.png',
+    TRUE,
+    '2025-07-27 00:00:00'
+  ),
+  (
+    'naivasha-more-than-just-a-day-trip',
+    'Naivasha: More Than Just A Day Trip',
+    'Destinations',
+    'From boat rides to hot springs, here is how to make the most of your Naivasha adventure.',
+    'From boat rides to hot springs, here is how to make the most of your Naivasha adventure.',
+    '/images/adventure-mountain.png',
+    TRUE,
+    '2025-07-18 00:00:00'
+  ),
+  (
+    'camping-101-a-beginners-guide',
+    'Camping 101: A Beginner’s Guide',
+    'Travel Tips',
+    'From gear to safety tips, we have you covered for your first camping experience.',
+    'From gear to safety tips, we have you covered for your first camping experience.',
+    '/images/adventure-camp.png',
+    TRUE,
+    '2025-07-10 00:00:00'
+  );

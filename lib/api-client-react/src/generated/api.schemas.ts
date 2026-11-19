@@ -538,6 +538,91 @@ export interface EventUpdate {
   isPublished?: boolean;
 }
 
+export interface BlogPost {
+  id: number;
+  slug: string;
+  title: string;
+  category: string;
+  excerpt: string;
+  content: string;
+  coverImageUrl: string;
+  isPublished: boolean;
+  /** @nullable */
+  publishedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BlogPostInput {
+  /**
+     * @minLength 2
+     * @maxLength 200
+     * @pattern ^[a-z0-9]+(?:-[a-z0-9]+)*$
+     */
+  slug: string;
+  /**
+     * @minLength 2
+     * @maxLength 180
+     */
+  title: string;
+  /**
+     * @minLength 2
+     * @maxLength 80
+     */
+  category: string;
+  /**
+     * @minLength 2
+     * @maxLength 600
+     */
+  excerpt: string;
+  /**
+     * @minLength 2
+     * @maxLength 20000
+     */
+  content: string;
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  coverImageUrl: string;
+  isPublished: boolean;
+}
+
+export interface BlogPostUpdate {
+  /**
+     * @minLength 2
+     * @maxLength 200
+     * @pattern ^[a-z0-9]+(?:-[a-z0-9]+)*$
+     */
+  slug: string;
+  /**
+     * @minLength 2
+     * @maxLength 180
+     */
+  title: string;
+  /**
+     * @minLength 2
+     * @maxLength 80
+     */
+  category: string;
+  /**
+     * @minLength 2
+     * @maxLength 600
+     */
+  excerpt: string;
+  /**
+     * @minLength 2
+     * @maxLength 20000
+     */
+  content: string;
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  coverImageUrl: string;
+  isPublished: boolean;
+}
+
 export interface AdventureItineraryDay {
   /** @maxLength 80 */
   day: string;

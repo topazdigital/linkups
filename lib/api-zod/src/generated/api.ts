@@ -168,6 +168,54 @@ export const ListPublicEventsResponse = zod.array(ListPublicEventsResponseItem)
 
 
 /**
+ * @summary List published blog posts
+ */
+export const ListPublicBlogPostsResponseItem = zod.object({
+  "id": zod.number().int(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "category": zod.string(),
+  "excerpt": zod.string(),
+  "content": zod.string(),
+  "coverImageUrl": zod.string(),
+  "isPublished": zod.boolean(),
+  "publishedAt": zod.coerce.date().nullable(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+export const ListPublicBlogPostsResponse = zod.array(ListPublicBlogPostsResponseItem)
+
+
+/**
+ * @summary Get a published blog post
+ */
+export const getPublicBlogPostPathSlugMin = 2;
+export const getPublicBlogPostPathSlugMax = 200;
+
+
+export const getPublicBlogPostPathSlugRegExp = new RegExp('^[a-z0-9]+(?:-[a-z0-9]+)*$');
+
+
+export const GetPublicBlogPostParams = zod.object({
+  "slug": zod.coerce.string().min(getPublicBlogPostPathSlugMin).max(getPublicBlogPostPathSlugMax).regex(getPublicBlogPostPathSlugRegExp)
+})
+
+export const GetPublicBlogPostResponse = zod.object({
+  "id": zod.number().int(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "category": zod.string(),
+  "excerpt": zod.string(),
+  "content": zod.string(),
+  "coverImageUrl": zod.string(),
+  "isPublished": zod.boolean(),
+  "publishedAt": zod.coerce.date().nullable(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
  * @summary List published destinations
  */
 export const ListPublicDestinationsResponseItem = zod.object({
@@ -927,6 +975,127 @@ export const UpdateEventResponse = zod.object({
   "priceLabel": zod.string().nullable(),
   "heroImageUrl": zod.string().nullable(),
   "isPublished": zod.boolean(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary List all blog posts, including drafts
+ */
+export const ListAdminBlogPostsResponseItem = zod.object({
+  "id": zod.number().int(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "category": zod.string(),
+  "excerpt": zod.string(),
+  "content": zod.string(),
+  "coverImageUrl": zod.string(),
+  "isPublished": zod.boolean(),
+  "publishedAt": zod.coerce.date().nullable(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+export const ListAdminBlogPostsResponse = zod.array(ListAdminBlogPostsResponseItem)
+
+
+/**
+ * @summary Create a blog post
+ */
+export const createBlogPostBodySlugMin = 2;
+export const createBlogPostBodySlugMax = 200;
+
+
+export const createBlogPostBodySlugRegExp = new RegExp('^[a-z0-9]+(?:-[a-z0-9]+)*$');
+export const createBlogPostBodyTitleMin = 2;
+export const createBlogPostBodyTitleMax = 180;
+
+export const createBlogPostBodyCategoryMin = 2;
+export const createBlogPostBodyCategoryMax = 80;
+
+export const createBlogPostBodyExcerptMin = 2;
+export const createBlogPostBodyExcerptMax = 600;
+
+export const createBlogPostBodyContentMin = 2;
+export const createBlogPostBodyContentMax = 20000;
+
+export const createBlogPostBodyCoverImageUrlMax = 500;
+
+
+
+export const CreateBlogPostBody = zod.object({
+  "slug": zod.string().min(createBlogPostBodySlugMin).max(createBlogPostBodySlugMax).regex(createBlogPostBodySlugRegExp),
+  "title": zod.string().min(createBlogPostBodyTitleMin).max(createBlogPostBodyTitleMax),
+  "category": zod.string().min(createBlogPostBodyCategoryMin).max(createBlogPostBodyCategoryMax),
+  "excerpt": zod.string().min(createBlogPostBodyExcerptMin).max(createBlogPostBodyExcerptMax),
+  "content": zod.string().min(createBlogPostBodyContentMin).max(createBlogPostBodyContentMax),
+  "coverImageUrl": zod.string().min(1).max(createBlogPostBodyCoverImageUrlMax),
+  "isPublished": zod.boolean()
+})
+
+export const CreateBlogPostResponse = zod.object({
+  "id": zod.number().int(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "category": zod.string(),
+  "excerpt": zod.string(),
+  "content": zod.string(),
+  "coverImageUrl": zod.string(),
+  "isPublished": zod.boolean(),
+  "publishedAt": zod.coerce.date().nullable(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Edit or publish a blog post
+ */
+export const UpdateBlogPostParams = zod.object({
+  "id": zod.coerce.number().int()
+})
+
+export const updateBlogPostBodySlugMin = 2;
+export const updateBlogPostBodySlugMax = 200;
+
+
+export const updateBlogPostBodySlugRegExp = new RegExp('^[a-z0-9]+(?:-[a-z0-9]+)*$');
+export const updateBlogPostBodyTitleMin = 2;
+export const updateBlogPostBodyTitleMax = 180;
+
+export const updateBlogPostBodyCategoryMin = 2;
+export const updateBlogPostBodyCategoryMax = 80;
+
+export const updateBlogPostBodyExcerptMin = 2;
+export const updateBlogPostBodyExcerptMax = 600;
+
+export const updateBlogPostBodyContentMin = 2;
+export const updateBlogPostBodyContentMax = 20000;
+
+export const updateBlogPostBodyCoverImageUrlMax = 500;
+
+
+
+export const UpdateBlogPostBody = zod.object({
+  "slug": zod.string().min(updateBlogPostBodySlugMin).max(updateBlogPostBodySlugMax).regex(updateBlogPostBodySlugRegExp),
+  "title": zod.string().min(updateBlogPostBodyTitleMin).max(updateBlogPostBodyTitleMax),
+  "category": zod.string().min(updateBlogPostBodyCategoryMin).max(updateBlogPostBodyCategoryMax),
+  "excerpt": zod.string().min(updateBlogPostBodyExcerptMin).max(updateBlogPostBodyExcerptMax),
+  "content": zod.string().min(updateBlogPostBodyContentMin).max(updateBlogPostBodyContentMax),
+  "coverImageUrl": zod.string().min(1).max(updateBlogPostBodyCoverImageUrlMax),
+  "isPublished": zod.boolean()
+})
+
+export const UpdateBlogPostResponse = zod.object({
+  "id": zod.number().int(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "category": zod.string(),
+  "excerpt": zod.string(),
+  "content": zod.string(),
+  "coverImageUrl": zod.string(),
+  "isPublished": zod.boolean(),
+  "publishedAt": zod.coerce.date().nullable(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date()
 })

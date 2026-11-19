@@ -116,6 +116,43 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Event"
+  /blog-posts:
+    get:
+      operationId: listPublicBlogPosts
+      tags: [public]
+      summary: List published blog posts
+      responses:
+        "200":
+          description: Published blog posts, newest first
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BlogPost"
+  /blog-posts/{slug}:
+    get:
+      operationId: getPublicBlogPost
+      tags: [public]
+      summary: Get a published blog post
+      parameters:
+        - in: path
+          name: slug
+          required: true
+          schema: { type: string, minLength: 2, maxLength: 200, pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$" }
+      responses:
+        "200":
+          description: Published blog post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BlogPost"
+        "404":
+          description: Blog post not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /destinations:
     get:
       operationId: listPublicDestinations
@@ -531,6 +568,103 @@ paths:
                 $ref: "#/components/schemas/Event"
         "404":
           description: Event not found
+  /admin/blog-posts:
+    get:
+      operationId: listAdminBlogPosts
+      tags: [admin]
+      summary: List all blog posts, including drafts
+      security:
+        - AdminSession: []
+      responses:
+        "200":
+          description: Blog posts available to the admin workspace
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BlogPost"
+        "401":
+          description: Admin sign-in required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      operationId: createBlogPost
+      tags: [admin]
+      summary: Create a blog post
+      security:
+        - AdminSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BlogPostInput"
+      responses:
+        "201":
+          description: Blog post created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BlogPost"
+        "400":
+          description: Invalid blog post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Admin sign-in required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /admin/blog-posts/{id}:
+    patch:
+      operationId: updateBlogPost
+      tags: [admin]
+      summary: Edit or publish a blog post
+      security:
+        - AdminSession: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BlogPostUpdate"
+      responses:
+        "200":
+          description: Blog post updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BlogPost"
+        "400":
+          description: Invalid blog post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Admin sign-in required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Blog post not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /admin/users:
     get:
       operationId: listAdminUsers
@@ -1002,6 +1136,43 @@ components:
         location: { type: string, minLength: 2, maxLength: 180 }
         priceLabel: { type: ["string", "null"], maxLength: 160 }
         heroImageUrl: { type: ["string", "null"], maxLength: 500 }
+        isPublished: { type: boolean }
+    BlogPost:
+      type: object
+      required: [id, slug, title, category, excerpt, content, coverImageUrl, isPublished, publishedAt, createdAt, updatedAt]
+      properties:
+        id: { type: integer }
+        slug: { type: string }
+        title: { type: string }
+        category: { type: string }
+        excerpt: { type: string }
+        content: { type: string }
+        coverImageUrl: { type: string }
+        isPublished: { type: boolean }
+        publishedAt: { type: ["string", "null"], format: date-time }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+    BlogPostInput:
+      type: object
+      required: [slug, title, category, excerpt, content, coverImageUrl, isPublished]
+      properties:
+        slug: { type: string, minLength: 2, maxLength: 200, pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$" }
+        title: { type: string, minLength: 2, maxLength: 180 }
+        category: { type: string, minLength: 2, maxLength: 80 }
+        excerpt: { type: string, minLength: 2, maxLength: 600 }
+        content: { type: string, minLength: 2, maxLength: 20000 }
+        coverImageUrl: { type: string, minLength: 1, maxLength: 500 }
+        isPublished: { type: boolean }
+    BlogPostUpdate:
+      type: object
+      required: [slug, title, category, excerpt, content, coverImageUrl, isPublished]
+      properties:
+        slug: { type: string, minLength: 2, maxLength: 200, pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$" }
+        title: { type: string, minLength: 2, maxLength: 180 }
+        category: { type: string, minLength: 2, maxLength: 80 }
+        excerpt: { type: string, minLength: 2, maxLength: 600 }
+        content: { type: string, minLength: 2, maxLength: 20000 }
+        coverImageUrl: { type: string, minLength: 1, maxLength: 500 }
         isPublished: { type: boolean }
     Adventure:
       type: object
