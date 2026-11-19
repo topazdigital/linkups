@@ -17,7 +17,12 @@ function eventContactLink(item: Event) {
 }
 
 export function EventCarousel() {
-  const eventsQuery = useListPublicEvents({ query: { queryKey: getListPublicEventsQueryKey() } })
+  const eventsQuery = useListPublicEvents({
+    query: {
+      queryKey: getListPublicEventsQueryKey(),
+      retry: false,
+    },
+  })
   const events = eventsQuery.data ?? []
   const [active, setActive] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
@@ -53,7 +58,7 @@ export function EventCarousel() {
   }
 
   return <section
-    className="events-section"
+    className={`events-section${eventsQuery.error ? ' has-error' : ''}`}
     aria-labelledby="events-heading"
     onKeyDown={handleKeyDown}
     onMouseEnter={() => setIsHovered(true)}
