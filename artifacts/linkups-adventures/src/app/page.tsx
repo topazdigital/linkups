@@ -5,7 +5,7 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { ArrowRight, CalendarDays, Check, ChevronDown, ChevronLeft, ChevronRight, Compass, Globe2, MapPin, Menu, Pause, Play, Star, Users, X } from 'lucide-react'
 import { AdventureCards } from '@/components/adventure-cards'
 import { AdventureTypeCarousel } from '@/components/adventure-type-carousel'
-import { Logo } from '@/components/site-shell'
+import { HeaderAccountLink, Logo } from '@/components/site-shell'
 import { EventCarousel } from '@/components/event-carousel'
 import { AdventureQuiz, FloatingWhatsAppButton } from '@/components/conversion-tools'
 import { ReviewsMedia } from '@/components/reviews-media'
@@ -57,6 +57,7 @@ function Header() {
       {menuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
     </button>
     <div className="header-actions">
+      <HeaderAccountLink />
       <Link className="button orange" data-testid="link-home-plan" href="/plan">Plan My Adventure</Link>
     </div>
   </header>

@@ -54,12 +54,23 @@ export function SiteHeader() {
         {menuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
       </button>
       <div className="header-actions">
+        <HeaderAccountLink />
         <Link className="button orange" href="/plan">
           Plan My Adventure <ArrowRight />
         </Link>
       </div>
     </header>
   )
+}
+
+export function HeaderAccountLink() {
+  const session = useGetAuthSession()
+  const authenticated = session.data?.authenticated === true
+  const href = authenticated
+    ? session.data?.role === 'admin' ? '/admin' : '/dashboard'
+    : '/login'
+
+  return <Link className="header-account" href={href} data-testid="header-account-link">{authenticated ? 'My account' : 'Sign in'}</Link>
 }
 
 export function MobileBottomNav() {
