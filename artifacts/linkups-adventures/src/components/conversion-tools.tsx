@@ -25,7 +25,11 @@ function getRecommendation(answers: string[]) {
 }
 
 export function ConversionTools() {
-  return <><a className="floating-whatsapp" href="https://wa.me/254726843677?text=Hi%20LinkUps%20Adventures%2C%20I%27d%20like%20help%20planning%20a%20trip." target="_blank" rel="noreferrer" aria-label="Chat with LinkUps on WhatsApp"><MessageCircle /></a><div className="mobile-action-bar"><Link href="/plan">Book / Enquire <ArrowRight /></Link><a href="https://wa.me/254726843677" target="_blank" rel="noreferrer"><MessageCircle /> WhatsApp</a></div></>
+  return <><FloatingWhatsAppButton /><div className="mobile-action-bar"><Link href="/plan">Book / Enquire <ArrowRight /></Link><a href="https://wa.me/254726843677" target="_blank" rel="noreferrer"><MessageCircle /> WhatsApp</a></div></>
+}
+
+export function FloatingWhatsAppButton() {
+  return <a className="floating-whatsapp" href="https://wa.me/254726843677?text=Hi%20LinkUps%20Adventures%2C%20I%27d%20like%20help%20planning%20a%20trip." target="_blank" rel="noreferrer" aria-label="Chat with LinkUps on WhatsApp"><MessageCircle aria-hidden="true" /></a>
 }
 
 export function AdventureQuiz() {

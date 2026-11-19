@@ -1,7 +1,8 @@
 'use client'
 
 import { Link } from 'wouter'
-import { ArrowRight, CalendarDays, Compass, Home, MapPin, UserRound } from 'lucide-react'
+import { useState } from 'react'
+import { ArrowRight, CalendarDays, Compass, Home, MapPin, Menu, UserRound, X } from 'lucide-react'
 import { useGetAuthSession } from '@workspace/api-client-react'
 import { useLocation } from 'wouter'
 import { optimizedImageUrl, SiteImage } from '@/components/site-image'
@@ -25,15 +26,33 @@ export function Logo({ light = false, className = '', 'data-testid': testId }: L
 }
 
 export function SiteHeader() {
+  const [menuOpen, setMenuOpen] = useState(false)
   const links = [['Adventures', '/adventures'], ['Destinations', '/destinations'], ['Upcoming Trips', '/upcoming-trips'], ['Compare Trips', '/compare'], ['Travel Guide', '/travel-guide'], ['Group Travel', '/group-travel'], ['About Us', '/about'], ['Blog', '/blog'], ['Contact', '/contact']]
   return (
     <header className="site-header">
       <Logo />
-      <nav className="nav" aria-label="Main navigation">
+      <nav id="site-navigation" className={menuOpen ? 'nav open' : 'nav'} aria-label="Main navigation">
         {links.map(([label, href]) => (
-          <Link href={href} key={href}>{label}</Link>
+          <Link
+            href={href}
+            key={href}
+            className={href === '/adventures' || href === '/destinations' ? 'bottom-nav-link' : undefined}
+            onClick={() => setMenuOpen(false)}
+          >
+            {label}
+          </Link>
         ))}
       </nav>
+      <button
+        type="button"
+        className="menu menu-button"
+        aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+        aria-expanded={menuOpen}
+        aria-controls="site-navigation"
+        onClick={() => setMenuOpen((open) => !open)}
+      >
+        {menuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
+      </button>
       <div className="header-actions">
         <Link className="button orange" href="/plan">
           Plan My Adventure <ArrowRight />
