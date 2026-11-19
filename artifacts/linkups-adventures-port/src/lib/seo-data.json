@@ -69,21 +69,6 @@
       "sitemap": true,
       "schemaType": "CollectionPage"
     },
-    "/compare": {
-      "title": "Compare Kenya Safari & Adventure Trips | LinkUps Adventures",
-      "description": "Compare Kenya safari, coast and day-trip experiences by pace, duration and inclusions. Find a trip that suits your group and budget with LinkUps Adventures.",
-      "keywords": [
-        "compare Kenya safari packages",
-        "Kenya tour prices",
-        "Kenya day trips",
-        "Kenya holiday packages"
-      ],
-      "imageSource": "/images/adventure-camp.webp",
-      "imageAlt": "Compare Kenya adventure trips with LinkUps",
-      "index": true,
-      "sitemap": true,
-      "schemaType": "WebPage"
-    },
     "/contact": {
       "title": "Contact LinkUps Adventures in Kenya | Tour Planning",
       "description": "Contact LinkUps Adventures to plan a Kenya safari, group holiday or custom trip. Ask about destinations, bookings and Nairobi travel support. Talk to our team.",

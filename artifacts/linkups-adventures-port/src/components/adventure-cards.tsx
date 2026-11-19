@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { formatAdventurePrice } from "@/lib/api";
 import { useAdventures } from "@/lib/use-adventures";
 import { SiteImage } from "@/components/site-image";
+import { TripCompareButton } from "@/components/trip-compare";
 
 type AdventureCardsProps = {
   variant?: "package" | "adventure";
@@ -71,12 +72,15 @@ export function AdventureCards({
                   <MapPin /> {adventure.destinationName || "Kenya"}
                 </span>
                 <strong>{formatAdventurePrice(adventure)}{adventure.price > 0 || adventure.priceUsd ? " per person" : ""}</strong>
-                <Link
-                  className="button orange small-button"
-                  href={`/adventures/${adventure.slug}`}
-                >
-                  Explore <ArrowRight />
-                </Link>
+                <div className="adventure-card-actions">
+                  <Link
+                    className="button orange small-button"
+                    href={`/adventures/${adventure.slug}`}
+                  >
+                    Explore <ArrowRight />
+                  </Link>
+                  <TripCompareButton trip={adventure} />
+                </div>
               </div>
             </article>
           ))}
@@ -103,12 +107,15 @@ export function AdventureCards({
               </small>
               <h3>{adventure.title}</h3>
               <strong>{formatAdventurePrice(adventure)}{adventure.price > 0 || adventure.priceUsd ? " per person" : ""}</strong>
-              <Link
-                className="button orange small"
-                href={`/adventures/${adventure.slug}`}
-              >
-                View package <ArrowRight />
-              </Link>
+              <div className="package-card-actions">
+                <Link
+                  className="button orange small"
+                  href={`/adventures/${adventure.slug}`}
+                >
+                  View package <ArrowRight />
+                </Link>
+                <TripCompareButton trip={adventure} />
+              </div>
             </div>
           </article>
         ))}

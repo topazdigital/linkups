@@ -29,6 +29,7 @@ interface SiteContentRow extends RowDataPacket {
   bodyContent: string | null;
   heroImageUrl: string | null;
   heroImages: string[] | string | null;
+  imageOverrides: Record<string, string> | string | null;
   heroMode: string;
   isPublished: number | boolean;
   updatedAt: string;
@@ -78,6 +79,7 @@ router.get(
               body_content AS bodyContent,
               hero_image_url AS heroImageUrl,
               hero_images AS heroImages,
+              image_overrides AS imageOverrides,
               hero_mode AS heroMode,
               is_published AS isPublished,
               DATE_FORMAT(updated_at, '%Y-%m-%dT%H:%i:%s.000Z') AS updatedAt
@@ -95,12 +97,28 @@ router.get(
       GetPublicSiteContentResponse.parse({
         ...content,
         heroImages: parseHeroImages(content.heroImages),
+        imageOverrides: parseImageOverrides(content.imageOverrides),
         heroMode: content.heroMode === "slideshow" ? "slideshow" : "static",
         isPublished: Boolean(content.isPublished),
       }),
     );
   },
 );
+
+function parseImageOverrides(value: Record<string, string> | string | null): Record<string, string> {
+  let parsed: unknown = value
+  if (typeof value === "string") {
+    try {
+      parsed = JSON.parse(value)
+    } catch {
+      return {}
+    }
+  }
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return {}
+  return Object.fromEntries(
+    Object.entries(parsed).filter((entry): entry is [string, string] => typeof entry[1] === "string"),
+  )
+}
 
 function parseHeroImages(value: string[] | string | null): string[] {
   if (Array.isArray(value)) {

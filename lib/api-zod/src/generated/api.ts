@@ -197,6 +197,8 @@ export const getPublicSiteContentResponseHeroImagesItemMax = 500;
 
 export const getPublicSiteContentResponseHeroImagesMax = 8;
 
+export const getPublicSiteContentResponseImageOverridesMaxOne = 500;
+
 
 
 export const GetPublicSiteContentResponse = zod.object({
@@ -208,6 +210,7 @@ export const GetPublicSiteContentResponse = zod.object({
   "bodyContent": zod.string().nullable(),
   "heroImageUrl": zod.string().nullable(),
   "heroImages": zod.array(zod.string().max(getPublicSiteContentResponseHeroImagesItemMax)).max(getPublicSiteContentResponseHeroImagesMax),
+  "imageOverrides": zod.record(zod.string(), zod.string().max(getPublicSiteContentResponseImageOverridesMaxOne)),
   "heroMode": zod.enum(['static', 'slideshow']),
   "isPublished": zod.boolean(),
   "updatedAt": zod.coerce.date()
@@ -1075,6 +1078,8 @@ export const listAdminSiteContentResponseHeroImagesItemMax = 500;
 
 export const listAdminSiteContentResponseHeroImagesMax = 8;
 
+export const listAdminSiteContentResponseImageOverridesMaxOne = 500;
+
 
 
 export const ListAdminSiteContentResponseItem = zod.object({
@@ -1086,6 +1091,7 @@ export const ListAdminSiteContentResponseItem = zod.object({
   "bodyContent": zod.string().nullable(),
   "heroImageUrl": zod.string().nullable(),
   "heroImages": zod.array(zod.string().max(listAdminSiteContentResponseHeroImagesItemMax)).max(listAdminSiteContentResponseHeroImagesMax),
+  "imageOverrides": zod.record(zod.string(), zod.string().max(listAdminSiteContentResponseImageOverridesMaxOne)),
   "heroMode": zod.enum(['static', 'slideshow']),
   "isPublished": zod.boolean(),
   "updatedAt": zod.coerce.date()
@@ -1118,6 +1124,8 @@ export const saveAdminSiteContentBodyHeroImagesItemMax = 500;
 
 export const saveAdminSiteContentBodyHeroImagesMax = 8;
 
+export const saveAdminSiteContentBodyImageOverridesMaxOne = 500;
+
 
 
 export const SaveAdminSiteContentBody = zod.object({
@@ -1129,6 +1137,7 @@ export const SaveAdminSiteContentBody = zod.object({
   "bodyContent": zod.string().max(saveAdminSiteContentBodyBodyContentMax).nullish(),
   "heroImageUrl": zod.string().max(saveAdminSiteContentBodyHeroImageUrlMax).nullish(),
   "heroImages": zod.array(zod.string().max(saveAdminSiteContentBodyHeroImagesItemMax)).max(saveAdminSiteContentBodyHeroImagesMax).optional(),
+  "imageOverrides": zod.record(zod.string(), zod.string().max(saveAdminSiteContentBodyImageOverridesMaxOne)).optional(),
   "heroMode": zod.enum(['static', 'slideshow']).optional(),
   "isPublished": zod.boolean()
 })
@@ -1136,6 +1145,8 @@ export const SaveAdminSiteContentBody = zod.object({
 export const saveAdminSiteContentResponseHeroImagesItemMax = 500;
 
 export const saveAdminSiteContentResponseHeroImagesMax = 8;
+
+export const saveAdminSiteContentResponseImageOverridesMaxOne = 500;
 
 
 
@@ -1148,6 +1159,7 @@ export const SaveAdminSiteContentResponse = zod.object({
   "bodyContent": zod.string().nullable(),
   "heroImageUrl": zod.string().nullable(),
   "heroImages": zod.array(zod.string().max(saveAdminSiteContentResponseHeroImagesItemMax)).max(saveAdminSiteContentResponseHeroImagesMax),
+  "imageOverrides": zod.record(zod.string(), zod.string().max(saveAdminSiteContentResponseImageOverridesMaxOne)),
   "heroMode": zod.enum(['static', 'slideshow']),
   "isPublished": zod.boolean(),
   "updatedAt": zod.coerce.date()

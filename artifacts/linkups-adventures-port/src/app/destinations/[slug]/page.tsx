@@ -5,6 +5,7 @@ import { PageFrame } from '@/components/site-shell'
 import { destinations, getDestination } from '@/lib/destinations'
 import { ApiRequestError, createBooking } from '@/lib/api'
 import { optimizedImageUrl, SiteImage } from '@/components/site-image'
+import { useSiteImageOverrides } from '@/lib/use-site-image-overrides'
 
 const itinerary = [
   ['Day 1', 'Nairobi to Maasai Mara', 'Depart Nairobi · arrive at the lodge · afternoon game drive · dinner and bonfire'],
@@ -13,9 +14,11 @@ const itinerary = [
 ]
 
 export default function DestinationPage({ slug }: { slug: string }) {
+  const { getImage } = useSiteImageOverrides('destinations')
   const destination = getDestination(slug)
   if (!destination) return <PageFrame><section className="compare-page"><h1>Destination not found</h1><p>This destination may no longer be available.</p><Link className="button orange" href="/destinations">Browse destinations</Link></section></PageFrame>
-  const gallery = [destination.image, destination.image, destination.image, destination.image, destination.image]
+  const destinationImage = getImage(`destination-${destination.slug}`, destination.image)
+  const gallery = [destinationImage, destinationImage, destinationImage, destinationImage, destinationImage]
   return <PageFrame><main className="destination-package">
     <section className="package-hero" style={{ backgroundImage: `linear-gradient(90deg,rgba(0,40,34,.88),rgba(0,40,34,.1)),url(${optimizedImageUrl(destination.image)})` }}>
       <div className="package-hero-copy"><span className="package-pill">Featured destination</span><span className="eyebrow">LinkUps Adventures</span><h1>{destination.name}<br /><em>Villa Escape</em></h1><p>{destination.description} Unforgettable moments with your favourite people.</p><div className="package-meta"><span><CalendarDays /> 3 Days / 2 Nights</span><span><MapPin /> {destination.name}</span><span><Users /> 8–16 Pax (sharing)</span></div></div><div className="package-price"><small>From</small><strong>KES 24,800</strong><span>per person</span></div>

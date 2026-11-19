@@ -5,6 +5,8 @@ import { Link } from 'wouter'
 import { Check, ChevronDown, Mail, MapPin, MessageCircle, Phone, Send, ShieldCheck, Users, Wallet } from 'lucide-react'
 import { PageFrame } from '@/components/site-shell'
 import { createEnquiry } from '@/lib/api'
+import { optimizedImageUrl } from '@/components/site-image'
+import { useSiteImageOverrides } from '@/lib/use-site-image-overrides'
 
 const faqs = [
   ['How do I make a booking?', 'Send us a message with your dates and preferred adventure. Our team will guide you from there.'],
@@ -15,6 +17,7 @@ const faqs = [
 ]
 
 export default function ContactPage() {
+  const { getImage } = useSiteImageOverrides('contact')
   const eventParams = typeof window === 'undefined'
     ? null
     : new URLSearchParams(window.location.search)
@@ -51,7 +54,7 @@ export default function ContactPage() {
   }
 
   return <PageFrame>
-    <section className="contact-hero" style={{ backgroundImage: "linear-gradient(90deg,rgba(0,42,35,.86),rgba(0,42,35,.2)),url('/images/group-travel-hero.webp')" }}>
+    <section className="contact-hero" style={{ backgroundImage: `linear-gradient(90deg,rgba(0,42,35,.86),rgba(0,42,35,.2)),url("${optimizedImageUrl(getImage('hero', '/images/group-travel-hero.webp'))}")` }}>
       <div><span className="contact-ribbon">Get in touch</span><h1>Contact us<br /><em>we&apos;d love to hear from you!</em></h1><p>Have a question, need help with a booking, or want to plan your next adventure? Our team is here to assist you. Reach out — we&apos;re just a message away!</p></div>
     </section>
     <section className="contact-main">
@@ -76,6 +79,6 @@ export default function ContactPage() {
       </div>
     </section>
     <section className="visit-section"><div className="visit-copy"><span className="eyebrow">Visit us</span><h2>We are based in Nairobi, Kenya.</h2><p>Come say hi or visit our office by appointment.</p><div><MapPin /><b>Nairobi, Kenya</b><small>Exact location available on request</small></div><strong>We can&apos;t wait<br />to meet you.</strong></div><div className="map-card"><div className="map-pin"><MapPin /></div><b>Nairobi, Kenya</b><small>View location details</small></div></section>
-    <section className="faq-section"><div className="faq-image" /><div className="faq-list"><span className="eyebrow">Frequently asked questions</span><h2>Need to know?</h2>{faqs.map(([question,answer], index)=><div className="faq-item" key={question}><button onClick={()=>setOpenFaq(openFaq===index?null:index)}>{question}<ChevronDown className={openFaq===index?'rotated':''} /></button>{openFaq===index&&<p>{answer}</p>}</div>)}</div><div className="faq-cta"><h2>Adventure<br />is calling...</h2><Link className="button orange" href="/plan">Plan your next trip <Send /></Link></div></section>
+    <section className="faq-section"><div className="faq-image" style={{ backgroundImage: `linear-gradient(0deg,rgba(0,35,29,.15),rgba(0,35,29,.15)),url("${optimizedImageUrl(getImage('faq-image', '/images/contact-hero.png'))}")` }} /><div className="faq-list"><span className="eyebrow">Frequently asked questions</span><h2>Need to know?</h2>{faqs.map(([question,answer], index)=><div className="faq-item" key={question}><button onClick={()=>setOpenFaq(openFaq===index?null:index)}>{question}<ChevronDown className={openFaq===index?'rotated':''} /></button>{openFaq===index&&<p>{answer}</p>}</div>)}</div><div className="faq-cta"><h2>Adventure<br />is calling...</h2><Link className="button orange" href="/plan">Plan your next trip <Send /></Link></div></section>
   </PageFrame>
 }

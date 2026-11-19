@@ -732,6 +732,11 @@
   .workspace-dialog-form .hero-image-row {
     grid-template-columns: minmax(0, 1fr);
   }
+
+  .workspace-dialog-form .site-image-override-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
 }
 
 @media (max-width: 380px) {

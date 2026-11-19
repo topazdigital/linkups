@@ -914,7 +914,7 @@ components:
         isPublished: { type: boolean }
     SiteContent:
       type: object
-      required: [pageKey, pageTitle, heroTitle, heroSubtitle, seoDescription, bodyContent, heroImageUrl, heroImages, heroMode, isPublished, updatedAt]
+      required: [pageKey, pageTitle, heroTitle, heroSubtitle, seoDescription, bodyContent, heroImageUrl, heroImages, imageOverrides, heroMode, isPublished, updatedAt]
       properties:
         pageKey: { type: string }
         pageTitle: { type: string }
@@ -927,6 +927,9 @@ components:
           type: array
           maxItems: 8
           items: { type: string, maxLength: 500 }
+        imageOverrides:
+          type: object
+          additionalProperties: { type: string, maxLength: 500 }
         heroMode: { type: string, enum: [static, slideshow] }
         isPublished: { type: boolean }
         updatedAt: { type: string, format: date-time }
@@ -945,6 +948,9 @@ components:
           type: array
           maxItems: 8
           items: { type: string, maxLength: 500 }
+        imageOverrides:
+          type: object
+          additionalProperties: { type: string, maxLength: 500 }
         heroMode: { type: string, enum: [static, slideshow] }
         isPublished: { type: boolean }
     Event:

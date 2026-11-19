@@ -42,6 +42,7 @@ import { legalPages } from '@/lib/legal-content'
 import { formatAdventurePrice } from '@/lib/api'
 import { SiteImage } from '@/components/site-image'
 import { AdminImageField, AdminImageUploadButton } from '@/components/admin-image-upload'
+import { getSiteImageSlots } from '@/lib/site-image-catalog'
 import {
   CalendarCheck,
   CalendarDays,
@@ -109,6 +110,7 @@ type ContentForm = {
   seoDescription: string
   bodyContent: string
   heroImages: string[]
+  imageOverrides: Record<string, string>
   heroMode: 'static' | 'slideshow'
   isPublished: boolean
 }
@@ -142,7 +144,7 @@ const blankEvent: EventForm = {
 }
 const blankContent: ContentForm = {
   pageKey: '', pageTitle: '', heroTitle: '', heroSubtitle: '', seoDescription: '',
-  bodyContent: '', heroImages: [], heroMode: 'static', isPublished: false,
+  bodyContent: '', heroImages: [], imageOverrides: {}, heroMode: 'static', isPublished: false,
 }
 
 function formatDate(value: string | null | undefined) {
@@ -591,8 +593,15 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
       heroSubtitle: item.heroSubtitle ?? '', seoDescription: item.seoDescription ?? '',
       bodyContent: item.bodyContent ?? legalPages[item.pageKey]?.bodyContent ?? '',
       heroImages: item.heroImages.length ? item.heroImages : item.heroImageUrl ? [item.heroImageUrl] : [],
+      imageOverrides: item.imageOverrides ?? {},
       heroMode: item.heroMode, isPublished: item.isPublished,
     })
+  }
+  function updateContentImage(key: string, value: string) {
+    setContentForm((current) => ({
+      ...current,
+      imageOverrides: { ...current.imageOverrides, [key]: value },
+    }))
   }
   function updateHeroImage(index: number, value: string) {
     setContentForm((current) => ({
@@ -643,6 +652,11 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
       bodyContent: contentForm.bodyContent.trim() || null,
       heroImageUrl: contentForm.heroImages.find((image) => image.trim())?.trim() || null,
       heroImages: contentForm.heroImages.map((image) => image.trim()).filter(Boolean),
+      imageOverrides: Object.fromEntries(
+        Object.entries(contentForm.imageOverrides)
+          .map(([key, image]) => [key, image.trim()])
+          .filter(([, image]) => image),
+      ),
       heroMode: contentForm.heroMode,
       isPublished: contentForm.isPublished,
     }
@@ -911,6 +925,42 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
                 </div>
               </div>
             </>}
+            {getSiteImageSlots(contentForm.pageKey.trim().toLowerCase()).length > 0 && <section className="workspace-field wide hero-image-editor site-image-override-editor">
+              <span>Images used across this page</span>
+              <small>Upload a replacement or enter a public image URL or path. Clear the field to restore the built-in image.</small>
+              <div className="site-image-override-grid">
+                {getSiteImageSlots(contentForm.pageKey.trim().toLowerCase()).map((slot) => {
+                  const image = contentForm.imageOverrides[slot.key] ?? ''
+                  return <div className="site-image-override" key={slot.key}>
+                    <label className="workspace-field">
+                      {slot.label}
+                      <input
+                        className="workspace-input"
+                        data-testid={`input-site-image-${slot.key}`}
+                        maxLength={500}
+                        value={image}
+                        onChange={(event) => updateContentImage(slot.key, event.target.value)}
+                        placeholder={`${slot.fallback} or https://…`}
+                      />
+                    </label>
+                    <SiteImage className="hero-image-preview" src={image.trim() || slot.fallback} alt={`${slot.label} preview`} />
+                    <div className="hero-image-actions">
+                      <AdminImageUploadButton
+                        label="Upload replacement"
+                        maxFiles={1}
+                        testId={`button-site-image-upload-${slot.key}`}
+                        className="admin-image-upload-control--inline"
+                        onUploadingChange={trackImageUpload}
+                        onUploaded={(urls) => {
+                          if (urls[0]) updateContentImage(slot.key, urls[0])
+                        }}
+                      />
+                      {image && <button className="admin-secondary" type="button" onClick={() => updateContentImage(slot.key, '')}>Restore default</button>}
+                    </div>
+                  </div>
+                })}
+              </div>
+            </section>}
             <label className="workspace-check"><input data-testid="check-content-published" type="checkbox" checked={contentForm.isPublished} onChange={(event) => setContentForm({ ...contentForm, isPublished: event.target.checked })} /> Publish this page content</label>
                 <div className="workspace-form-actions wide"><button className="admin-primary" data-testid="button-content-save" type="submit" disabled={isSavingContent || pendingImageUploads > 0}>{isSavingContent ? 'Saving page…' : 'Save page content'}</button><button className="admin-secondary" data-testid="button-content-cancel" type="button" onClick={closeForm}>Cancel</button></div>
               </form>

@@ -1,12 +1,13 @@
+import { useEffect } from 'react';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { SeoManager } from '@/components/seo-manager';
 import { MobileBottomNav, PageFrame } from '@/components/site-shell';
+import { CompareProvider, TripCompareTray } from '@/components/trip-compare';
 import AboutPage from '@/app/about/page';
 import AdminPage from '@/app/admin/page';
 import AdventuresPage from '@/app/adventures/page';
 import AdventureDetailPage from '@/app/adventures/[slug]/page';
 import BlogPage from '@/app/blog/page';
-import ComparePage from '@/app/compare/page';
 import ContactPage from '@/app/contact/page';
 import DestinationsPage from '@/app/destinations/page';
 import DestinationDetailPage from '@/app/destinations/[slug]/page';
@@ -34,6 +35,14 @@ function NotFoundPage() {
   );
 }
 
+function LegacyCompareRedirect() {
+  const [, setLocation] = useLocation();
+  useEffect(() => {
+    setLocation('/adventures');
+  }, [setLocation]);
+  return null;
+}
+
 function AppRoutes() {
   const [location] = useLocation();
   const showMobileNavigation =
@@ -54,7 +63,7 @@ function AppRoutes() {
             {(params) => <AdventureDetailPage slug={params.slug} />}
           </Route>
           <Route path="/blog" component={BlogPage} />
-          <Route path="/compare" component={ComparePage} />
+          <Route path="/compare" component={LegacyCompareRedirect} />
           <Route path="/contact" component={ContactPage} />
           <Route path="/destinations" component={DestinationsPage} />
           <Route path="/destinations/:slug">
@@ -73,6 +82,7 @@ function AppRoutes() {
         </Switch>
       </ErrorBoundary>
       {showMobileNavigation && <MobileBottomNav />}
+      {showMobileNavigation && <TripCompareTray />}
     </>
   );
 }
@@ -80,8 +90,10 @@ function AppRoutes() {
 function App() {
   return (
     <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-      <SeoManager />
-      <AppRoutes />
+      <CompareProvider>
+        <SeoManager />
+        <AppRoutes />
+      </CompareProvider>
     </WouterRouter>
   );
 }

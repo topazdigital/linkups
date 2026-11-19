@@ -6,6 +6,8 @@ import { ArrowRight, CalendarDays, Clock3, Mail, Send, Sparkles } from 'lucide-r
 import { PageFrame } from '@/components/site-shell'
 import { SiteImage } from '@/components/site-image'
 import { useCreateNewsletterSubscription } from '@workspace/api-client-react'
+import { optimizedImageUrl } from '@/components/site-image'
+import { useSiteImageOverrides } from '@/lib/use-site-image-overrides'
 import './newsletter.css'
 
 const posts = [
@@ -26,6 +28,13 @@ export default function BlogPage() {
   const subscribe = useCreateNewsletterSubscription()
   const [subscribed, setSubscribed] = useState(false)
   const [error, setError] = useState('')
+  const { getImage } = useSiteImageOverrides('blog')
+  const postImageKeys = ['post-maasai-mara', 'post-beach-getaway', 'post-rafting', 'post-girls-trip', 'post-naivasha', 'post-camping']
+  const managedPosts = posts.map((post, index) => [
+    post[0],
+    getImage(postImageKeys[index], post[1]),
+    ...post.slice(2),
+  ] as typeof post)
 
   async function submitNewsletter(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -44,10 +53,10 @@ export default function BlogPage() {
     }
   }
 
-  return <PageFrame><main className="blog-page"><section className="blog-hero" style={{ backgroundImage: `linear-gradient(90deg,rgba(0,43,36,.86),rgba(0,43,36,.16)),url('/images/adventure-mountain.webp')` }}><div><span className="blog-eyebrow">The LinkUps Adventures</span><h1><em>Blog</em></h1><p>Travel tips, real stories, destination guides, and everything adventure. Get inspired, plan better and make the most of your next journey.</p></div></section><nav className="blog-categories" aria-label="Blog categories">{categories.map((category, index) => <Link className={index === 0 ? 'active' : ''} href={`/blog?category=${category.toLowerCase().replaceAll(' ', '-')}`} key={category}><Sparkles />{category}</Link>)}</nav><section className="blog-layout"><div className="blog-main"><div className="blog-grid"><PostCard post={posts[0]} featured /><PostCard post={posts[1]} secondary />{posts.slice(2).map(post => <PostCard post={post} key={post[0]} />)}</div><nav className="pagination" aria-label="Pagination"><b>1</b><span>2</span><span>3</span><span>4</span><span>5</span><b>›</b></nav></div><aside className="blog-sidebar"><section className="newsletter-card"><Send /><h2>Join our newsletter</h2><p>Get travel tips, new packages, exclusive deals and adventure inspiration straight to your inbox.</p>{subscribed ? <div className="newsletter-feedback" role="status">You&apos;re subscribed. Thanks for opting in.</div> : <form onSubmit={submitNewsletter}>
+  return <PageFrame><main className="blog-page"><section className="blog-hero" style={{ backgroundImage: `linear-gradient(90deg,rgba(0,43,36,.86),rgba(0,43,36,.16)),url("${optimizedImageUrl(getImage('hero', '/images/adventure-mountain.webp'))}")` }}><div><span className="blog-eyebrow">The LinkUps Adventures</span><h1><em>Blog</em></h1><p>Travel tips, real stories, destination guides, and everything adventure. Get inspired, plan better and make the most of your next journey.</p></div></section><nav className="blog-categories" aria-label="Blog categories">{categories.map((category, index) => <Link className={index === 0 ? 'active' : ''} href={`/blog?category=${category.toLowerCase().replaceAll(' ', '-')}`} key={category}><Sparkles />{category}</Link>)}</nav><section className="blog-layout"><div className="blog-main"><div className="blog-grid"><PostCard post={managedPosts[0]} featured /><PostCard post={managedPosts[1]} secondary />{managedPosts.slice(2).map(post => <PostCard post={post} key={post[0]} />)}</div><nav className="pagination" aria-label="Pagination"><b>1</b><span>2</span><span>3</span><span>4</span><span>5</span><b>›</b></nav></div><aside className="blog-sidebar"><section className="newsletter-card"><Send /><h2>Join our newsletter</h2><p>Get travel tips, new packages, exclusive deals and adventure inspiration straight to your inbox.</p>{subscribed ? <div className="newsletter-feedback" role="status">You&apos;re subscribed. Thanks for opting in.</div> : <form onSubmit={submitNewsletter}>
         <input name="email" type="email" placeholder="Your email address" aria-label="Your email address" required maxLength={190} autoComplete="email" />
         <label className="newsletter-consent"><input name="consent" type="checkbox" required /><span>I agree to receive LinkUps travel tips, updates and offers by email.</span></label>
         {error && <div className="newsletter-feedback" role="alert">{error}</div>}
         <button type="submit" disabled={subscribe.isPending}>{subscribe.isPending ? 'Saving…' : <>Subscribe <ArrowRight /></>}</button>
-      </form>}</section><section className="popular-card"><h2>Popular posts</h2>{posts.slice(0, 5).map(post => <Link href="/plan" key={post[0]}><SiteImage src={post[1]} alt="" /><span><strong>{post[0]}</strong><small><Clock3 /> {post[4]}</small></span></Link>)}</section><Link className="blog-cta" href="/adventures"><span>Your next adventure is just a click away.</span><b>Explore adventures <ArrowRight /></b></Link></aside></section></main></PageFrame>
+        </form>}</section><section className="popular-card"><h2>Popular posts</h2>{managedPosts.slice(0, 5).map(post => <Link href="/plan" key={post[0]}><SiteImage src={post[1]} alt="" /><span><strong>{post[0]}</strong><small><Clock3 /> {post[4]}</small></span></Link>)}</section><Link className="blog-cta" href="/adventures"><span>Your next adventure is just a click away.</span><b>Explore adventures <ArrowRight /></b></Link></aside></section></main></PageFrame>
 }

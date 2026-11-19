@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { SiteContentInputHeroMode } from './siteContentInputHeroMode';
+import type { SiteContentInputImageOverrides } from './siteContentInputImageOverrides';
 
 export interface SiteContentInput {
   /**
@@ -49,6 +50,7 @@ export interface SiteContentInput {
      * @items.maxLength 500
      */
   heroImages?: string[];
+  imageOverrides?: SiteContentInputImageOverrides;
   heroMode?: SiteContentInputHeroMode;
   isPublished: boolean;
 }

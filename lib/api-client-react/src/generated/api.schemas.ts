@@ -356,6 +356,8 @@ export interface DestinationUpdate {
   isPublished?: boolean;
 }
 
+export type SiteContentImageOverrides = {[key: string]: string};
+
 export type SiteContentHeroMode = typeof SiteContentHeroMode[keyof typeof SiteContentHeroMode];
 
 
@@ -382,10 +384,13 @@ export interface SiteContent {
      * @items.maxLength 500
      */
   heroImages: string[];
+  imageOverrides: SiteContentImageOverrides;
   heroMode: SiteContentHeroMode;
   isPublished: boolean;
   updatedAt: string;
 }
+
+export type SiteContentInputImageOverrides = {[key: string]: string};
 
 export type SiteContentInputHeroMode = typeof SiteContentInputHeroMode[keyof typeof SiteContentInputHeroMode];
 
@@ -437,6 +442,7 @@ export interface SiteContentInput {
      * @items.maxLength 500
      */
   heroImages?: string[];
+  imageOverrides?: SiteContentInputImageOverrides;
   heroMode?: SiteContentInputHeroMode;
   isPublished: boolean;
 }

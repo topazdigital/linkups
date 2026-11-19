@@ -27,7 +27,7 @@ export function Logo({ light = false, className = '', 'data-testid': testId }: L
 
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false)
-  const links = [['Adventures', '/adventures'], ['Destinations', '/destinations'], ['Upcoming Trips', '/upcoming-trips'], ['Compare Trips', '/compare'], ['Travel Guide', '/travel-guide'], ['Group Travel', '/group-travel'], ['About Us', '/about'], ['Blog', '/blog'], ['Contact', '/contact']]
+  const links = [['Adventures', '/adventures'], ['Destinations', '/destinations'], ['Upcoming Trips', '/upcoming-trips'], ['Travel Guide', '/travel-guide'], ['Group Travel', '/group-travel'], ['About Us', '/about'], ['Blog', '/blog'], ['Contact', '/contact']]
   return (
     <header className="site-header">
       <Logo />

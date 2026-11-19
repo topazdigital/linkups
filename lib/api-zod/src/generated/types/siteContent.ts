@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { SiteContentHeroMode } from './siteContentHeroMode';
+import type { SiteContentImageOverrides } from './siteContentImageOverrides';
 
 export interface SiteContent {
   pageKey: string;
@@ -25,6 +26,7 @@ export interface SiteContent {
      * @items.maxLength 500
      */
   heroImages: string[];
+  imageOverrides: SiteContentImageOverrides;
   heroMode: SiteContentHeroMode;
   isPublished: boolean;
   updatedAt: Date;
