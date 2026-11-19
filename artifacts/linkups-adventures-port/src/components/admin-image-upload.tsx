@@ -111,6 +111,7 @@ type AdminImageFieldProps = {
   multiple?: boolean;
   wide?: boolean;
   className?: string;
+  onUploadingChange?: (isUploading: boolean) => void;
 };
 
 function imageLines(value: string): string[] {
@@ -130,6 +131,7 @@ export function AdminImageField({
   multiple = false,
   wide = true,
   className = "",
+  onUploadingChange,
 }: AdminImageFieldProps) {
   const inputId = useId();
   const [isUploading, setIsUploading] = useState(false);
@@ -182,7 +184,10 @@ export function AdminImageField({
           multiple={multiple}
           maxFiles={8}
           testId={testId ? `${testId}-upload` : undefined}
-          onUploadingChange={setIsUploading}
+          onUploadingChange={(uploading) => {
+            setIsUploading(uploading);
+            onUploadingChange?.(uploading);
+          }}
         />
       </div>
       <small>

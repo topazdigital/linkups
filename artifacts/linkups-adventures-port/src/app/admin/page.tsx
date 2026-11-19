@@ -247,6 +247,7 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
   const [query, setQuery] = useState('')
   const [notice, setNotice] = useState('')
   const [formError, setFormError] = useState('')
+  const [pendingImageUploads, setPendingImageUploads] = useState(0)
   const [openForm, setOpenForm] = useState<OpenForm>(null)
   const [editingAdventure, setEditingAdventure] = useState<number | null>(null)
   const [adventureForm, setAdventureForm] = useState<AdventureForm>(blankAdventure)
@@ -256,6 +257,10 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
   const [eventForm, setEventForm] = useState<EventForm>(blankEvent)
   const [contentForm, setContentForm] = useState<ContentForm>(blankContent)
   const [editingPage, setEditingPage] = useState('')
+
+  function trackImageUpload(isUploading: boolean) {
+    setPendingImageUploads((count) => Math.max(0, count + (isUploading ? 1 : -1)))
+  }
 
   function closeForm() {
     setOpenForm(null)
@@ -756,6 +761,7 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
               testId="input-adventure-image"
               placeholder="/images/trips/example.jpg or https://…"
               hint="The main image appears on adventure cards and detail pages."
+              onUploadingChange={trackImageUpload}
             />
             <AdminImageField
               label="Gallery image paths or URLs (one per line)"
@@ -765,10 +771,11 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
               placeholder={'/images/trips/gallery-1.jpg\nhttps://…'}
               hint="Upload several supporting photos or paste one URL/path per line."
               multiple
+              onUploadingChange={trackImageUpload}
             />
             <label className="workspace-check"><input data-testid="check-adventure-featured" type="checkbox" checked={adventureForm.isFeatured} onChange={(event) => setAdventureForm({ ...adventureForm, isFeatured: event.target.checked })} /> Featured adventure</label>
             <label className="workspace-check"><input data-testid="check-adventure-published" type="checkbox" checked={adventureForm.isPublished} onChange={(event) => setAdventureForm({ ...adventureForm, isPublished: event.target.checked })} /> Published on website</label>
-                <div className="workspace-form-actions wide"><button className="admin-primary" data-testid="button-adventure-save" type="submit" disabled={isSavingAdventure}>{isSavingAdventure ? 'Saving…' : editingAdventure === null ? 'Create adventure' : 'Save adventure'}</button><button className="admin-secondary" data-testid="button-adventure-cancel" type="button" onClick={closeForm}>Cancel</button></div>
+                <div className="workspace-form-actions wide"><button className="admin-primary" data-testid="button-adventure-save" type="submit" disabled={isSavingAdventure || pendingImageUploads > 0}>{isSavingAdventure ? 'Saving…' : editingAdventure === null ? 'Create adventure' : 'Save adventure'}</button><button className="admin-secondary" data-testid="button-adventure-cancel" type="button" onClick={closeForm}>Cancel</button></div>
               </form>
             </section>
           </div>}
@@ -797,9 +804,10 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
               testId="input-event-image"
               placeholder="/images/trips/example.jpg or https://…"
               hint="Optional. The carousel uses a branded background if no image is provided."
+              onUploadingChange={trackImageUpload}
             />
             <label className="workspace-check"><input data-testid="check-event-published" type="checkbox" checked={eventForm.isPublished} onChange={(event) => setEventForm({ ...eventForm, isPublished: event.target.checked })} /> Publish on the homepage carousel</label>
-                <div className="workspace-form-actions wide"><button className="admin-primary" data-testid="button-event-save" type="submit" disabled={isSavingEvent}>{isSavingEvent ? 'Saving…' : editingEvent === null ? 'Create event' : 'Save event'}</button><button className="admin-secondary" data-testid="button-event-cancel" type="button" onClick={closeForm}>Cancel</button></div>
+                <div className="workspace-form-actions wide"><button className="admin-primary" data-testid="button-event-save" type="submit" disabled={isSavingEvent || pendingImageUploads > 0}>{isSavingEvent ? 'Saving…' : editingEvent === null ? 'Create event' : 'Save event'}</button><button className="admin-secondary" data-testid="button-event-cancel" type="button" onClick={closeForm}>Cancel</button></div>
               </form>
             </section>
           </div>}
@@ -832,10 +840,11 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
               onChange={(value) => setDestinationForm({ ...destinationForm, imageUrl: value })}
               testId="input-destination-image"
               placeholder="/images/destinations/example.jpg or https://…"
+              onUploadingChange={trackImageUpload}
             />
             <label className="workspace-check"><input data-testid="check-destination-featured" type="checkbox" checked={destinationForm.isFeatured} onChange={(event) => setDestinationForm({ ...destinationForm, isFeatured: event.target.checked })} /> Feature this destination</label>
             <label className="workspace-check"><input data-testid="check-destination-published" type="checkbox" checked={destinationForm.isPublished} onChange={(event) => setDestinationForm({ ...destinationForm, isPublished: event.target.checked })} /> Publish on website</label>
-                <div className="workspace-form-actions wide"><button className="admin-primary" data-testid="button-destination-save" type="submit" disabled={isSavingDestination}>{isSavingDestination ? 'Saving…' : editingDestination === null ? 'Create destination' : 'Save destination'}</button><button className="admin-secondary" data-testid="button-destination-cancel" type="button" onClick={closeForm}>Cancel</button></div>
+                <div className="workspace-form-actions wide"><button className="admin-primary" data-testid="button-destination-save" type="submit" disabled={isSavingDestination || pendingImageUploads > 0}>{isSavingDestination ? 'Saving…' : editingDestination === null ? 'Create destination' : 'Save destination'}</button><button className="admin-secondary" data-testid="button-destination-cancel" type="button" onClick={closeForm}>Cancel</button></div>
               </form>
             </section>
           </div>}
@@ -870,6 +879,7 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
                       maxFiles={1}
                       testId={`button-home-hero-upload-${index}`}
                       className="admin-image-upload-control--inline"
+                      onUploadingChange={trackImageUpload}
                       onUploaded={(urls) => setContentForm((current) => {
                         const currentIndex = current.heroImages.indexOf(image)
                         if (currentIndex < 0 || !urls[0]) return current
@@ -891,6 +901,7 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
                     maxFiles={8 - contentForm.heroImages.length}
                     disabled={contentForm.heroImages.length >= 8}
                     testId="button-home-hero-upload-multiple"
+                    onUploadingChange={trackImageUpload}
                     onUploaded={(urls) => setContentForm((current) => ({
                       ...current,
                       heroImages: [...current.heroImages, ...urls].slice(0, 8),
@@ -901,7 +912,7 @@ function AdminWorkspace({ adminEmail }: { adminEmail: string }) {
               </div>
             </>}
             <label className="workspace-check"><input data-testid="check-content-published" type="checkbox" checked={contentForm.isPublished} onChange={(event) => setContentForm({ ...contentForm, isPublished: event.target.checked })} /> Publish this page content</label>
-                <div className="workspace-form-actions wide"><button className="admin-primary" data-testid="button-content-save" type="submit" disabled={isSavingContent}>{isSavingContent ? 'Saving page…' : 'Save page content'}</button><button className="admin-secondary" data-testid="button-content-cancel" type="button" onClick={closeForm}>Cancel</button></div>
+                <div className="workspace-form-actions wide"><button className="admin-primary" data-testid="button-content-save" type="submit" disabled={isSavingContent || pendingImageUploads > 0}>{isSavingContent ? 'Saving page…' : 'Save page content'}</button><button className="admin-secondary" data-testid="button-content-cancel" type="button" onClick={closeForm}>Cancel</button></div>
               </form>
             </section>
           </div>}
