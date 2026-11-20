@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -32,6 +33,21 @@ export function AdventureTypeCarousel({ items }: { items: AdventureType[] }) {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
   const isPaused = isInteracting || isFocused || prefersReducedMotion
 
+  const finishPointerInteraction = useCallback((pointerId?: number) => {
+    const drag = dragRef.current
+    if (!drag || (pointerId !== undefined && drag.pointerId !== pointerId)) return
+
+    if (drag.pointerType !== 'touch' && drag.moved) {
+      suppressClickRef.current = true
+      window.setTimeout(() => {
+        suppressClickRef.current = false
+      }, 0)
+    }
+
+    dragRef.current = null
+    setIsInteracting(false)
+  }, [])
+
   useEffect(() => {
     const preference = window.matchMedia('(prefers-reduced-motion: reduce)')
     const updatePreference = () => setPrefersReducedMotion(preference.matches)
@@ -39,6 +55,21 @@ export function AdventureTypeCarousel({ items }: { items: AdventureType[] }) {
     preference.addEventListener('change', updatePreference)
     return () => preference.removeEventListener('change', updatePreference)
   }, [])
+
+  useEffect(() => {
+    const finishOutsidePointerInteraction = (
+      event: WindowEventMap['pointerup'] | WindowEventMap['pointercancel'],
+    ) => {
+      finishPointerInteraction(event.pointerId)
+    }
+
+    window.addEventListener('pointerup', finishOutsidePointerInteraction)
+    window.addEventListener('pointercancel', finishOutsidePointerInteraction)
+    return () => {
+      window.removeEventListener('pointerup', finishOutsidePointerInteraction)
+      window.removeEventListener('pointercancel', finishOutsidePointerInteraction)
+    }
+  }, [finishPointerInteraction])
 
   useEffect(() => {
     const viewport = viewportRef.current
@@ -102,6 +133,7 @@ export function AdventureTypeCarousel({ items }: { items: AdventureType[] }) {
       (event.pointerType === 'mouse' && event.button !== 0)
     ) return
 
+    setIsFocused(false)
     dragRef.current = {
       pointerId: event.pointerId,
       pointerType: event.pointerType,
@@ -109,8 +141,6 @@ export function AdventureTypeCarousel({ items }: { items: AdventureType[] }) {
       lastX: event.clientX,
       moved: false,
     }
-    setIsInteracting(true)
-
   }
 
   function handlePointerMove(event: PointerEvent<HTMLDivElement>) {
@@ -122,7 +152,10 @@ export function AdventureTypeCarousel({ items }: { items: AdventureType[] }) {
       drag.lastX = event.clientX
       return
     }
-    drag.moved = true
+    if (!drag.moved) {
+      drag.moved = true
+      setIsInteracting(true)
+    }
 
     if (!event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.setPointerCapture(event.pointerId)
@@ -131,21 +164,6 @@ export function AdventureTypeCarousel({ items }: { items: AdventureType[] }) {
     event.currentTarget.scrollLeft -= distance
     drag.lastX = event.clientX
     normalizeLoopPosition(event.currentTarget)
-  }
-
-  function finishPointerInteraction(pointerId?: number) {
-    const drag = dragRef.current
-    if (!drag || (pointerId !== undefined && drag.pointerId !== pointerId)) return
-
-    if (drag.pointerType !== 'touch' && drag.moved) {
-      suppressClickRef.current = true
-      window.setTimeout(() => {
-        suppressClickRef.current = false
-      }, 0)
-    }
-
-    dragRef.current = null
-    setIsInteracting(false)
   }
 
   function handleBlur(event: FocusEvent<HTMLDivElement>) {
@@ -173,6 +191,12 @@ export function AdventureTypeCarousel({ items }: { items: AdventureType[] }) {
       role="region"
       aria-label="Adventure categories. Swipe, drag, or use the arrow keys to browse."
       tabIndex={0}
+      onPointerEnter={(event) => {
+        if (event.pointerType === 'mouse') setIsFocused(false)
+      }}
+      onPointerLeave={(event) => {
+        if (event.pointerType === 'mouse') setIsFocused(false)
+      }}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={(event) => {
@@ -181,11 +205,18 @@ export function AdventureTypeCarousel({ items }: { items: AdventureType[] }) {
       onPointerCancel={(event) => {
         if (event.pointerType !== 'touch') finishPointerInteraction(event.pointerId)
       }}
+      onLostPointerCapture={(event) => finishPointerInteraction(event.pointerId)}
       onTouchStart={(event) => setIsInteracting(event.touches.length > 0)}
       onTouchEnd={(event) => setIsInteracting(event.touches.length > 0)}
       onTouchCancel={(event) => setIsInteracting(event.touches.length > 0)}
       onScroll={handleScroll}
-      onFocusCapture={() => setIsFocused(true)}
+      onFocusCapture={(event) => {
+        const focusedElement = event.target
+        setIsFocused(
+          focusedElement instanceof HTMLElement &&
+            focusedElement.matches(':focus-visible'),
+        )
+      }}
       onBlurCapture={handleBlur}
       onClickCapture={handleClickCapture}
     >
