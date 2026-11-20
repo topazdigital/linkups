@@ -18,6 +18,7 @@ import './marketing-pages.css';
 import './homepage-visual-tuning.css';
 import './blog-admin.css';
 import './destination-detail-responsive.css';
+import './components/auth-modal.css';
 
 const queryClient = new QueryClient();
 

@@ -5,12 +5,19 @@ import { Link, useLocation } from 'wouter'
 import { getGetAuthSessionQueryKey, useGetAuthSession, useRegister } from '@workspace/api-client-react'
 import { useQueryClient } from '@tanstack/react-query'
 import { Logo } from '@/components/site-shell'
+import type { AuthModalMode } from '@/components/auth-modal-context'
+
+type RegisterPageProps = {
+  inDialog?: boolean
+  onSwitchMode?: (mode: AuthModalMode) => void
+  onSuccess?: () => void
+}
 
 function errorMessage(reason: unknown) {
   return reason instanceof Error ? reason.message : 'Your account could not be created. Please try again.'
 }
 
-export default function RegisterPage() {
+export default function RegisterPage({ inDialog = false, onSwitchMode, onSuccess }: RegisterPageProps) {
   const [, setLocation] = useLocation()
   const queryClient = useQueryClient()
   const session = useGetAuthSession()
@@ -43,6 +50,7 @@ export default function RegisterPage() {
       })
       queryClient.setQueryData(getGetAuthSessionQueryKey(), nextSession)
       await queryClient.invalidateQueries({ queryKey: getGetAuthSessionQueryKey() })
+      onSuccess?.()
       setLocation(nextSession.role === 'admin' ? '/admin' : '/dashboard')
     } catch (reason) {
       setMessage(errorMessage(reason))
@@ -50,10 +58,11 @@ export default function RegisterPage() {
   }
 
   if (session.isLoading) {
-    return <main className="auth-page"><div className="auth-card auth-card-register" role="status" data-testid="status-session-check"><div className="skeleton" /><p>Preparing your account…</p></div></main>
+    const loadingCard = <div className={`auth-card auth-card-register${inDialog ? ' auth-dialog-card' : ''}`} role="status" data-testid="status-session-check"><div className="skeleton" /><p>Preparing your account…</p></div>
+    return inDialog ? loadingCard : <main className="auth-page">{loadingCard}</main>
   }
 
-  return <main className="auth-page"><div className="auth-card auth-card-register">
+  const card = <div className={`auth-card auth-card-register${inDialog ? ' auth-dialog-card' : ''}`}>
     <Logo data-testid="link-register-home" />
     <span className="eyebrow">Start collecting stories</span>
     <h1>Create your account.</h1>
@@ -67,6 +76,9 @@ export default function RegisterPage() {
       {message && <div className="error-box" role="alert" data-testid="error-register">{message}</div>}
       <button data-testid="button-register-submit" className="button orange" type="submit" disabled={register.isPending}>{register.isPending ? 'Creating your account…' : 'Create account'}</button>
     </form>
-    <p className="auth-foot">Already travelling with us? <Link href="/login" data-testid="link-register-login">Sign in</Link></p>
-  </div></main>
+    <p className="auth-foot">Already travelling with us? {onSwitchMode
+      ? <button type="button" className="auth-dialog-switch" onClick={() => onSwitchMode('login')} data-testid="link-register-login">Sign in</button>
+      : <Link href="/login" data-testid="link-register-login">Sign in</Link>}</p>
+  </div>
+  return inDialog ? card : <main className="auth-page">{card}</main>
 }

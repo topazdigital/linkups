@@ -6,6 +6,7 @@ import { ArrowRight, CalendarDays, Compass, Home, MapPin, Menu, UserRound, X } f
 import { useGetAuthSession } from '@workspace/api-client-react'
 import { useLocation } from 'wouter'
 import { optimizedImageUrl, SiteImage } from '@/components/site-image'
+import { useAuthModal, type AuthModalMode } from '@/components/auth-modal-context'
 
 export const siteImages = {
   mara: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=1100&q=70',
@@ -26,6 +27,7 @@ export function Logo({ light = false, className = '', 'data-testid': testId }: L
 }
 
 export function DesktopAccountLink() {
+  const { openAuth } = useAuthModal()
   const session = useGetAuthSession()
   const authenticated = session.data?.authenticated === true
   const href = authenticated
@@ -35,8 +37,45 @@ export function DesktopAccountLink() {
     : '/login'
 
   return (
-    <Link className="header-account" href={href} data-testid="link-header-account">
+    <Link
+      className="header-account"
+      href={href}
+      data-testid="link-header-account"
+      onClick={(event) => {
+        if (!authenticated) {
+          event.preventDefault()
+          openAuth('login')
+        }
+      }}
+    >
       {authenticated ? 'My account' : 'Sign in'}
+    </Link>
+  )
+}
+
+export function AuthLink({
+  mode,
+  children,
+  className,
+  'data-testid': testId,
+}: {
+  mode: AuthModalMode
+  children: React.ReactNode
+  className?: string
+  'data-testid'?: string
+}) {
+  const { openAuth } = useAuthModal()
+  return (
+    <Link
+      href={mode === 'login' ? '/login' : '/register'}
+      className={className}
+      data-testid={testId}
+      onClick={(event) => {
+        event.preventDefault()
+        openAuth(mode)
+      }}
+    >
+      {children}
     </Link>
   )
 }
@@ -81,6 +120,7 @@ export function SiteHeader() {
 
 export function MobileBottomNav() {
   const [location] = useLocation()
+  const { openAuth } = useAuthModal()
   const session = useGetAuthSession()
   const accountHref = session.data?.authenticated
     ? session.data.role === 'admin'
@@ -107,6 +147,12 @@ export function MobileBottomNav() {
             className={isActive ? 'mobile-tab active' : 'mobile-tab'}
             href={href}
             key={label}
+            onClick={(event) => {
+              if (label === 'My account' && !session.data?.authenticated) {
+                event.preventDefault()
+                openAuth('login')
+              }
+            }}
             aria-label={label}
             aria-current={isActive ? 'page' : undefined}
             data-testid={`mobile-nav-${label.toLowerCase().replaceAll(' ', '-')}`}
@@ -121,7 +167,7 @@ export function MobileBottomNav() {
 }
 
 export function SiteFooter() {
-  return <footer><div className="footer-main"><div><Logo light /><p>Where fun meets adventures.</p></div><div><strong>Explore</strong><Link href="/adventures">Adventures</Link><Link href="/destinations">Destinations</Link><Link href="/group-travel">Group Travel</Link><Link href="/blog">Blog</Link></div><div><strong>Contact</strong><a href="tel:0726843677">0726 843 677</a><a href="mailto:linkupsadventures@gmail.com">linkupsadventures@gmail.com</a><Link href="/contact">Send an enquiry</Link></div><div><strong>Your LinkUps</strong><Link href="/login">Sign in</Link><Link href="/register">Create an account</Link></div><div><strong>Policies</strong><Link href="/terms">Terms &amp; Conditions</Link><Link href="/cancellation-policy">Cancellation Policy</Link><Link href="/privacy-policy">Privacy Policy</Link></div><div><strong>Payments</strong><p>M-Pesa Till<br /><b>5139557</b></p></div></div><div className="footer-bottom"><span>© 2026 Linkups Adventures. All rights reserved.</span><span>LinkUps Adventures · Kenya</span></div></footer>
+  return <footer><div className="footer-main"><div><Logo light /><p>Where fun meets adventures.</p></div><div><strong>Explore</strong><Link href="/adventures">Adventures</Link><Link href="/destinations">Destinations</Link><Link href="/group-travel">Group Travel</Link><Link href="/blog">Blog</Link></div><div><strong>Contact</strong><a href="tel:0726843677">0726 843 677</a><a href="mailto:linkupsadventures@gmail.com">linkupsadventures@gmail.com</a><Link href="/contact">Send an enquiry</Link></div><div><strong>Your LinkUps</strong><AuthLink mode="login" data-testid="link-footer-sign-in">Sign in</AuthLink><AuthLink mode="register" data-testid="link-footer-register">Create an account</AuthLink></div><div><strong>Policies</strong><Link href="/terms">Terms &amp; Conditions</Link><Link href="/cancellation-policy">Cancellation Policy</Link><Link href="/privacy-policy">Privacy Policy</Link></div><div><strong>Payments</strong><p>M-Pesa Till<br /><b>5139557</b></p></div></div><div className="footer-bottom"><span>© 2026 Linkups Adventures. All rights reserved.</span><span>LinkUps Adventures · Kenya</span></div></footer>
 }
 
 import { ConversionTools } from './conversion-tools'

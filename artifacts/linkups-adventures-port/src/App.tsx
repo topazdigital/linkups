@@ -5,6 +5,8 @@ import { MobileBottomNav, PageFrame } from '@/components/site-shell';
 import { CompareProvider, TripCompareTray } from '@/components/trip-compare';
 import AboutPage from '@/app/about/page';
 import AdminPage from '@/app/admin/page';
+import { AuthModalProvider, useAuthModal, type AuthModalMode } from '@/components/auth-modal-context';
+import { AuthDialogHost } from '@/components/auth-dialog-host';
 import AdventuresPage from '@/app/adventures/page';
 import AdventureDetailPage from '@/app/adventures/[slug]/page';
 import BlogPage from '@/app/blog/page';
@@ -14,10 +16,8 @@ import DestinationsPage from '@/app/destinations/page';
 import DestinationDetailPage from '@/app/destinations/[slug]/page';
 import GroupTravelPage from '@/app/group-travel/page';
 import HomePage from '@/app/page';
-import LoginPage from '@/app/login/page';
 import PlanPage from '@/app/plan/page';
 import PublicContentPage from '@/app/site-content/page';
-import RegisterPage from '@/app/register/page';
 import DashboardPage from '@/app/dashboard/page';
 import TravelGuidePage from '@/app/travel-guide/page';
 import UpcomingTripsPage from '@/app/upcoming-trips/page';
@@ -44,11 +44,17 @@ function LegacyCompareRedirect() {
   return null;
 }
 
+function AuthRoutePage({ mode }: { mode: AuthModalMode }) {
+  const { openAuth } = useAuthModal();
+  useEffect(() => {
+    openAuth(mode);
+  }, [mode, openAuth]);
+  return <HomePage />;
+}
+
 function AppRoutes() {
   const [location] = useLocation();
   const showMobileNavigation =
-    location !== '/login' &&
-    location !== '/register' &&
     !location.startsWith('/admin');
 
   return (
@@ -74,9 +80,9 @@ function AppRoutes() {
             {(params) => <DestinationDetailPage slug={params.slug} />}
           </Route>
           <Route path="/group-travel" component={GroupTravelPage} />
-          <Route path="/login" component={LoginPage} />
+          <Route path="/login">{() => <AuthRoutePage mode="login" />}</Route>
           <Route path="/plan" component={PlanPage} />
-          <Route path="/register" component={RegisterPage} />
+          <Route path="/register">{() => <AuthRoutePage mode="register" />}</Route>
           <Route path="/travel-guide" component={TravelGuidePage} />
           <Route path="/upcoming-trips" component={UpcomingTripsPage} />
           <Route path="/:pageKey">
@@ -95,8 +101,11 @@ function App() {
   return (
     <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
       <CompareProvider>
-        <SeoManager />
-        <AppRoutes />
+        <AuthModalProvider>
+          <SeoManager />
+          <AppRoutes />
+          <AuthDialogHost />
+        </AuthModalProvider>
       </CompareProvider>
     </WouterRouter>
   );
