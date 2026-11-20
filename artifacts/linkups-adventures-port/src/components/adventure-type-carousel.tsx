@@ -27,11 +27,10 @@ export function AdventureTypeCarousel({ items }: { items: AdventureType[] }) {
     moved: boolean
   } | null>(null)
   const suppressClickRef = useRef(false)
-  const [isHovered, setIsHovered] = useState(false)
   const [isInteracting, setIsInteracting] = useState(false)
   const [isFocused, setIsFocused] = useState(false)
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
-  const isPaused = isHovered || isInteracting || isFocused || prefersReducedMotion
+  const isPaused = isInteracting || isFocused || prefersReducedMotion
 
   useEffect(() => {
     const preference = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -172,14 +171,8 @@ export function AdventureTypeCarousel({ items }: { items: AdventureType[] }) {
       ref={viewportRef}
       className={`type-carousel-track${isInteracting ? ' is-interacting' : ''}`}
       role="region"
-      aria-label="Adventure categories. Pause by hovering or touching, then swipe or drag to browse."
+      aria-label="Adventure categories. Swipe, drag, or use the arrow keys to browse."
       tabIndex={0}
-      onPointerEnter={(event) => {
-        if (event.pointerType === 'mouse') setIsHovered(true)
-      }}
-      onPointerLeave={(event) => {
-        if (event.pointerType === 'mouse') setIsHovered(false)
-      }}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={(event) => {
