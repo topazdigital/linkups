@@ -25,6 +25,22 @@ export function Logo({ light = false, className = '', 'data-testid': testId }: L
   return <Link href="/" className={`brand logo-mark ${className}`.trim()} style={light ? { color: '#fff' } : undefined} aria-label="LinkUps Adventures home" data-testid={testId}><SiteImage src="/images/linkups-logo.png" alt="LinkUps Adventures" loading="eager" /></Link>
 }
 
+export function DesktopAccountLink() {
+  const session = useGetAuthSession()
+  const authenticated = session.data?.authenticated === true
+  const href = authenticated
+    ? session.data?.role === 'admin'
+      ? '/admin'
+      : '/dashboard'
+    : '/login'
+
+  return (
+    <Link className="header-account" href={href} data-testid="link-header-account">
+      {authenticated ? 'My account' : 'Sign in'}
+    </Link>
+  )
+}
+
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false)
   const links = [['Adventures', '/adventures'], ['Destinations', '/destinations'], ['Upcoming Trips', '/upcoming-trips'], ['Travel Guide', '/travel-guide'], ['Group Travel', '/group-travel'], ['About Us', '/about'], ['Blog', '/blog'], ['Contact', '/contact']]
@@ -54,6 +70,7 @@ export function SiteHeader() {
         {menuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
       </button>
       <div className="header-actions">
+        <DesktopAccountLink />
         <Link className="button orange" href="/plan">
           Plan My Adventure <ArrowRight />
         </Link>
